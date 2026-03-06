@@ -1,0 +1,12 @@
+[06-03-26 00:36:40.593] reason = RDSBathroomZed x,y,z = 6366,5375,0 room = bathroom
+reason = RBSafehouse x,y,z = 6259,5421,0 room = livingroom
+reason = RBSafehouse x,y,z = 6257,5423,0 room = bedroom
+reason = RBSafehouse x,y,z = 6260,5426,0 room = kitchen
+reason = RBSafehouse x,y,z = 6256,5426,0 room = bedroom
+reason = RBSafehouse x,y,z = 6258,5417,0 room = livingroom
+reason = RBSafehouse x,y,z = 6261,5424,0 room = kitchen
+reason = RBSafehouse x,y,z = 6262,5424,0 room = kitchen
+reason = RVSChangingTire x,y,z = 6221,5434,0
+reason = RVSChangingTire x,y,z = 6221,5435,0
+reason = createEatingZombies x,y,z = 6225,5412,0
+reason = createEatingZombies x,y,z = 6181,5383,0.

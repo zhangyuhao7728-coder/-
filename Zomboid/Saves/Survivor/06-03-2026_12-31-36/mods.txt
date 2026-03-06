@@ -1,0 +1,43 @@
+VERSION = 1,
+
+mods
+{
+	mod = Arsenal(26)GunFighter,
+	mod = modoptions,
+	mod = Arsenal(26)GunFighter[MAIN MOD 2.0],
+	mod = MaeAshHairCuts,
+	mod = Brita,
+	mod = disablewelcome,
+	mod = tikitown_tiles,
+	mod = FancyHandwork,
+	mod = Erikas_Tiles,
+	mod = L4D2 Zombie Siege Main Menu mod 16:9,
+	mod = L4D2 Zombie Siege Main Menu mod 16:9 NO BGM,
+	mod = melos_tiles_for_miles_pack,
+	mod = ReadFasterWhenSitting,
+	mod = TT_PowerPlant,
+	mod = TombBody,
+	mod = TombBodyTex,
+	mod = TombBodyTexDOLL,
+	mod = TombBodyTexNUDE,
+	mod = TombBodyCompat,
+	mod = TombWardrobeALT,
+	mod = TombWardrobeALTVanilla,
+	mod = VanillaVehiclesAnimated,
+	mod = VanillaVehiclesAnimated_SVU,
+	mod = VVA_slowdoors,
+	mod = VVA_cullseats,
+	mod = B42Trans_CN,
+	mod = B42ModTrans_CN,
+	mod = B42Trans_CN_Simple,
+	mod = errorMagnifier,
+	mod = 412356785499842.13test,
+	mod = vs3,
+	mod = butiao,
+	mod = fonts-cn,
+	mod = CNRadioS,
+}
+
+maps
+{
+}

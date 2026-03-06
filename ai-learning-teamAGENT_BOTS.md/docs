@@ -1,0 +1,26 @@
+# Agent 独立机器人配置
+
+## 已分配
+
+| Agent | Bot Token | 状态 |
+|-------|-----------|------|
+| **planner** | 8673494887:AAGLudy2Y69vUZTnPi9U4ndLFSY6jE-VdwQ | ✅ 已记录 |
+| **researcher** | 8779180935:AAFIrUuEAe7up1T6UN7KOLLVHz9GqNQgZvY | ✅ 已记录 |
+| **engineer** | [待分配] | ⏳ |
+| **reviewer** | [待分配] | ⏳ |
+| **analyst** | [待分配] | ⏳ |
+
+---
+
+## 待分配
+
+- **engineer**:
+- **reviewer**:
+- **analyst**:
+
+---
+
+## 说明
+
+当前 OpenClaw 全局配置只支持 1 个 Telegram Bot。
+如需为每个 Agent 分配独立机器人，需配置 Bot API 映射。
