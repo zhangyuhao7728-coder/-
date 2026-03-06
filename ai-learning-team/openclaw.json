@@ -1,0 +1,27 @@
+{
+  "agents": {
+    "list": [
+      { "id": "ceo", "soul": "souls/ceo.md" },
+      { "id": "planner", "soul": "souls/planner.md" },
+      { "id": "researcher", "soul": "souls/researcher.md" },
+      { "id": "engineer", "soul": "souls/engineer.md" },
+      { "id": "reviewer", "soul": "souls/reviewer.md" },
+      { "id": "analyst", "soul": "souls/analyst.md" }
+    ]
+  },
+  "bindings": [
+    { "agentId": "ceo", "match": { "channel": "telegram", "accountId": "ceo", "botToken": "8370057237:AAGYl-5GfOj2JyK9OHXAjJqfYrqzntBSnfk" }},
+    { "agentId": "planner", "match": { "channel": "telegram", "accountId": "planner", "botToken": "8673494887:AAGLudy2Y69vUZTnPi9U4ndLFSY6jE-VdwQ" }},
+    { "agentId": "researcher", "match": { "channel": "telegram", "accountId": "researcher", "botToken": "8779180935:AAFIrUuEAe7up1T6UN7KOLLVHz9GqNQgZvY" }},
+    { "agentId": "engineer", "match": { "channel": "telegram", "accountId": "engineer", "botToken": "8791760022:AAGwCGs8_BJg9BqGd3hhyzwGZhOm9DMa4i0" }},
+    { "agentId": "reviewer", "match": { "channel": "telegram", "accountId": "reviewer", "botToken": "8700305426:AAE_iKG1cQRpAHGYfjZbNEoP5ipISS1tp4k" }},
+    { "agentId": "analyst", "match": { "channel": "telegram", "accountId": "analyst", "botToken": "8635278132:AAE9hxbdu7dkwJ3LxCnGs-joB5gCuCoIjYk" }}
+  ],
+  "tools": {
+    "agentToAgent": {
+      "enabled": true,
+      "allow": ["ceo", "planner", "researcher", "engineer", "reviewer", "analyst"],
+      "maxRecursion": 3
+    }
+  }
+}

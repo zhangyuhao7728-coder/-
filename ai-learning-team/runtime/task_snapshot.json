@@ -1,0 +1,20 @@
+{
+  "status": "IN_PROGRESS",
+  "locked": false,
+  "retry_count": 0,
+  "risk_level": "low",
+  "recursion_control": {
+    "current_depth": 0,
+    "max_depth": 3,
+    "call_count": 0,
+    "max_calls": 20
+  },
+  "communication_trace": {
+    "chain": [],
+    "max_chain_length": 10
+  },
+  "token_budget": {
+    "used": 0,
+    "total": 50000
+  }
+}

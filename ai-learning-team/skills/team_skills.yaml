@@ -1,0 +1,136 @@
+# =============================================================================
+# AI 学习团队 Skill 配置
+# 每个 Agent 对应一个 Skill
+# =============================================================================
+
+# 0. Browser API: 浏览器控制 (所有 Agent 可用)
+- id: "browser_api"
+  name: "Browser_Controller"
+  description: "通过 HTTP API 控制浏览器集群，执行自动化操作"
+  endpoint: "http://localhost:8000"
+  api_key: ""
+  operations:
+    - "navigate"
+    - "click"
+    - "fill"
+    - "screenshot"
+    - "get_html"
+    - "evaluate"
+    - "wait_for_selector"
+  triggers:
+    - "browser_automation_needed"
+
+# 0. Browser API: 浏览器控制 (所有 Agent 可用)
+- id: "browser_visit"
+  name: "Browser_Visit"
+  description: "通过Docker浏览器访问JS渲染页面"
+  file: "skills/browser_api.py"
+  function: "visit_page"
+  endpoint: "http://localhost:8001"
+  triggers:
+    - "js_rendering_needed"
+  rules:
+    - "默认使用 requests"
+    - "浏览器仅用于 JS 渲染页面"
+    - "单任务单实例"
+    - "禁止批量并发抓取"
+    - "每日浏览器调用不超过 20 次"
+
+# 1. CEO: 战略决策
+- id: "ceo_decision_maker"
+  name: "Strategic_Director"
+  description: "基于当前进度和风险报告，下达最终指令"
+  input:
+    - "daily_summary"
+    - "risk_report"
+  output:
+    - "final_instruction"
+    - "priority_queue"
+  triggers:
+    - "daily_review"
+    - "task_completed"
+    - "escalation"
+
+# 2. Planner: 任务拆解
+- id: "planner_squad_split"
+  name: "Task_Architect"
+  description: "将 CEO 指令转化为 L2/L3 级的具体任务卡片"
+  input:
+    - "milestone_goal"
+    - "agent_availability"
+  output:
+    - "task_cards"
+    - "timeline_update"
+  templates:
+    - "templates/daily/L3_TASK_CARD.md"
+  triggers:
+    - "new_goal_received"
+    - "goal_updated"
+
+# 3. Researcher: 技术洞察
+- id: "researcher_tech_lookup"
+  name: "Knowledge_Informer"
+  description: "从外部文档和 GitHub 抓取最新的 AI 工具使用方法"
+  input:
+    - "tech_keyword"
+    - "search_depth"
+  output:
+    - "reference_doc"
+    - "tool_evaluation"
+  tools:
+    - "web_search"
+    - "web_fetch"
+    - "agent-reach"
+  triggers:
+    - "research_requested"
+
+# 4. Engineer: 代码实现
+- id: "engineer_code_generator"
+  name: "Logic_Builder"
+  description: "根据 Planner 的任务卡片编写可执行的 Python 脚本"
+  input:
+    - "logic_description"
+    - "tech_stack"
+    - "constraints"
+  output:
+    - "source_code"
+    - "unit_test_result"
+  templates:
+    - "templates/code/function.py"
+  triggers:
+    - "code_requested"
+    - "fix_requested"
+
+# 5. Reviewer: 质量审计
+- id: "reviewer_quality_audit"
+  name: "Code_Guardian"
+  description: "对 Engineer 输出的代码进行多维度安全性与性能审计"
+  input:
+    - "code_snippet"
+    - "security_level"
+  output:
+    - "audit_report"
+    - "fix_suggestions"
+  criteria:
+    - "syntax_check"
+    - "security_scan"
+    - "performance_check"
+    - "readability_review"
+  triggers:
+    - "review_requested"
+
+# 6. Analyst: 学习复盘
+- id: "analyst_data_summary"
+  name: "Knowledge_Synthesizer"
+  description: "归纳今日所有 Agent 的交互日志，提取核心知识点存入知识库"
+  input:
+    - "runtime_logs"
+    - "task_history"
+  output:
+    - "kb_markdown"
+    - "learning_progress"
+  templates:
+    - "templates/MEMORY.md"
+  triggers:
+    - "daily_review"
+    - "task_completed"

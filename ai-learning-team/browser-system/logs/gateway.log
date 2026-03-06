@@ -1,0 +1,62 @@
+INFO:     Started server process [79130]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59467 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59896 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59898 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59900 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59902 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59904 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59906 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59908 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59910 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59912 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59914 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59916 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59918 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59920 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59922 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59924 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59926 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59928 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59930 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59932 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59934 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59936 - "GET /queue_status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61161 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61163 - "GET /queue_status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61168 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61171 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61173 - "GET /queue_status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61186 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61192 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61208 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61210 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61212 - "GET /queue_status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61217 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61251 - "GET /queue_status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61263 - "GET /result/456ff97a HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61998 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62005 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62007 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62009 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62043 - "GET /result/46c7d991 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62045 - "GET /result/0e7f4db7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62047 - "GET /result/c067388f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62049 - "GET /result/1e8f0bcf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62092 - "GET /result/46c7d991 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62095 - "GET /result/0e7f4db7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62100 - "GET /result/c067388f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62102 - "GET /result/1e8f0bcf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62182 - "GET /result/46c7d991 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62184 - "GET /queue_status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62324 - "GET /queue_status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62348 - "GET /result/0e7f4db7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62350 - "GET /result/c067388f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62352 - "GET /result/1e8f0bcf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62394 - "GET /result/1e8f0bcf HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [79130]

@@ -1,0 +1,37 @@
+agents:
+
+ ceo:
+   role: strategy
+   model: cloud
+   next: planner
+   type: general
+
+ planner:
+   role: planning
+   model: cloud
+   next: researcher
+   type: planning
+
+ researcher:
+   role: research
+   model: cloud
+   next: engineer
+   type: research
+
+ engineer:
+   role: coding
+   model: coder
+   next: reviewer
+   type: code
+
+ reviewer:
+   role: review
+   model: cloud
+   next: analyst
+   type: review
+
+ analyst:
+   role: analysis
+   model: cloud
+   next: ceo
+   type: analysis

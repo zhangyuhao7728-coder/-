@@ -1,0 +1,42 @@
+INFO:     Started server process [18303]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58593 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58599 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58589 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58590 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58591 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58597 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58595 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58601 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58605 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58604 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58626 - "GET /queue/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58868 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59066 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59067 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59069 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59070 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59074 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59076 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59072 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59078 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59080 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59084 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59082 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59086 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59090 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59088 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59097 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59095 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59098 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59101 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59093 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59102 - "GET /visit?url=https://github.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59182 - "GET /health HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59184 - "GET / HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [18303]

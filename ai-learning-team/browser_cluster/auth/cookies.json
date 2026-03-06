@@ -1,0 +1,17 @@
+{
+  "description": "浏览器认证 Cookie 存储",
+  "accounts": {
+    "twitter": {
+      "cookies": [],
+      "updated_at": ""
+    },
+    "github": {
+      "cookies": [],
+      "updated_at": ""
+    },
+    "bilibili": {
+      "cookies": [],
+      "updated_at": ""
+    }
+  }
+}

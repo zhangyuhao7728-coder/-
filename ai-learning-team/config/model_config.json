@@ -1,0 +1,22 @@
+{
+  "models": {
+    "general": "ollama/qwen2.5:14b",
+    "code": "ollama/deepseek-coder:6.7b",
+    "analysis": "mimax/MiniMax-M2.5"
+  },
+  "fallbacks": {
+    "general": "ollama/qwen2.5:7b",
+    "code": "ollama/qwen2.5:14b",
+    "analysis": "ollama/qwen2.5:14b"
+  },
+  "providers": {
+    "ollama": {
+      "base_url": "http://localhost:11434",
+      "timeout": 30
+    },
+    "mimax": {
+      "base_url": "https://api.minimax.chat/v1",
+      "timeout": 30
+    }
+  }
+}

@@ -1,0 +1,7 @@
+🚀 Starting worker...
+📊 Health Report:
+===================
+Timestamp: Mon Mar  2 22:37:16 CST 2026
+Gateway: http://localhost:8000
+Redis: localhost:6379
+{"status":"ok","redis":"connected"}

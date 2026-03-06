@@ -1,0 +1,41 @@
+2026-03-05T16:32:04.539122 🔥 Organization OS started
+2026-03-05T16:32:04.539218 --- Cycle 1 ---
+2026-03-05T16:32:04.539269 ceo received {'from': 'system', 'msg': '创建AI项目'}
+2026-03-05T16:32:04.539304 model -> MiniMax-M2.5
+2026-03-05T16:32:04.539564 planner received {'from': 'ceo', 'msg': '继续任务'}
+2026-03-05T16:32:04.539607 model -> MiniMax-M2.5
+2026-03-05T16:32:04.539820 researcher received {'from': 'planner', 'msg': '继续任务'}
+2026-03-05T16:32:04.539853 model -> MiniMax-M2.5
+2026-03-05T16:32:04.540061 engineer received {'from': 'researcher', 'msg': '继续任务'}
+2026-03-05T16:32:04.540098 model -> deepseek-coder:6.7b
+2026-03-05T16:32:04.540335 reviewer received {'from': 'engineer', 'msg': '继续任务'}
+2026-03-05T16:32:04.540371 model -> MiniMax-M2.5
+2026-03-05T16:32:04.540573 analyst received {'from': 'reviewer', 'msg': '继续任务'}
+2026-03-05T16:32:04.540604 model -> MiniMax-M2.5
+2026-03-05T16:32:05.599275 --- Cycle 2 ---
+2026-03-05T16:32:05.599944 ceo received {'from': 'analyst', 'msg': '继续任务'}
+2026-03-05T16:32:05.600240 model -> MiniMax-M2.5
+2026-03-05T16:32:05.601353 planner received {'from': 'ceo', 'msg': '继续任务'}
+2026-03-05T16:32:05.601426 model -> MiniMax-M2.5
+2026-03-05T16:32:05.601830 researcher received {'from': 'planner', 'msg': '继续任务'}
+2026-03-05T16:32:05.601886 model -> MiniMax-M2.5
+2026-03-05T16:32:05.602766 engineer received {'from': 'researcher', 'msg': '继续任务'}
+2026-03-05T16:32:05.602893 model -> deepseek-coder:6.7b
+2026-03-05T16:32:05.603771 reviewer received {'from': 'engineer', 'msg': '继续任务'}
+2026-03-05T16:32:05.603898 model -> MiniMax-M2.5
+2026-03-05T16:32:05.605023 analyst received {'from': 'reviewer', 'msg': '继续任务'}
+2026-03-05T16:32:05.605221 model -> MiniMax-M2.5
+2026-03-05T16:32:06.624185 --- Cycle 3 ---
+2026-03-05T16:32:06.624895 ceo received {'from': 'analyst', 'msg': '继续任务'}
+2026-03-05T16:32:06.625227 model -> MiniMax-M2.5
+2026-03-05T16:32:06.626940 planner received {'from': 'ceo', 'msg': '继续任务'}
+2026-03-05T16:32:06.627099 model -> MiniMax-M2.5
+2026-03-05T16:32:06.627747 researcher received {'from': 'planner', 'msg': '继续任务'}
+2026-03-05T16:32:06.627831 model -> MiniMax-M2.5
+2026-03-05T16:32:06.628386 engineer received {'from': 'researcher', 'msg': '继续任务'}
+2026-03-05T16:32:06.628457 model -> deepseek-coder:6.7b
+2026-03-05T16:32:06.628980 reviewer received {'from': 'engineer', 'msg': '继续任务'}
+2026-03-05T16:32:06.629045 model -> MiniMax-M2.5
+2026-03-05T16:32:06.629560 analyst received {'from': 'reviewer', 'msg': '继续任务'}
+2026-03-05T16:32:06.629624 model -> MiniMax-M2.5
+2026-03-05T16:32:07.654636 ✅ Organization OS finished

@@ -1,0 +1,32 @@
+{
+  "model_router": {
+    "strategy": "cloud_first",
+    "cloud": {
+      "provider": "minimax",
+      "model": "MiniMax-M2.5",
+      "context": 200000
+    },
+    "local": {
+      "provider": "ollama",
+      "model": "qwen3.5:9b",
+      "context": 128000
+    },
+    "coder": {
+      "provider": "ollama",
+      "model": "deepseek-coder:6.7b",
+      "context": 16000
+    }
+  },
+  "session": {
+    "max_context_ratio": 0.6,
+    "auto_rotate": true,
+    "summary": true,
+    "hard_limit": 180000
+  },
+  "telegram": {
+    "session": "main"
+  },
+  "agents": {
+    "team": ["ceo", "planner", "researcher", "engineer", "reviewer", "analyst"]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "tasks": [
+    {
+      "url": "https://realpython.com/",
+      "task_type": "scrape",
+      "scrape_depth": 3,
+      "storage": "local",
+      "file_format": "json",
+      "frequency": "daily",
+      "name": "Real Python"
+    },
+    {
+      "url": "https://www.w3schools.com/python/",
+      "task_type": "scrape",
+      "scrape_depth": 3,
+      "storage": "local",
+      "file_format": "json",
+      "frequency": "daily",
+      "name": "W3Schools Python"
+    },
+    {
+      "url": "https://www.geeksforgeeks.org/python-programming-language/",
+      "task_type": "scrape",
+      "scrape_depth": 3,
+      "storage": "local",
+      "file_format": "json",
+      "frequency": "daily",
+      "name": "GeeksforGeeks Python"
+    },
+    {
+      "url": "https://www.kaggle.com/learn/python",
+      "task_type": "scrape",
+      "scrape_depth": 3,
+      "storage": "local",
+      "file_format": "json",
+      "frequency": "daily",
+      "name": "Kaggle Python"
+    }
+  ]
+}
