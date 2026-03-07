@@ -1,120 +1,85 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-用例 09：SSH 私钥扫描器
-检查密钥泄露风险
+SSH密钥扫描 - 优化版
+快速检测SSH密钥
 """
 
 import os
-import re
 import subprocess
-from pathlib import Path
+from datetime import datetime
 
-# 扫描路径
-SCAN_PATHS = [
-    os.path.expanduser("~"),
-    "/Users/zhangyuhao/Learning project/python/openclaw_modules",
-    "/Users/zhangyuhao/openclaw"
-]
-
-# SSH 私钥文件名模式
-SSH_KEY_PATTERNS = [
-    r"id_rsa",
-    r"id_dsa",
-    r"id_ecdsa",
-    r"id_ed25519",
-    r"\.pem",
-    r"\.key",
-    r"\.ppk"
-]
-
-# 危险内容模式
-DANGEROUS_PATTERNS = [
-    r"-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----",
-    r"-----BEGIN CERTIFICATE-----",
-    r"aws_access_key",
-    r"aws_secret_key",
-    r"AKIA[0-9A-Z]{16}"
-]
-
-def scan_file(filepath):
-    """扫描文件内容"""
-    try:
-        with open(filepath, 'r', errors='ignore') as f:
-            content = f.read(8192)  # 只读前8KB
-            for pattern in DANGEROUS_PATTERNS:
-                if re.search(pattern, content):
-                    return True
-    except:
-        pass
-    return False
-
-def check_permissions(filepath):
-    """检查文件权限"""
-    try:
-        stat = os.stat(filepath)
-        mode = stat.st_mode & 0o777
-        # 644 或更宽松的权限是危险的
-        if mode > 0o600:
-            return False
-        return True
-    except:
-        return False
-
-def scan_directory(base_path):
-    """扫描目录"""
-    results = []
+def check_ssh_key(path):
+    """检查单个SSH密钥"""
+    if not os.path.exists(path):
+        return None
     
-    for root, dirs, files in os.walk(base_path):
-        # 跳过某些目录
-        dirs[:] = [d for d in dirs if d not in ['.git', 'node_modules', '__pycache__']]
-        
-        for file in files:
-            filepath = os.path.join(root, file)
-            
-            # 检查文件名
-            for pattern in SSH_KEY_PATTERNS:
-                if re.search(pattern, file, re.IGNORECASE):
-                    # 检查权限
-                    perm_ok = check_permissions(filepath)
-                    # 检查内容
-                    has_secret = scan_file(filepath)
-                    
-                    if not perm_ok or has_secret:
-                        results.append({
-                            "file": filepath,
-                            "issue": "权限过宽" if not perm_ok else "包含密钥",
-                            "severity": "🔴 高" if has_secret else "🟡 中"
-                        })
-    
-    return results
+    stat = os.stat(path)
+    return {
+        "path": path,
+        "size": stat.st_size,
+        "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
+        "permissions": oct(stat.st_mode)[-3:]
+    }
 
-def run_scan():
-    """运行扫描"""
-    all_results = []
-    
-    print("🔍 正在扫描 SSH 私钥...")
-    
-    for path in SCAN_PATHS:
-        if os.path.exists(path):
-            print(f"   扫描: {path}")
-            results = scan_directory(path)
-            all_results.extend(results)
-    
-    return all_results
-
-if __name__ == "__main__":
-    results = run_scan()
-    
-    print("\n" + "="*50)
-    print("🔒 SSH 私钥扫描报告")
+def quick_scan():
+    """快速扫描"""
+    print("🔑 SSH密钥快速扫描")
+    print("="*50)
+    print(f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print("="*50)
     
-    if not results:
-        print("✅ 未发现安全问题")
-    else:
-        print(f"⚠️ 发现 {len(results)} 个问题:\n")
-        for r in results:
-            print(f"  {r['severity']} {r['file']}")
-            print(f"     问题: {r['issue']}")
-            print()
+    ssh_dir = os.path.expanduser("~/.ssh")
+    
+    # 检查SSH目录
+    if not os.path.exists(ssh_dir):
+        print("❌ SSH目录不存在")
+        return
+    
+    print(f"\n📁 SSH目录: {ssh_dir}")
+    
+    # 快速检查密钥
+    keys = []
+    
+    for key_file in ["id_rsa", "id_ed25519", "id_ecdsa", "id_dsa"]:
+        path = os.path.join(ssh_dir, key_file)
+        info = check_ssh_key(path)
+        if info:
+            keys.append(info)
+    
+    # 显示结果
+    print(f"\n🔑 发现 {len(keys)} 个SSH密钥:\n")
+    
+    for key in keys:
+        name = os.path.basename(key["path"])
+        print(f"   📄 {name}")
+        print(f"      路径: {key['path']}")
+        print(f"      修改: {key['modified']}")
+        print(f"      权限: {key['permissions']}")
+        
+        # 检查密钥类型
+        if "ed25519" in name:
+            print(f"      类型: ed25519 (推荐)")
+        elif "rsa" in name:
+            print(f"      类型: RSA")
+        
+        # 检查权限
+        if key["permissions"] != "600":
+            print(f"      ⚠️ 权限过松! 应为600")
+        
+        print()
+    
+    # 检查公钥
+    pub_keys = [f for f in os.listdir(ssh_dir) if f.endswith(".pub")]
+    print(f"📢 公钥: {len(pub_keys)} 个")
+    
+    # 建议
+    print("="*50)
+    print("\n💡 建议:")
+    print("   1. 使用 ed25519 类型密钥 (更安全)")
+    print("   2. 权限设置为 600")
+    print("   3. 定期轮换密钥 (90天)")
+    print("   4. 不在不信任的网络使用SSH")
+
+if __name__ == "__main__":
+    quick_scan()

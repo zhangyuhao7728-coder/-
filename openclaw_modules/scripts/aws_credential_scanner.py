@@ -1,88 +1,91 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-用例 29：AWS 凭证扫描器
-检查 AWS 密钥泄露
+AWS凭证扫描 - 优化版
+快速检测AWS凭据泄露
 """
 
 import os
-import re
 import subprocess
-from pathlib import Path
+from datetime import datetime
 
-# AWS 密钥模式
-AWS_PATTERNS = [
-    r"AKIA[0-9A-Z]{16}",  # Access Key ID
-    r"aws_access_key_id\s*=\s*[A-Z0-9]{20}",
-    r"aws_secret_access_key\s*=\s*[A-Za-z0-9/+=]{40}",
-]
-
-# 扫描路径
-SCAN_PATHS = [
-    os.path.expanduser("~"),
-    "/Users/zhangyuhao/Learning project/python/openclaw_modules",
-    "/Users/zhangyuhao/openclaw"
-]
-
-def scan_file(filepath):
-    """扫描文件内容"""
-    try:
-        with open(filepath, 'r', errors='ignore') as f:
-            content = f.read(8192)
-            for pattern in AWS_PATTERNS:
-                if re.search(pattern, content):
-                    return True
-    except:
-        pass
-    return False
-
-def scan_directory(base_path):
-    """扫描目录"""
-    results = []
-    
-    for root, dirs, files in os.walk(base_path):
-        dirs[:] = [d for d in dirs if d not in ['.git', 'node_modules', '__pycache__', '.venv']]
-        
-        for file in files:
-            filepath = os.path.join(root, file)
-            
-            # 只扫描可能包含密钥的文件
-            if file.endswith(('.py', '.sh', '.json', '.yml', '.yaml', '.env', '.txt', '.conf', '.config')):
-                if scan_file(filepath):
-                    results.append({
-                        "file": filepath,
-                        "issue": "包含 AWS 密钥",
-                        "severity": "🔴 高"
-                    })
-    
-    return results
-
-def run_scan():
-    """运行扫描"""
-    all_results = []
-    
-    print("🔍 正在扫描 AWS 凭证...")
-    
-    for path in SCAN_PATHS:
-        if os.path.exists(path):
-            print(f"   扫描: {path}")
-            results = scan_directory(path)
-            all_results.extend(results)
-    
-    return all_results
-
-if __name__ == "__main__":
-    results = run_scan()
-    
-    print("\n" + "="*50)
-    print("🔒 AWS 凭证扫描报告")
+def check_aws_credentials():
+    """检查AWS凭据"""
+    print("☁️ AWS凭证快速扫描")
+    print("="*50)
+    print(f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print("="*50)
     
-    if not results:
-        print("✅ 未发现 AWS 密钥泄露")
+    results = []
+    
+    # 1. 检查环境变量
+    print("\n1️⃣ 检查环境变量...")
+    aws_keys = ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN"]
+    found = []
+    for key in aws_keys:
+        if os.environ.get(key):
+            found.append(key)
+    
+    if found:
+        print(f"   ⚠️ 发现环境变量: {', '.join(found)}")
+        results.append(("环境变量", False))
     else:
-        print(f"⚠️ 发现 {len(results)} 个问题:\n")
-        for r in results:
-            print(f"  {r['severity']} {r['file']}")
-            print(f"     问题: {r['issue']}")
-            print()
+        print("   ✅ 无AWS环境变量")
+        results.append(("环境变量", True))
+    
+    # 2. 检查AWS CLI配置
+    print("\n2️⃣ 检查AWS CLI配置...")
+    aws_dir = os.path.expanduser("~/.aws")
+    if os.path.exists(aws_dir):
+        files = os.listdir(aws_dir)
+        print(f"   📁 AWS目录存在: {files}")
+        
+        # 检查敏感文件
+        creds_file = os.path.join(aws_dir, "credentials")
+        if os.path.exists(creds_file):
+            print("   ⚠️ 发现credentials文件")
+            results.append(("CLI配置", False))
+        else:
+            print("   ✅ 无credentials文件")
+            results.append(("CLI配置", True))
+    else:
+        print("   ✅ 无AWS CLI配置")
+        results.append(("CLI配置", True))
+    
+    # 3. 检查常见泄露位置
+    print("\n3️⃣ 检查常见泄露位置...")
+    dangerous_paths = [
+        "~/.aws/credentials",
+        "~/aws.pem",
+        "~/aws-key.pem",
+    ]
+    
+    leaks = []
+    for path in dangerous_paths:
+        full_path = os.path.expanduser(path)
+        if os.path.exists(full_path):
+            leaks.append(path)
+    
+    if leaks:
+        print(f"   ❌ 发现可疑文件: {leaks}")
+        results.append(("泄露检测", False))
+    else:
+        print("   ✅ 未发现泄露")
+        results.append(("泄露检测", True))
+    
+    # 总结
+    print("\n" + "="*50)
+    passed = sum(1 for _, r in results if r)
+    total = len(results)
+    
+    print(f"\n📊 检查结果: {passed}/{total} 通过")
+    
+    if passed == total:
+        print("   ✅ 未发现AWS凭证泄露风险")
+    else:
+        print("   ⚠️ 建议检查以上问题")
+    
+    return passed == total
+
+if __name__ == "__main__":
+    check_aws_credentials()

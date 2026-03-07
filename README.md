@@ -5,44 +5,66 @@
 ## 📁 项目结构
 
 ```
-Ai学习系统/
-├── openclaw_modules/     ← 核心模块 (70个用例)
-│   ├── scripts/           # Python脚本 (45+)
-│   ├── skills/            # Skill文档 (20+)
-│   ├── browser-system/   # 浏览器自动化
-│   ├── organization-os/  # 组织系统
-│   └── organization_core/ # 核心架构
-├── projects/             # 附加项目
-│   ├── agent-reach/      # AgentReach配置
-│   └── crawler/          # 爬虫工具
+~/项目/Ai学习系统/
+├── openclaw_modules/     ← 核心模块 (70用例)
+│   ├── scripts/          # Python脚本 (50个)
+│   ├── skills/           # Skill文档
+│   └── SCRIPTS_README.md # 脚本分类说明
 ├── memory/               # 记忆数据
-├── docs/                # 文档
-└── config/              # 配置
+│   └── improvements.md  # 提升记录
+└── README.md            # 项目说明
 ```
 
 ## 🎯 已安装用例
 
-| 类别 | 数量 | 用例 |
-|------|------|------|
-| 内容创作 | 5 | 03, 20, 52, 57, 58 |
-| 记忆与知识 | 5 | 04, 40, 41, 42, 60 |
-| 夜间自动化 | 6 | 12, 13, 34, 35, 36, 17 |
-| 安全类 | 11 | 05-09, 19, 30, 31, 07, 26 |
-| 开发者工具 | 1 | 26 |
+### 安全类 (12个)
+05, 06, 07, 08, 09, 19, 26, 30, 31, 34
 
-## 🚀 快速开始
+### 运维类 (10个)
+13, 15, 16, 18, 35, 36
+
+### 学习类 (7个)
+03, 20, 39, 40, 52, 57, 60
+
+### 自动化类 (4个)
+12, 17, 41, 42
+
+### 开发者工具 (1个)
+26
+
+## 🚀 常用命令
 
 ```bash
-# 运行健康检查
+# 健康检查
 python3 openclaw_modules/scripts/health_check.py
 
-# 查看Cron任务
-python3 openclaw_modules/scripts/cron_dashboard.py
+# 紧急修复
+python3 openclaw_modules/scripts/openclaw_quick_fix.py
+
+# 自动维护
+python3 openclaw_modules/scripts/openclaw_auto_maintenance.py
+
+# 每日提升
+python3 openclaw_modules/scripts/daily_self_improvement.py
 ```
 
-## 📝 默认项目
+## ⏰ Cron任务 (20个)
 
-此项目为学习系统默认AI，其他项目请放在同级目录的 `projects/` 文件夹中。
+| 频率 | 数量 |
+|------|------|
+| 每15分钟 | 1 |
+| 每30分钟 | 2 |
+| 每小时 | 1 |
+| 每天 | 10 |
+| 每周 | 6 |
+
+## 📊 统计
+
+- 脚本: 50个
+- 技能: 20+个
+- Cron: 20个
+- 用例: 34个已安装
 
 ---
 *基于 OpenClaw + Moltbook 70用例构建*
+*更新时间: 2026-03-07*
