@@ -6,11 +6,22 @@
 
 import subprocess
 import time
+import shutil
+import os
+
+# 检查 openclaw 命令可用性
+def get_openclaw_cmd():
+    """获取 openclaw 命令"""
+    if shutil.which("openclaw"):
+        return ["openclaw"]
+    return ["npx", "-y", "openclaw"]
+
+OPENCLAW_CMD = get_openclaw_cmd()
 
 def check_for_errors():
     """检查是否有错误"""
     result = subprocess.run(
-        ["openclaw", "logs", "--limit", "30", "--no-color"],
+        OPENCLAW_CMD + ["logs", "--limit", "30", "--no-color"],
         capture_output=True,
         text=True,
         timeout=30
@@ -31,13 +42,13 @@ def check_for_errors():
 def send_alert(message):
     """发送警报到 Telegram"""
     # 直接通过 OpenClaw 发送消息
-    cmd = f'openclaw message send --to 8793442405 --message "🚨 {message}"'
-    subprocess.run(cmd, shell=True, capture_output=True)
+    cmd = OPENCLAW_CMD + ["message", "send", "--to", "8793442405", "--message", f"🚨 {message}"]
+    subprocess.run(cmd, capture_output=True)
 
 def run_fix():
     """运行修复"""
     send_alert("检测到异常，正在尝试修复...")
-    subprocess.run(["openclaw", "gateway", "restart"], capture_output=True)
+    subprocess.run(OPENCLAW_CMD + ["gateway", "restart"], capture_output=True)
     time.sleep(5)
     send_alert("✅ 修复完成，系统已恢复正常")
 
