@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Control Center - 姬子</title>
+  <style>
+    * {margin: 0;padding: 0;box-sizing: border-box;}
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+      min-height: 100vh;
+      color: #fff;
+      overflow: hidden;
+    }
+    
+    /* Grid background */
+    .bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255,107,107,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,107,107,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 0;
+    }
+    
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .logo {
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+    
+    h1 {
+      font-size: 2.2em;
+      background: linear-gradient(90deg, #ff6b6b, #feca57, #26de81);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    /* Control Grid */
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .control-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 25px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .control-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #ff6b6b, #feca57);
+    }
+    
+    .control-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,107,107,0.5);
+      box-shadow: 0 15px 40px rgba(255,107,107,0.2);
+    }
+    
+    .card-icon {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+    }
+    
+    .card-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    
+    .card-desc {
+      font-size: 0.85em;
+      color: #888;
+    }
+    
+    .card-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #ff6b6b;
+      color: #fff;
+      font-size: 0.7em;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+    
+    /* Status Bar */
+    .status-bar {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .status-title {
+      font-size: 1em;
+      color: #feca57;
+      margin-bottom: 15px;
+    }
+    
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+    
+    .status-item {
+      text-align: center;
+    }
+    
+    .status-icon {
+      font-size: 1.5em;
+      margin-bottom: 5px;
+    }
+    
+    .status-value {
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+    
+    .status-label {
+      font-size: 0.75em;
+      color: #666;
+    }
+    
+    .online { color: #26de81; }
+    .offline { color: #eb3b5a; }
+    
+    /* Quick Actions */
+    .quick-actions {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    
+    .quick-title {
+      font-size: 1em;
+      color: #feca57;
+      margin-bottom: 15px;
+    }
+    
+    .actions-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .action-btn {
+      background: rgba(255,107,107,0.15);
+      border: 1px solid rgba(255,107,107,0.3);
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.3s;
+    }
+    
+    .action-btn:hover {
+      background: rgba(255,107,107,0.3);
+      transform: scale(1.05);
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      color: #444;
+      font-size: 0.75em;
+      padding: 20px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .control-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .status-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    /* Animation */
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .container > * {
+      animation: fade-in 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">🎮</div>
+      <h1>AI Control Center</h1>
+      <p class="subtitle">智能控制中心 | 姬子 AI 教练</p>
+    </div>
+    
+    <!-- Status -->
+    <div class="status-bar">
+      <div class="status-title">⚡ 系统状态</div>
+      <div class="status-grid">
+        <div class="status-item">
+          <div class="status-icon">🧠</div>
+          <div class="status-value online" id="model-status">qwen3.5</div>
+          <div class="status-label">当前模型</div>
+        </div>
+        <div class="status-item">
+          <div class="status-icon">🤖</div>
+          <div class="status-value online">6</div>
+          <div class="status-label">AI Agents</div>
+        </div>
+        <div class="status-item">
+          <div class="status-icon">⚙️</div>
+          <div class="status-value online">5</div>
+          <div class="status-label">子系统</div>
+        </div>
+        <div class="status-item">
+          <div class="status-icon">🎯</div>
+          <div class="status-value" id="tasks-count">3</div>
+          <div class="status-label">待办任务</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Control Grid -->
+    <div class="control-grid">
+      <a href="#" class="control-card" onclick="openSection('tasks')">
+        <div class="card-icon">📋</div>
+        <div class="card-title">今日任务</div>
+        <div class="card-desc">查看和管理今日学习任务</div>
+        <span class="card-badge">3</span>
+      </a>
+      
+      <a href="#" class="control-card" onclick="openSection('project')">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">创建项目</div>
+        <div class="card-desc">AI辅助创建Python项目</div>
+      </a>
+      
+      <a href="#" class="control-card" onclick="openSection('research')">
+        <div class="card-icon">🔍</div>
+        <div class="card-title">AI研究</div>
+        <div class="card-desc">搜索和研究AI相关内容</div>
+      </a>
+      
+      <a href="#" class="control-card" onclick="openSection('automation')">
+        <div class="card-icon">⚙️</div>
+        <div class="card-title">自动化</div>
+        <div class="card-desc">设置自动化任务和工作流</div>
+      </a>
+      
+      <a href="#" class="control-card" onclick="openSection('learning')">
+        <div class="card-icon">📚</div>
+        <div class="card-title">学习系统</div>
+        <div class="card-desc">课程、题库、进度追踪</div>
+      </a>
+      
+      <a href="#" class="control-card" onclick="openSection('system')">
+        <div class="card-icon">📊</div>
+        <div class="card-title">系统状态</div>
+        <div class="card-desc">监控运行状态和资源</div>
+      </a>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="quick-title">⚡ 快速开始</div>
+      <div class="actions-row">
+        <button class="action-btn" onclick="quickAction('一道算法题')">🎯 算法题</button>
+        <button class="action-btn" onclick="quickAction('学Python')">📖 学Python</button>
+        <button class="action-btn" onclick="quickAction('写个项目')">💻 写项目</button>
+        <button class="action-btn" onclick="quickAction('搜索AI新闻')">🔍 AI新闻</button>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      <p>AI学习系统 v2.0 | Powered by Agent Team</p>
+    </div>
+  </div>
+  
+  <script>
+    function openSection(section) {
+      console.log('Open:', section);
+      // Navigate to corresponding system
+    }
+    
+    function quickAction(action) {
+      alert('🤖 正在调用AI: ' + action);
+    }
+    
+    // Load runtime status
+    async function loadStatus() {
+      try {
+        const response = await fetch('../runtime/tasks.json');
+        const data = await response.json();
+        
+        const pending = data.tasks.filter(t => t.status === 'pending').length;
+        document.getElementById('tasks-count').textContent = pending;
+      } catch(e) {
+        console.log('Using default');
+      }
+    }
+    
+    loadStatus();
+  </script>
+</body>
+</html>
