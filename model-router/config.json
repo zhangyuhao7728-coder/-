@@ -1,0 +1,17 @@
+{
+  "name": "Model Router",
+  "version": "1.0.0",
+  "port": 3000,
+  "primary_model": "qwen3.5:9b",
+  "ollama_url": "http://127.0.0.1:11434",
+  "api_token": "changeme-secret",
+  "openclaw": {
+    "configPath": "/Users/zhangyuhao/.openclaw/openclaw.json",
+    "gatewayPort": 18789
+  },
+  "logpath": "./logs/server.log",
+    "maxSize": "10m",
+    "maxFiles": {
+    "": 5
+  }
+}

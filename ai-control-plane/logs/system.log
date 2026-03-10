@@ -1,0 +1,84 @@
+2026-03-10T11:17:49.075Z AI Control Plane running
+2026-03-10T11:17:49.076Z http://localhost:3001
+2026-03-10T11:19:07.553Z AI Control Plane running
+2026-03-10T11:19:07.554Z http://localhost:3001
+2026-03-10T11:20:04.910Z AI Control Plane running
+2026-03-10T11:20:04.912Z http://localhost:3001
+2026-03-10T11:21:30.317Z AI Control Plane running
+2026-03-10T11:21:30.318Z http://localhost:3001
+2026-03-10T11:21:58.188Z AI Control Plane running
+2026-03-10T11:21:58.189Z http://localhost:3001
+2026-03-10T11:22:16.198Z AI Control Plane running
+2026-03-10T11:22:16.200Z http://localhost:3001
+2026-03-10T11:26:01.512Z AI Control Plane running
+2026-03-10T11:26:01.514Z http://localhost:3001
+2026-03-10T11:26:09.525Z AI Control Plane running
+2026-03-10T11:26:09.526Z http://localhost:3001
+2026-03-10T11:27:26.986Z AI Control Plane running
+2026-03-10T11:27:26.987Z http://localhost:3001
+2026-03-10T11:28:38.202Z AI Control Plane running
+2026-03-10T11:28:38.203Z http://localhost:3001
+2026-03-10T11:28:48.345Z chat request -> model: demo
+2026-03-10T11:28:48.346Z chat response <- model: demo
+2026-03-10T11:29:48.568Z AI Control Plane running
+2026-03-10T11:29:48.570Z http://localhost:3001
+2026-03-10T11:30:10.472Z chat request -> model: demo
+2026-03-10T11:30:10.473Z chat response <- model: demo
+2026-03-10T11:30:57.208Z AI Control Plane running
+2026-03-10T11:30:57.210Z http://localhost:3001
+2026-03-10T11:32:18.887Z AI Control Plane running
+2026-03-10T11:32:18.889Z http://localhost:3001
+2026-03-10T11:33:23.986Z AI Control Plane running
+2026-03-10T11:33:23.987Z http://localhost:3001
+2026-03-10T11:34:37.595Z AI Control Plane running
+2026-03-10T11:34:37.596Z http://localhost:3001
+2026-03-10T11:34:37.596Z config hot-reload enabled
+2026-03-10T11:38:24.275Z [INFO] AI Control Plane running
+2026-03-10T11:38:24.276Z [INFO] http://localhost:3001
+2026-03-10T11:39:28.757Z [INFO] AI Control Plane running
+2026-03-10T11:39:28.758Z [INFO] http://localhost:3001
+2026-03-10T11:41:44.237Z [INFO] AI Control Plane running
+2026-03-10T11:41:44.239Z [INFO] http://localhost:3001
+2026-03-10T11:46:00.341Z [INFO] AI Control Plane running
+2026-03-10T11:46:00.342Z [INFO] http://localhost:3001
+2026-03-10T11:48:18.864Z [ERROR] chat error: Cannot read properties of undefined (reading 'length')
+[2026-03-10T13:04:53.828Z] 系统初始化完成
+[2026-03-10T13:04:53.834Z] ========================================
+[2026-03-10T13:04:53.834Z] 🤖 AI Control Plane 启动成功
+[2026-03-10T13:04:53.834Z] 📡 访问地址: http://localhost:3001
+[2026-03-10T13:04:53.834Z] 📋 管理面板: http://localhost:3001/
+[2026-03-10T13:04:53.834Z] ========================================
+[2026-03-10T13:10:39.400Z] 添加模型: minimax/MiniMax-M2.5 (minimax)
+[2026-03-10T13:10:57.806Z] 添加模型: qwen3.5:9b (ollama)
+[2026-03-10T13:13:08.334Z] 切换模型: qwen2.5
+[2026-03-10T13:14:32.109Z] 切换模型: minimax/MiniMax-M2.5
+[2026-03-10T13:14:43.798Z] 切换模型: minimax/MiniMax-M2.5
+[2026-03-10T13:14:59.696Z] 切换模型: qwen3.5:9b
+[2026-03-10T13:15:49.420Z] 切换模型: qwen3.5:9b
+[2026-03-10T13:19:43.875Z] ========================================
+[2026-03-10T13:19:43.877Z] 🤖 AI Control Plane 启动成功
+[2026-03-10T13:19:43.877Z] 📡 访问地址: http://localhost:3001
+[2026-03-10T13:19:43.877Z] ========================================
+[2026-03-10T13:24:47.574Z] 切换云端模型: minimax_m25
+[2026-03-10T13:30:21.936Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:30:21.938Z] 📡 http://localhost:3001
+[2026-03-10T13:30:59.182Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:30:59.183Z] 📡 http://localhost:3001
+[2026-03-10T13:40:41.434Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:40:41.435Z] 📡 http://localhost:3001
+[2026-03-10T13:45:28.602Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:45:28.604Z] 📡 http://localhost:3001
+[2026-03-10T13:45:39.290Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:45:39.291Z] 📡 http://localhost:3001
+[2026-03-10T13:47:33.508Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:47:33.510Z] 📡 http://localhost:3001
+[2026-03-10T13:49:28.025Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:49:28.027Z] 📡 http://localhost:3001
+[2026-03-10T13:55:26.634Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:55:26.635Z] 📡 http://localhost:3001
+[2026-03-10T13:55:39.676Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:55:39.677Z] 📡 http://localhost:3001
+[2026-03-10T13:57:23.461Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:57:23.462Z] 📡 http://localhost:3001
+[2026-03-10T13:58:30.847Z] 🤖 AI Control Plane v2.1 启动
+[2026-03-10T13:58:30.849Z] 📡 http://localhost:3001

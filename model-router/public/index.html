@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Model Router</title>
+<style>
+body{
+font-family:Arial;
+margin:40px;
+background:#f5f5f5;
+}
+h1{color:#333;}
+h2{color:#666;margin-top:20px;}
+#status{font-size:18px;color:green;}
+#current{font-size:24px;color:#2196F3;font-weight:bold;}
+ul{list-style:none;padding:0;}
+li{
+background:white;
+padding:15px;
+margin:10px 0;
+border-radius:8px;
+box-shadow:0 2px 4px rgba(0,0,0,0.1);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+button{
+background:#4CAF50;
+color:white;
+border:none;
+padding:8px 16px;
+border-radius:4px;
+cursor:pointer;
+}
+button:hover{background:#45a049;}
+</style>
+</head>
+
+<body>
+
+<h1>🤖 AI Model Router</h1>
+
+<h2>Status</h2>
+<div id="status">Loading...</div>
+
+<h2>Current Model</h2>
+<div id="current">Loading...</div>
+
+<h2>Local Models</h2>
+<ul id="models"></ul>
+
+<script>
+
+const API_KEY = "changeme-secret"
+
+async function load(){
+ try{
+ const status = await fetch("/api/status")
+ const s = await status.json()
+ document.getElementById("status").innerText = "Ollama: " + s.ollama
+
+ const res = await fetch("/api/models")
+ const data = await res.json()
+
+ document.getElementById("current").innerText = data.primary
+
+ const list = document.getElementById("models")
+ list.innerHTML = ""
+
+ data.local_models.forEach(function(m){
+ const li = document.createElement("li")
+ li.innerHTML = '<span>' + m + '</span><button onclick="setModel(\''+m+'\')">use</button>'
+ list.appendChild(li)
+ })
+ } catch(e){
+ document.getElementById("status").innerText = "Error: " + e.message
+ }
+}
+
+async function setModel(m){
+ await fetch("/api/set",{
+ method:"POST",
+ headers:{
+ "Content-Type":"application/json",
+ "x-api-key":API_KEY
+ },
+ body:JSON.stringify({model:m})
+ })
+ load()
+}
+
+load()
+
+</script>
+
+</body>
+</html>
