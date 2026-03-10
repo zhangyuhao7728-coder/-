@@ -1,0 +1,44 @@
+{
+  "date": "2026-03-11",
+  "focus": "python-basics",
+  "daily_goal": {
+    "concepts": 2,
+    "exercises": 3,
+    "project": 1,
+    "time": 60
+  },
+  "tasks": [
+    {
+      "type": "concept",
+      "topic": "\u53d8\u91cf\u4e0e\u6570\u636e\u7c7b\u578b",
+      "subtasks": "\u6570\u636e\u7c7b\u578b\u8f6c\u6362",
+      "estimated_time": 20
+    },
+    {
+      "type": "concept",
+      "topic": "\u8fd0\u7b97\u7b26",
+      "subtasks": "\u7b97\u672f\u8fd0\u7b97\u7ec3\u4e60",
+      "estimated_time": 20
+    },
+    {
+      "type": "exercise",
+      "difficulty": "easy",
+      "estimated_time": 15
+    },
+    {
+      "type": "exercise",
+      "difficulty": "easy",
+      "estimated_time": 15
+    },
+    {
+      "type": "exercise",
+      "difficulty": "medium",
+      "estimated_time": 15
+    },
+    {
+      "type": "project",
+      "topic": "\u5f85\u529eCLI",
+      "estimated_time": 30
+    }
+  ]
+}

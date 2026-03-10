@@ -1,0 +1,48 @@
+{
+  "user": "张余豪",
+  "created_at": "2026-03-11",
+  "last_updated": "2026-03-11",
+  
+  "skills": {
+    "python_basics": {
+      "name": "Python基础",
+      "level": 65,
+      "topics": {
+        "variables": {"level": 80, "attempts": 10, "correct": 8},
+        "operators": {"level": 75, "attempts": 8, "correct": 6},
+        "conditionals": {"level": 60, "attempts": 5, "correct": 3},
+        "loops": {"level": 45, "attempts": 5, "correct": 2},
+        "functions": {"level": 50, "attempts": 4, "correct": 2},
+        "classes": {"level": 30, "attempts": 3, "correct": 1}
+      }
+    },
+    "algorithms": {
+      "name": "算法",
+      "level": 40,
+      "topics": {
+        "arrays": {"level": 55, "attempts": 10, "correct": 6},
+        "strings": {"level": 35, "attempts": 5, "correct": 2},
+        "dp": {"level": 25, "attempts": 4, "correct": 1}
+      }
+    },
+    "ai_ml": {
+      "name": "AI/ML",
+      "level": 10,
+      "topics": {}
+    }
+  },
+  
+  "weaknesses": ["python_basics.loops", "python_basics.classes", "algorithms.dp"],
+  "strengths": ["python_basics.variables"],
+  
+  "daily_streak": 3,
+  "total_study_time": 180,
+  "total_problems": 25,
+  "total_projects": 1,
+  
+  "recent_activity": [
+    {"date": "2026-03-11", "topic": "variables", "correct": true},
+    {"date": "2026-03-11", "topic": "loops", "correct": false},
+    {"date": "2026-03-10", "topic": "classes", "correct": false}
+  ]
+}

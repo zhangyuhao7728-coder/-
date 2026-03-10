@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习 Dashboard - 姬子AI教练</title>
+  <style>
+    * {margin: 0;padding: 0;box-sizing: border-box;}
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #fff;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, #ff6b6b, #feca57);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .stat-icon {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    
+    .stat-value {
+      font-size: 2em;
+      font-weight: bold;
+      color: #ff6b6b;
+    }
+    
+    .stat-label {
+      color: #888;
+      font-size: 0.9em;
+    }
+    
+    /* Progress Section */
+    .section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .section h2 {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+      color: #feca57;
+    }
+    
+    /* Progress Bars */
+    .progress-item {
+      margin-bottom: 15px;
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .progress-bar {
+      height: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+    
+    .fill-green { background: linear-gradient(90deg, #26de81, #20bf6b); }
+    .fill-yellow { background: linear-gradient(90deg, #feca57, #fa8231); }
+    .fill-red { background: linear-gradient(90deg, #fa8231, #eb3b5a); }
+    .fill-purple { background: linear-gradient(90deg, #a55eea, #8854d0); }
+    
+    /* Activity */
+    .activity-list {
+      list-style: none;
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .activity-icon {
+      font-size: 1.5em;
+      margin-right: 15px;
+    }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .activity-time {
+      color: #666;
+      font-size: 0.8em;
+    }
+    
+    /* Weak Points */
+    .weak-points {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .tag {
+      background: rgba(235, 59, 90, 0.2);
+      border: 1px solid rgba(235, 59, 90, 0.5);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9em;
+    }
+    
+    /* Chart placeholder */
+    .chart {
+      height: 200px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding: 20px;
+    }
+    
+    .bar {
+      width: 30px;
+      background: linear-gradient(180deg, #ff6b6b, #a55eea);
+      border-radius: 5px 5px 0 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 学习 Dashboard</h1>
+    
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value" id="total-problems">25</div>
+        <div class="stat-label">累计解题</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value" id="today-problems">5</div>
+        <div class="stat-label">今日解题</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💻</div>
+        <div class="stat-value" id="total-lines">210</div>
+        <div class="stat-label">今日编码</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value" id="streak">3</div>
+        <div class="stat-label">连续天数</div>
+      </div>
+    </div>
+    
+    <!-- Progress -->
+    <div class="section">
+      <h2>📈 技能掌握度</h2>
+      
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Python基础</span>
+          <span>65%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-green" style="width: 65%"></div>
+        </div>
+      </div>
+      
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>算法</span>
+          <span>40%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-yellow" style="width: 40%"></div>
+        </div>
+      </div>
+      
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>AI/ML</span>
+          <span>15%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-red" style="width: 15%"></div>
+        </div>
+      </div>
+      
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>项目经验</span>
+          <span>30%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-purple" style="width: 30%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Weak Points -->
+    <div class="section">
+      <h2>📉 需要加强的领域</h2>
+      <div class="weak-points">
+        <span class="tag">🔴 算法-动态规划</span>
+        <span class="tag">🔴 Python-循环</span>
+        <span class="tag">🟡 Python-面向对象</span>
+      </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="section">
+      <h2>📝 最近活动</h2>
+      <ul class="activity-list">
+        <li class="activity-item">
+          <span class="activity-icon">✅</span>
+          <div class="activity-content">
+            <div>完成算法题: 两数之和</div>
+            <div class="activity-time">今天 14:30</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="activity-icon">📖</span>
+          <div class="activity-content">
+            <div>学习: Python函数</div>
+            <div class="activity-time">今天 13:00</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="activity-icon">🚀</span>
+          <div class="activity-content">
+            <div>完成项目: 待办CLI</div>
+            <div class="activity-time">昨天 20:00</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Weekly Chart -->
+    <div class="section">
+      <h2>📊 本周学习趋势</h2>
+      <div class="chart">
+        <div class="bar" style="height: 60%"></div>
+        <div class="bar" style="height: 80%"></div>
+        <div class="bar" style="height: 45%"></div>
+        <div class="bar" style="height: 90%"></div>
+        <div class="bar" style="height: 70%"></div>
+        <div class="bar" style="height: 55%"></div>
+        <div class="bar" style="height: 85%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-around;margin-top:10px;color:#666;font-size:0.8em;">
+        <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Load data from stats.json
+    async function loadStats() {
+      try {
+        const response = await fetch('../learning-data/stats.json');
+        const data = await response.json();
+        
+        // Update stats
+        document.getElementById('total-problems').textContent = data.total_problems || 0;
+        document.getElementById('streak').textContent = data.daily_streak || 0;
+      } catch (e) {
+        console.log('Using default stats');
+      }
+    }
+    
+    loadStats();
+  </script>
+</body>
+</html>

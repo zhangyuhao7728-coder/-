@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+canvas { image-rendering: pixelated; border-radius: 20px; box-shadow: 0 0 30px rgba(255,107,107,0.5); }
+</style>
+</head>
+<body>
+<canvas id="canvas" width="256" height="256"></canvas>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const img = new Image();
+img.onload = () => {
+  // Draw pixelated
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, 0, 0, 256, 256);
+  // Add border
+  ctx.strokeStyle = '#ff6b6b';
+  ctx.lineWidth = 8;
+  ctx.strokeRect(4, 4, 248, 248);
+  // Save
+  const link = document.createElement('a');
+  link.download = 'icon_pixel.png';
+  link.href = canvas.toDataURL();
+  link.click();
+};
+img.src = 'icon.jpg';
+</script>
+</body>
+</html>

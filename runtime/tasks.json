@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "name": "每日学习任务生成",
+      "schedule": "08:00",
+      "status": "pending",
+      "last_run": null
+    },
+    {
+      "id": 2,
+      "name": "AI新闻研究",
+      "schedule": "10:00", 
+      "status": "pending",
+      "last_run": null
+    },
+    {
+      "id": 3,
+      "name": "学习总结",
+      "schedule": "18:00",
+      "status": "pending",
+      "last_run": null
+    }
+  ]
+}

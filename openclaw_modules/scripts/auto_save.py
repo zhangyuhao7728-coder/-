@@ -28,9 +28,10 @@ def check_git_installed():
 
 def check_github_connected():
     """检查GitHub连接"""
-    returncode, stdout, _ = run_cmd("gh auth status")
-    print(f"Debug: {stdout}")  # Debug
-    return returncode == 0 and "github.com" in stdout
+    # 使用 gh auth token 检查，比 gh auth status 更可靠
+    returncode, stdout, stderr = run_cmd("gh auth token")
+    print(f"Debug: token={'已获取' if returncode == 0 and stdout.strip() else '未获取'}")
+    return returncode == 0 and stdout.strip().startswith("gho_")
 
 def get_changes():
     """获取变更状态"""
