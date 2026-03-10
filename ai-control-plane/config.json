@@ -2,12 +2,14 @@
   "api_token": "ai-control-plane-2026",
   "local_model": "qwen3.5:9b",
   "cloud_model": "minimax_m25",
-  "routing": {
-    "mode": "smart",
-    "rules": {
-      "complex": "cloud",
-      "simple": "local",
-      "default": "local"
+  "affiliate": {
+    "alimama": {
+      "pid": "mm_10013873396_3397400377_116242050304",
+      "enabled": true,
+      "platform": "taobao"
+    },
+    "jingfen": {
+      "enabled": false
     }
   },
   "models": {
@@ -17,8 +19,7 @@
       "model": "qwen3.5:9b",
       "type": "local",
       "size": "6.1GB",
-      "enabled": true,
-      "use_cases": ["simple", "frequent", "planner", "analyst", "research"]
+      "enabled": true
     },
     "qwen2.5": {
       "provider": "ollama",
@@ -26,8 +27,7 @@
       "model": "qwen2.5:latest",
       "type": "local",
       "size": "4.7GB",
-      "enabled": true,
-      "use_cases": ["simple", "frequent"]
+      "enabled": true
     },
     "deepseek-coder": {
       "provider": "ollama",
@@ -35,8 +35,7 @@
       "model": "deepseek-coder:6.7b",
       "type": "local",
       "size": "3.8GB",
-      "enabled": true,
-      "use_cases": ["code", "simple"]
+      "enabled": true
     }
   },
   "cloud_models": {
@@ -45,20 +44,7 @@
       "url": "https://api.minimax.io/anthropic",
       "model": "MiniMax-M2.5",
       "type": "cloud",
-      "enabled": true,
-      "use_cases": ["complex", "code_generation", "architecture", "reasoning", "reviewer"]
-    },
-    "minimax_m3": {
-      "provider": "minimax-cn",
-      "url": "https://api.minimaxi.com/anthropic",
-      "model": "MiniMax-M3",
-      "type": "cloud",
-      "enabled": true,
-      "use_cases": ["complex", "high_quality"]
+      "enabled": true
     }
-  },
-  "security": {
-    "require_auth": false,
-    "rate_limit": 100
   }
 }

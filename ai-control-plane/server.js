@@ -42,7 +42,7 @@ function saveStats(stats) {
 
 // 智能路由 - 根据任务类型选择模型
 function route(prompt, options = {}) {
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   const { force_type, use_case } = options
   
   // 强制指定类型
@@ -136,7 +136,7 @@ app.get("/", (req, res) => res.sendFile(path.join(PUBLIC_PATH, "index.html")))
 // ========== API ==========
 
 app.get("/api/models", (req, res) => {
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   const localModels = Object.entries(cfg.models || {}).map(([name, config]) => ({
     name, provider: config.provider, type: "local", size: config.size || "", enabled: config.enabled !== false, use_cases: config.use_cases || []
   }))
@@ -149,7 +149,7 @@ app.get("/api/models", (req, res) => {
 // 切换本地模型
 app.post("/api/local/switch", (req, res) => {
   const { model } = req.body
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   if (!cfg.models?.[model]) return res.status(400).json({ error: "模型不存在" })
   cfg.local_model = model
   saveConfig(cfg)
@@ -159,7 +159,7 @@ app.post("/api/local/switch", (req, res) => {
 // 切换云端模型
 app.post("/api/cloud/switch", (req, res) => {
   const { model } = req.body
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   if (!cfg.cloud_models?.[model]) return res.status(400).json({ error: "模型不存在" })
   cfg.cloud_model = model
   saveConfig(cfg)
@@ -169,7 +169,7 @@ app.post("/api/cloud/switch", (req, res) => {
 // 添加模型
 app.post("/api/local/add", (req, res) => {
   const { name, provider, url, model, size, use_cases } = req.body
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   cfg.models = cfg.models || {}
   cfg.models[name] = { provider, url: url || "", model: model || name, type: "local", size: size || "", enabled: true, use_cases: use_cases || [] }
   saveConfig(cfg)
@@ -178,7 +178,7 @@ app.post("/api/local/add", (req, res) => {
 
 app.post("/api/cloud/add", (req, res) => {
   const { name, provider, url, model, use_cases } = req.body
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   cfg.cloud_models = cfg.cloud_models || {}
   cfg.cloud_models[name] = { provider, url: url || "", model: model || name, type: "cloud", enabled: true, use_cases: use_cases || [] }
   saveConfig(cfg)
@@ -188,7 +188,7 @@ app.post("/api/cloud/add", (req, res) => {
 // 删除模型
 app.post("/api/local/remove", (req, res) => {
   const { name } = req.body
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   if (Object.keys(cfg.models || {}).length <= 1) return res.status(400).json({ error: "至少保留一个" })
   delete cfg.models[name]
   if (cfg.local_model === name) cfg.local_model = Object.keys(cfg.models)[0]
@@ -198,7 +198,7 @@ app.post("/api/local/remove", (req, res) => {
 
 app.post("/api/cloud/remove", (req, res) => {
   const { name } = req.body
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   delete cfg.cloud_models[name]
   if (cfg.cloud_model === name) cfg.cloud_model = ""
   saveConfig(cfg)
@@ -243,7 +243,7 @@ app.post("/api/chat", async (req, res) => {
 // 手动选择模型对话
 app.post("/api/chat/local", async (req, res) => {
   const { prompt, model } = req.body
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   const modelCfg = cfg.models[model || cfg.local_model]
   if (!modelCfg) return res.status(400).json({ error: "模型不存在" })
   
@@ -258,7 +258,7 @@ app.post("/api/chat/local", async (req, res) => {
 
 app.post("/api/chat/cloud", async (req, res) => {
   const { prompt, model } = req.body
-  const cfg = loadConfig()
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
   const modelCfg = cfg.cloud_models[model || cfg.cloud_model]
   if (!modelCfg) return res.status(400).json({ error: "云端模型不存在" })
   
@@ -303,3 +303,44 @@ app.listen(PORT, () => {
 })
 
 module.exports = app
+
+// ========== 返利 API ==========
+
+// 搜索商品
+app.get("/api/affiliate/search", async (req, res) => {
+  const { keyword, platform } = req.query
+  if (!keyword) return res.status(400).json({ error: "请输入关键词" })
+  
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
+  const affiliate = cfg.affiliate || {}
+  
+  if (!platform || platform === 'taobao' || platform === 'all') {
+    const alimama = affiliate.alimama || {}
+    if (alimama.enabled && alimama.pid) {
+      const results = await require("./providers/affiliate").search(keyword, alimama.pid)
+      return res.json({ success: true, platform: "taobao", pid: alimama.pid, results })
+    }
+  }
+  
+  res.json({ success: false, error: "请先配置阿里妈妈PID" })
+})
+
+// 生成返利链接
+app.post("/api/affiliate/link", async (req, res) => {
+  const { url, platform } = req.body
+  if (!url) return res.status(400).json({ error: "请输入商品链接" })
+  
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")))
+  const affiliate = cfg.affiliate || {}
+  
+  let affiliateUrl = url
+  
+  if (platform === 'taobao' || !platform) {
+    const alimama = affiliate.alimama || {}
+    if (alimama.enabled && alimama.pid) {
+      affiliateUrl = require("./providers/affiliate").generateLink(url, alimama.pid)
+    }
+  }
+  
+  res.json({ success: true, original: url, affiliate: affiliateUrl })
+})
