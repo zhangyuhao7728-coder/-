@@ -148,7 +148,8 @@ def translate_and_summarize(articles):
     if not articles:
         return None
     
-    articles = articles[:3]
+    # 限制翻译数量，减少额度消耗
+    articles = articles[:1]
     news_list = "\n".join([f"{i+1}. {a['title']}" for i, a in enumerate(articles)])
     
     prompt = f"""请将以下科技新闻翻译成中文并简要总结，每条1句话：
@@ -156,18 +157,16 @@ def translate_and_summarize(articles):
 {news_list}
 
 格式：
-1. [翻译+总结]
-2. [翻译+总结]
-3. [翻译+总结]"""
+1. [翻译+总结]"""
 
     print("🤖 本地模型翻译中...")
     
     try:
         result = subprocess.run(
-            ["ollama", "run", "qwen2.5", prompt],
+            ["ollama", "run", "qwen2.5:7b", prompt],  # 使用轻量版模型
             capture_output=True,
             text=True,
-            timeout=180
+            timeout=60
         )
         if result.returncode == 0:
             return result.stdout.strip()
