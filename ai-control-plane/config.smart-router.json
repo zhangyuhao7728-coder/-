@@ -1,0 +1,47 @@
+{
+  "enabled": true,
+  "default": "local",
+  "rules": [
+    {
+      "name": "代码任务",
+      "keywords": ["代码", "写代码", "编程", "function", "def ", "class ", "import ", "代码实现", "debug", "bug"],
+      "target": "local",
+      "model": "deepseek-coder:6.7b",
+      "priority": 10
+    },
+    {
+      "name": "复杂推理",
+      "keywords": ["分析", "推理", "为什么", "原因", "解释", "思考", "逻辑"],
+      "target": "cloud",
+      "model": "minimax_m25",
+      "priority": 9
+    },
+    {
+      "name": "长文本",
+      "keywords": ["总结", "摘要", "文章", "文档", "长篇", "详细"],
+      "target": "cloud",
+      "model": "minimax_m25",
+      "priority": 8
+    },
+    {
+      "name": "快速问答",
+      "keywords": ["什么是", "什么是", "怎么", "如何", "?"],
+      "target": "local",
+      "model": "qwen3.5:9b",
+      "priority": 5
+    },
+    {
+      "name": "创意写作",
+      "keywords": ["写", "创作", "故事", "文章", "文案", "脚本"],
+      "target": "cloud",
+      "model": "minimax_m25",
+      "priority": 7
+    }
+  ],
+  "fallback": {
+    "target": "cloud",
+    "model": "minimax_m25"
+  },
+  "force_cloud": false,
+  "force_local": false
+}
