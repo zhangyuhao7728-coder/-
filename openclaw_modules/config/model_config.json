@@ -1,22 +1,46 @@
 {
   "models": {
-    "general": "ollama/qwen2.5:7b",
-    "code": "ollama/deepseek-coder:6.7b",
-    "analysis": "ollama/qwen2.5:14b"
+    "main": "minimax/MiniMax-M2.5",
+    "general": "volcengine-plan/doubao-seed-code",
+    "code": "ollama/qwen2.5:7b",
+    "analysis": "ollama/qwen2.5:14b",
+    "fast": "ollama/qwen2.5:7b",
+    "creative": "minimax/MiniMax-M2.5"
   },
   "fallbacks": {
-    "general": "ollama/qwen2.5:7b",
-    "code": "ollama/qwen2.5:14b",
-    "analysis": "ollama/qwen2.5:7b"
+    "main": ["volcengine-plan/doubao-seed-code", "ollama/qwen2.5:7b"],
+    "general": ["ollama/qwen2.5:7b", "ollama/qwen2.5:14b"],
+    "code": ["ollama/qwen2.5:14b", "minimax/MiniMax-M2.5"],
+    "analysis": ["ollama/qwen2.5:14b", "volcengine-plan/doubao-seed-code"],
+    "fast": ["ollama/qwen2.5:7b"],
+    "creative": ["volcengine-plan/doubao-seed-code"]
   },
   "providers": {
+    "minimax": {
+      "base_url": "https://api.minimax.chat/v1",
+      "api_key": "sk-cp-Meplgefl3KmZt80fbHvoDR2oy7Fw_4BGKNwHulLTqcHgjqcPFv-BVmHTvoVCL1pNpNT_uV7JPxUuZ5jZ19VXHlivALDJLEq_Ijf7tFub__B3Wn6hRlB06WM",
+      "timeout": 60,
+      "quota": "unlimited"
+    },
+    "volcengine": {
+      "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+      "api_key": "f6e71ec3-7286-44ca-8640-d5aaf153ed46",
+      "timeout": 60,
+      "quota_percent": 40
+    },
     "ollama": {
       "base_url": "http://localhost:11434",
       "timeout": 30
-    },
-    "mimax": {
-      "base_url": "https://api.minimax.chat/v1",
-      "timeout": 30
     }
+  },
+  "cost_control": {
+    "enabled": true,
+    "max_percent": 40,
+    "auto_switch": true,
+    "warning_levels": [25, 50, 75, 100]
+  },
+  "user_controls": {
+    "switch_command": "/model [name]",
+    "available_models": ["main", "general", "code", "analysis", "fast", "creative"]
   }
 }
