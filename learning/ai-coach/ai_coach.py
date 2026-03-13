@@ -1,103 +1,216 @@
 #!/usr/bin/env python3
 """
-🤖 AI学习教练
-根据用户水平推荐学习内容
+AI Coach - AI学习助手
+功能：解释概念、生成练习、发现错误、提供提示
 """
+import requests
+from typing import Dict, List
 
-import json
-from pathlib import Path
 
 class AICoach:
-    def __init__(self, learning_dir):
-        self.learning_dir = Path(learning_dir)
-        self.progress_file = self.learning_dir / "learning-data" / "stats.json"
-        self.load_progress()
+    """AI学习助手"""
     
-    def load_progress(self):
-        """加载学习进度"""
-        if self.progress_file.exists():
-            with open(self.progress_file) as f:
-                self.stats = json.load(f)
-        else:
-            self.stats = {
-                "python_basics": 0,
-                "python_advanced": 0,
-                "algorithms": 0,
-                "ai_ml": 0,
-                "data_skills": 0,
-                "problems_solved": 0,
-                "projects_completed": 0
-            }
+    def __init__(self):
+        self.ollama_url = "http://localhost:11434"
+        self.model = "qwen2.5:14b"  # 分析用较强模型
     
-    def save_progress(self):
-        """保存进度"""
-        self.progress_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.progress_file, "w") as f:
-            json.dump(self.stats, f, indent=2)
+    def call_llm(self, prompt: str) -> str:
+        """调用LLM"""
+        try:
+            resp = requests.post(
+                f"{self.ollama_url}/api/generate",
+                json={"model": self.model, "prompt": prompt, "stream": False},
+                timeout=60
+            )
+            
+            if resp.status_code == 200:
+                return resp.json().get("response", "")
+        except:
+            pass
+        
+        return "AI暂时无法回答，请检查模型服务"
     
-    def get_recommendation(self):
-        """获取学习推荐"""
-        scores = {
-            "python_basics": self.stats.get("python_basics", 0),
-            "python_advanced": self.stats.get("python_advanced", 0),
-            "algorithms": self.stats.get("algorithms", 0),
-        }
-        
-        # 找到最低分
-        weakest = min(scores, key=scores.get)
-        
-        recommendations = {
-            "python_basics": "📖 建议学习Python基础: curriculum/python-basics/variables.md",
-            "python_advanced": "📖 建议学习Python进阶: curriculum/python-advanced/",
-            "algorithms": "💻 建议练习算法: problems/easy/two_sum/",
-        }
-        
-        return {
-            "当前进度": self.stats,
-            "建议": recommendations.get(weakest, "继续加油!"),
-            "下一步": self.get_next_topic(weakest)
-        }
+    # ===== 1. 解释概念 =====
     
-    def get_next_topic(self, weak_area):
-        """获取下一个学习主题"""
-        topics = {
-            "python_basics": [
-                "variables.md",
-                "loops.md", 
-                "functions.md",
-                "classes.md"
-            ],
-            "python_advanced": [
-                "decorators.md",
-                "generators.md",
-                "async.md"
-            ],
-            "algorithms": [
-                "problems/easy/two_sum/",
-                "problems/easy/palindrome/",
-                "problems/medium/longest_substring/"
-            ]
-        }
-        
-        current = self.stats.get(f"{weak_area}_current", 0)
-        topic_list = topics.get(weak_area, [])
-        
-        if current < len(topic_list):
-            return f"下一章: {topic_list[current]}"
-        return "已完成本阶段!"
-    
-    def update_progress(self, area, score):
-        """更新进度"""
-        key = f"{area}_progress"
-        self.stats[key] = score
-        self.stats["last_update"] = str(Path(".").stat().st_mtime)
-        self.save_progress()
+    def explain(self, topic: str) -> str:
+        """用简单方式解释概念"""
+        prompt = f"""你是一个Python老师。用简单易懂的方式解释以下概念：
 
+{topic}
+
+要求：
+- 用生活中的例子说明
+- 给出代码示例
+- 控制在100字内
+"""
+        return self.call_llm(prompt)
+    
+    # ===== 2. 生成练习 =====
+    
+    def generate_exercise(self, topic: str, difficulty: str = "easy") -> Dict:
+        """生成练习题"""
+        prompt = f"""生成一道{difficulty}难度的Python练习题，主题是{topic}。
+
+返回格式：
+题目：[题目内容]
+答案：[答案代码]
+提示：[给初学者的提示]
+"""
+        result = self.call_llm(prompt)
+        
+        # 简单解析
+        lines = result.split("\n")
+        exercise = {
+            "topic": topic,
+            "difficulty": difficulty,
+            "question": "",
+            "answer": "",
+            "hint": ""
+        }
+        
+        for line in lines:
+            if "题目" in line:
+                exercise["question"] = line.split("：")[-1].strip()
+            elif "答案" in line:
+                exercise["answer"] = line.split("：")[-1].strip()
+            elif "提示" in line:
+                exercise["hint"] = line.split("：")[-1].strip()
+        
+        if not exercise["question"]:
+            exercise["question"] = f"请用Python实现{topic}"
+        
+        return exercise
+    
+    # ===== 3. 发现错误 =====
+    
+    def find_errors(self, code: str) -> List[str]:
+        """发现代码中的错误"""
+        prompt = f"""分析以下Python代码，找出其中的错误或问题：
+
+```python
+{code}
+```
+
+返回格式：
+问题1：[描述]
+问题2：[描述]
+"""
+        result = self.call_llm(prompt)
+        
+        # 解析错误
+        errors = []
+        for line in result.split("\n"):
+            if "问题" in line or "错误" in line or "Bug" in line.upper():
+                errors.append(line)
+        
+        return errors if errors else ["代码看起来没有明显错误"]
+    
+    # ===== 4. 提供提示 =====
+    
+    def give_hint(self, problem: str, attempt: str = None) -> str:
+        """给提示"""
+        prompt = f"""用户在做这道题：
+{problem}
+"""
+        
+        if attempt:
+            prompt += f"用户的尝试：\n{attempt}\n"
+        
+        prompt += """
+给出一个有用的提示，帮助用户自己解决问题。
+提示要具体但不要直接给出答案。
+"""
+        return self.call_llm(prompt)
+    
+    # ===== 5. 代码审查 =====
+    
+    def review_code(self, code: str) -> str:
+        """审查代码并给出改进建议"""
+        prompt = f"""你是一个资深Python开发者。审查以下代码：
+
+```python
+{code}
+```
+
+从以下方面给出评价：
+1. 代码正确性
+2. 代码风格
+3. 性能优化
+4. 可能的bug
+"""
+        return self.call_llm(prompt)
+    
+    # ===== 6. 回答问题 =====
+    
+    def answer(self, question: str) -> str:
+        """回答学习相关问题"""
+        prompt = f"""你是一个Python学习助手。简短回答这个问题：
+
+{question}
+"""
+        return self.call_llm(prompt)
+    
+    # ===== 7. 生成学习计划 =====
+    
+    def create_plan(self, goal: str, days: int = 7) -> str:
+        """生成学习计划"""
+        prompt = f"""为一个想学习{goal}的初学者，生成一个{days}天的学习计划。
+
+每天包含：
+- 学习主题
+- 练习任务
+- 目标
+
+格式清晰简洁。
+"""
+        return self.call_llm(prompt)
+    
+    # ===== 8. 调试代码 =====
+    
+    def debug(self, code: str, error: str) -> str:
+        """调试代码"""
+        prompt = f"""用户的Python代码出错了：
+
+错误信息：{error}
+
+代码：
+```python
+{code}
+```
+
+分析错误原因并给出修复方案。
+"""
+        return self.call_llm(prompt)
+
+
+# 全局实例
+_coach = None
+
+def get_ai_coach() -> AICoach:
+    global _coach
+    if _coach is None:
+        _coach = AICoach()
+    return _coach
+
+
+# 便捷函数
+def explain(topic: str) -> str:
+    return get_ai_coach().explain(topic)
+
+def review_code(code: str) -> str:
+    return get_ai_coach().review_code(code)
+
+def answer(question: str) -> str:
+    return get_ai_coach().answer(question)
+
+
+# 测试
 if __name__ == "__main__":
-    coach = AICoach("~/项目/Ai学习系统/learning")
-    print("🤖 AI学习教练")
-    print("=" * 30)
-    rec = coach.get_recommendation()
-    for k, v in rec.items():
-        print(f"\n{k}:")
-        print(f"  {v}")
+    coach = get_ai_coach()
+    
+    print("=== AI Coach 测试 ===\n")
+    
+    # 测试解释
+    print("1. 解释概念:")
+    result = coach.explain("什么是变量")
+    print(result[:100])

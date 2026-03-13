@@ -1,0 +1,57 @@
+{
+  "success_solutions": [],
+  "error_cases": [],
+  "optimization_strategies": [],
+  "key_words": [
+    {
+      "keyword": "Python变量",
+      "content": "存储数据的容器，用=赋值",
+      "timestamp": "2026-03-14T00:09:45.100229"
+    },
+    {
+      "keyword": "Python函数",
+      "content": "def关键字定义，可重复调用",
+      "timestamp": "2026-03-14T00:09:45.100243"
+    },
+    {
+      "keyword": "Python列表",
+      "content": "有序集合，[]定义，append添加",
+      "timestamp": "2026-03-14T00:09:45.100247"
+    },
+    {
+      "keyword": "Python字典",
+      "content": "键值对，{}定义，dict[key]访问",
+      "timestamp": "2026-03-14T00:09:45.100250"
+    },
+    {
+      "keyword": "算法复杂度",
+      "content": "时间复杂度O(n)，空间复杂度O(1)",
+      "timestamp": "2026-03-14T00:09:45.100252"
+    },
+    {
+      "keyword": "排序算法",
+      "content": "快速排序/归并排序/冒泡排序",
+      "timestamp": "2026-03-14T00:09:45.100254"
+    },
+    {
+      "keyword": "AI机器学习",
+      "content": "让机器从数据中学习",
+      "timestamp": "2026-03-14T00:09:45.100256"
+    },
+    {
+      "keyword": "深度学习",
+      "content": "神经网络模型，如CNN/RNN",
+      "timestamp": "2026-03-14T00:09:45.100258"
+    },
+    {
+      "keyword": "Transformer",
+      "content": "注意力机制，GPT/BERT基础",
+      "timestamp": "2026-03-14T00:09:45.100259"
+    },
+    {
+      "keyword": "LangChain",
+      "content": "AI应用开发框架",
+      "timestamp": "2026-03-14T00:09:45.100261"
+    }
+  ]
+}
