@@ -1,0 +1,23 @@
+{
+  "minimax/MiniMax-M2.5": {
+    "calls": 1,
+    "tokens": 1000,
+    "cost": 0.01,
+    "success": 1,
+    "failed": 0
+  },
+  "qwen2.5:latest": {
+    "calls": 1,
+    "tokens": 500,
+    "cost": 0.0,
+    "success": 1,
+    "failed": 0
+  },
+  "qwen3.5:9b": {
+    "calls": 1,
+    "tokens": 800,
+    "cost": 0.0,
+    "success": 0,
+    "failed": 1
+  }
+}

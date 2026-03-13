@@ -1,201 +1,193 @@
 #!/usr/bin/env python3
 """
-Audit Logger - 审计日志
-功能：记录所有敏感操作
+Audit Logger - 审计日志模块
+功能：
+1. security.log - 安全日志
+2. access.log - 访问日志
+3. commands.log - 命令日志
 """
 import os
 import json
-import hashlib
-from pathlib import Path
 from datetime import datetime
-from typing import Optional, Dict, Any
-from functools import wraps
-import inspect
+from typing import Optional
 
 
 class AuditLogger:
     """审计日志器"""
     
-    def __init__(self, log_dir: str = None):
+    LOGS_DIR = os.path.expanduser('~/.openclaw/logs')
+    
+    def __init__(self):
+        """初始化"""
+        os.makedirs(self.LOGS_DIR, exist_ok=True)
+    
+    # ========== Security Log ==========
+    
+    def log_security(self, level: str, event: str, user_id: str = None, 
+                     details: dict = None, ip: str = None):
         """
-        初始化
+        记录安全日志
         
-        Args:
-            log_dir: 日志目录
+        [SECURITY ALERT]
+        Time: 2026-03-13 18:53:00
+        Level: WARNING
+        Event: unauthorized_command
+        User: 8793442405
+        IP: 127.0.0.1
+        Details: {"command": "rm -rf"}
         """
-        if log_dir is None:
-            log_dir = Path(__file__).parent.parent / 'logs'
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
-        self.log_dir = Path(log_dir)
-        self.log_dir.mkdir(parents=True, exist_ok=True)
+        log_entry = f"""[SECURITY {level.upper()}]
+Time: {timestamp}
+Event: {event}
+User: {user_id or 'unknown'}
+IP: {ip or 'N/A'}
+Details: {json.dumps(details) if details else 'N/A'}
+"""
         
-        self.log_file = self.log_dir / 'audit.log'
-        self.current_user = os.environ.get('USER', 'unknown')
+        filepath = os.path.join(self.LOGS_DIR, 'security.log')
+        with open(filepath, 'a') as f:
+            f.write(log_entry + '\n')
+        
+        print(log_entry)
     
-    def _hash_sensitive(self, data: str) -> str:
-        """对敏感数据脱敏"""
-        return hashlib.sha256(data.encode()).hexdigest()[:16]
+    def log_unauthorized(self, event: str, user_id: str = None,
+                        command: str = None, ip: str = None):
+        """记录未授权访问"""
+        self.log_security('ALERT', event, user_id, 
+                        {'command': command} if command else None, ip)
     
-    def _format_entry(self, event: str, details: Dict[str, Any]) -> dict:
-        """格式化日志条目"""
-        return {
-            'timestamp': datetime.now().isoformat(),
-            'event': event,
-            'user': self.current_user,
-            'details': details
-        }
+    # ========== Access Log ==========
     
-    def log(self, event: str, **kwargs):
+    def log_access(self, user_id: str, resource: str, 
+                   action: str, status: str, ip: str = None):
         """
-        记录日志
+        记录访问日志
         
-        Args:
-            event: 事件名称
-            **kwargs: 详细信息
+        [ACCESS]
+        Time: 2026-03-13 18:53:00
+        User: 8793442405
+        Resource: /api/crawler
+        Action: read
+        Status: OK
+        IP: 127.0.0.1
         """
-        entry = self._format_entry(event, kwargs)
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
-        # 写入文件
-        with open(self.log_file, 'a') as f:
-            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+        log_entry = f"""[ACCESS]
+Time: {timestamp}
+User: {user_id}
+Resource: {resource}
+Action: {action}
+Status: {status}
+IP: {ip or 'N/A'}
+"""
         
-        # 敏感字段脱敏
-        sensitive_fields = ['password', 'token', 'key', 'secret', 'api_key']
-        for field in sensitive_fields:
-            if field in kwargs:
-                kwargs[field] = self._hash_sensitive(kwargs[field])
+        filepath = os.path.join(self.LOGS_DIR, 'access.log')
+        with open(filepath, 'a') as f:
+            f.write(log_entry + '\n')
+    
+    # ========== Commands Log ==========
+    
+    def log_command(self, user_id: str, command: str, 
+                   status: str, duration_ms: int = None, ip: str = None):
+        """
+        记录命令日志
         
-        print(f"📝 [{event}] {kwargs}")
-    
-    def log_command(self, command: str, allowed: bool):
-        """记录命令执行"""
-        self.log(
-            'command_executed',
-            command=command[:100],  # 截断
-            allowed=allowed,
-            status='allowed' if allowed else 'blocked'
-        )
-    
-    def log_file_access(self, filepath: str, operation: str):
-        """记录文件访问"""
-        self.log(
-            'file_accessed',
-            filepath=str(filepath)[:200],
-            operation=operation
-        )
-    
-    def log_api_call(self, endpoint: str, status: int):
-        """记录 API 调用"""
-        self.log(
-            'api_call',
-            endpoint=endpoint[:100],
-            status=status
-        )
-    
-    def log_login(self, success: bool, method: str = 'unknown'):
-        """记录登录"""
-        self.log(
-            'login_attempt',
-            success=success,
-            method=method
-        )
-    
-    def log_config_change(self, key: str, old_value: str = None, new_value: str = None):
-        """记录配置变更"""
-        self.log(
-            'config_changed',
-            key=key,
-            old_value='***' if old_value else None,
-            new_value='***' if new_value else None
-        )
-    
-    def get_recent(self, limit: int = 100) -> list:
-        """获取最近日志"""
-        if not self.log_file.exists():
-            return []
+        [COMMAND]
+        Time: 2026-03-13 18:53:00
+        User: 8793442405
+        Command: python projects/crawler/crawler.py -p 3
+        Status: OK
+        Duration: 5000ms
+        IP: 127.0.0.1
+        """
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
-        entries = []
-        with open(self.log_file, 'r') as f:
-            for line in f:
-                try:
-                    entries.append(json.loads(line.strip()))
-                except:
-                    continue
+        log_entry = f"""[COMMAND]
+Time: {timestamp}
+User: {user_id}
+Command: {command}
+Status: {status}
+Duration: {duration_ms}ms
+IP: {ip or 'N/A'}
+"""
         
-        return entries[-limit:]
-
-
-# 装饰器：自动审计函数
-def audit(event_name: str = None):
-    """
-    审计装饰器
+        filepath = os.path.join(self.LOGS_DIR, 'commands.log')
+        with open(filepath, 'a') as f:
+            f.write(log_entry + '\n')
     
-    Usage:
-        @audit('function_called')
-        def my_function():
-            pass
-    """
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            logger = AuditLogger()
-            event = event_name or func.__name__
-            
-            try:
-                result = func(*args, **kwargs)
-                logger.log(
-                    f'{event}_success',
-                    function=func.__name__,
-                    args=str(args)[:100],
-                    kwargs=str(kwargs)[:100]
-                )
-                return result
-            except Exception as e:
-                logger.log(
-                    f'{event}_error',
-                    function=func.__name__,
-                    error=str(e)
-                )
-                raise
+    # ========== 便捷方法 ==========
+    
+    def log_login(self, user_id: str, success: bool, ip: str = None):
+        """登录日志"""
+        self.log_access(user_id, '/auth/login', 'login', 
+                      'SUCCESS' if success else 'FAILED', ip)
         
-        return wrapper
-    return decorator
+        if not success:
+            self.log_unauthorized('login_failed', user_id, ip=ip)
+    
+    def log_file_access(self, user_id: str, filepath: str, 
+                       action: str, status: str):
+        """文件访问日志"""
+        self.log_access(user_id, filepath, action, status)
+    
+    def log_network(self, user_id: str, url: str, status: int):
+        """网络请求日志"""
+        self.log_access(user_id, url, 'http', str(status))
+    
+    def log_api(self, user_id: str, endpoint: str, 
+                method: str, status: int, duration_ms: int):
+        """API调用日志"""
+        self.log_access(user_id, endpoint, method, str(status))
+        
+        if status >= 400:
+            self.log_security('WARNING', 'api_error', user_id,
+                           {'endpoint': endpoint, 'status': status})
 
 
 # 全局实例
 _logger = None
 
-def get_logger() -> AuditLogger:
-    """获取日志器实例"""
+def get_audit_logger() -> AuditLogger:
     global _logger
     if _logger is None:
         _logger = AuditLogger()
     return _logger
 
 
-# 便捷函数
-def log(event: str, **kwargs):
-    """记录日志"""
-    get_logger().log(event, **kwargs)
+# 便捷方法
+def log_security(level: str, event: str, **kwargs):
+    get_audit_logger().log_security(level, event, **kwargs)
 
-def audit_log(event_name: str):
-    """审计装饰器"""
-    return audit(event_name)
+def log_command(user_id: str, command: str, status: str, **kwargs):
+    get_audit_logger().log_command(user_id, command, status, **kwargs)
+
+def log_access(user_id: str, resource: str, action: str, status: str, **kwargs):
+    get_audit_logger().log_access(user_id, resource, action, status, **kwargs)
 
 
 # 测试
 if __name__ == "__main__":
-    logger = get_logger()
+    logger = get_audit_logger()
     
-    print("=== 审计日志测试 ===")
+    print("=== Audit Logger 测试 ===\n")
     
-    # 测试记录
-    logger.log('test_event', message='Hello')
-    logger.log_command('ls -la', True)
-    logger.log_file_access('/etc/passwd', 'read')
-    logger.log_api_call('/api/users', 200)
-    logger.log_login(True, 'password')
+    # Security Log
+    print("1. Security Log:")
+    logger.log_security('ALERT', 'unauthorized_command', 
+                       user_id='8793442405',
+                       command='rm -rf /',
+                       ip='127.0.0.1')
     
-    print("\n📝 最近日志:")
-    for entry in logger.get_recent(3):
-        print(f"  {entry['timestamp'][:19]} - {entry['event']}")
+    # Access Log
+    print("\n2. Access Log:")
+    logger.log_access('8793442405', '/api/crawler', 'read', 'OK', '127.0.0.1')
+    
+    # Command Log
+    print("\n3. Command Log:")
+    logger.log_command('8793442405', 'python projects/crawler.py -p 3', 
+                      'OK', 5000, '127.0.0.1')
+    
+    print("\n✅ 测试完成")
