@@ -16,12 +16,20 @@ def check_disk():
     lines = result.stdout.strip().split('\n')
     
     alerts = []
+    # 跳过这些虚拟文件系统
+    skip_fs = {'devfs', 'dev', 'map'}
+    
     for line in lines[1:]:
         if '/' in line:
             parts = line.split()
             if len(parts) >= 5:
                 mount = parts[-1] if '/' in parts[-1] else parts[5] if len(parts)>5 else parts[-1]
                 usage = parts[-2].replace('%', '')
+                
+                # 跳过虚拟文件系统
+                if mount in skip_fs or mount == '/dev' or mount.startswith('/dev/'):
+                    continue
+                    
                 try:
                     pct = int(usage)
                     if pct >= 95:
@@ -101,15 +109,17 @@ def check_internet():
 
 def check_gateway():
     """检查Gateway状态"""
-    result = subprocess.run(
-        ["pgrep", "-f", "openclaw-gateway"],
-        capture_output=True
+    # 直接检查端口是否在监听
+    port_check = subprocess.run(
+        ["lsof", "-i", ":18789"],
+        capture_output=True,
+        text=True
     )
     
-    if result.returncode == 0:
+    if port_check.returncode == 0 and "LISTEN" in port_check.stdout:
         return ["🟢 Gateway运行中"]
-    else:
-        return ["🔴 Gateway未运行"]
+    
+    return ["🔴 Gateway未运行"]
 
 def run_health_check():
     """运行完整健康检查"""
