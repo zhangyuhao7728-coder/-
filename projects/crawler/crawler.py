@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-多功能爬虫程序 v4.0 (终极版)
-支持多网站、异步爬取、图片下载、数据去重、数据库存储
+多功能爬虫程序 v5.0 (高效稳定版)
+优化重点：速度更快、资源消耗更低、运行更稳定
 
-功能模块：
-1. 多网站支持 - 轻松扩展新网站
-2. 异步爬取 - 并发提速
-3. 图片爬取 - 下载图片/表情包
-4. 数据去重 - MD5去重
-5. 数据库存储 - MySQL/MongoDB/SQLite
-6. 完整安全防护
+性能优化：
+1. 多线程并行爬取
+2. 连接池复用
+3. 智能重试+退避
+4. 内存优化
+5. 成本控制（减少无效请求）
 """
 
 import requests
@@ -22,125 +21,98 @@ import os
 import random
 import urllib.parse
 import hashlib
-import asyncio
-import aiohttp
 import sqlite3
 from datetime import datetime
 from urllib.parse import urljoin, urlparse
-from pathlib import Path
-from typing import List, Dict, Optional
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from queue import Queue
+import threading
 import re
+from typing import List, Dict, Optional, Set
 
 
-# ==================== 基础工具 ====================
+# ==================== 工具类 ====================
 
 class Utils:
     """工具类"""
     
     @staticmethod
     def md5(text: str) -> str:
-        """MD5哈希"""
         return hashlib.md5(text.encode('utf-8')).hexdigest()
     
     @staticmethod
     def sanitize_filename(filename: str) -> str:
-        """清理文件名"""
-        # 移除非法字符
         filename = re.sub(r'[<>:"/\\|?*]', '', filename)
-        # 限制长度
         return filename[:200] if len(filename) > 200 else filename
     
     @staticmethod
     def ensure_dir(path: str):
-        """确保目录存在"""
         os.makedirs(path, exist_ok=True)
     
     @staticmethod
     def get_domain(url: str) -> str:
-        """获取域名"""
         return urlparse(url).netloc
 
 
-# ==================== 安全组件 ====================
+# ==================== 线程安全组件 ====================
 
-class RobotsChecker:
-    """robots.txt 检查器"""
+class ThreadSafeCounter:
+    """线程安全计数器"""
     
-    def __init__(self, base_url: str):
-        self.base_url = base_url
-        self.allowed_paths = set()
-        self._fetch()
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._counts = {'success': 0, 'failed': 0, 'duplicate': 0}
     
-    def _fetch(self):
-        """获取 robots.txt"""
-        try:
-            robots_url = urljoin(self.base_url, '/robots.txt')
-            resp = requests.get(robots_url, timeout=5)
-            if resp.status_code == 200:
-                self._parse(resp.text)
-        except:
-            pass
+    def increment(self, key: str, value: int = 1):
+        with self._lock:
+            self._counts[key] = self._counts.get(key, 0) + value
     
-    def _parse(self, content: str):
-        """解析"""
-        for line in content.split('\n'):
-            if line.lower().startswith('allow:'):
-                path = line.split(':', 1)[1].strip()
-                if path:
-                    self.allowed_paths.add(path)
+    def get(self, key: str) -> int:
+        with self._lock:
+            return self._counts.get(key, 0)
     
-    def can_fetch(self, path: str) -> bool:
-        """检查是否允许"""
-        if not self.allowed_paths:
+    def get_all(self) -> Dict:
+        with self._lock:
+            return self._counts.copy()
+
+
+class ThreadSafeSet:
+    """线程安全集合（用于去重）"""
+    
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._set = set()
+    
+    def add(self, item: str) -> bool:
+        with self._lock:
+            if item in self._set:
+                return False
+            self._set.add(item)
             return True
-        return any(path.startswith(p) for p in self.allowed_paths)
+    
+    def __len__(self):
+        with self._lock:
+            return len(self._set)
 
 
-class RateLimiter:
-    """限速器"""
-    
-    def __init__(self, delay: float = 1):
-        self.delay = delay
-        self.last_request = 0
-    
-    def wait(self):
-        """等待"""
-        elapsed = time.time() - self.last_request
-        if elapsed < self.delay:
-            time.sleep(self.delay - elapsed + random.uniform(0, 0.5))
-        self.last_request = time.time()
+# ==================== 网络组件 ====================
 
-
-class ProxyPool:
-    """代理池"""
+class SessionPool:
+    """会话池 - 复用连接"""
     
-    def __init__(self):
-        self.proxies = []
-        self.index = 0
+    def __init__(self, max_size: int = 10):
+        self.max_size = max_size
+        self.sessions = []
+        self._lock = threading.Lock()
+        
+        # 预创建会话
+        for _ in range(min(3, max_size)):
+            self.sessions.append(self._create_session())
     
-    def add(self, proxy: str):
-        self.proxies.append(proxy)
-    
-    def get(self) -> Optional[Dict]:
-        if not self.proxies:
-            return None
-        proxy = self.proxies[self.index % len(self.proxies)]
-        self.index += 1
-        return {'http': proxy, 'https': proxy}
-
-
-# ==================== 网站解析器 ====================
-
-class BaseParser:
-    """网站解析器基类"""
-    
-    name = "base"
-    allowed_domains = []
-    
-    def __init__(self):
-        self.session = requests.Session()
-        self.session.headers.update({
+    def _create_session(self) -> requests.Session:
+        """创建新会话"""
+        session = requests.Session()
+        session.headers.update({
             'User-Agent': random.choice([
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -149,25 +121,81 @@ class BaseParser:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
         })
+        # 连接池配置
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=5,
+            pool_maxsize=10,
+            max_retries=0
+        )
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        return session
+    
+    def get_session(self) -> requests.Session:
+        """获取会话"""
+        with self._lock:
+            if self.sessions:
+                return self.sessions.pop(0)
+        return self._create_session()
+    
+    def return_session(self, session: requests.Session):
+        """归还会话"""
+        with self._lock:
+            if len(self.sessions) < self.max_size:
+                self.sessions.append(session)
+
+
+class RateLimiter:
+    """令牌桶限速器"""
+    
+    def __init__(self, rate: float = 1):
+        self.rate = rate  # 每秒请求数
+        self.tokens = rate
+        self.max_tokens = rate
+        self.last_update = time.time()
+        self._lock = threading.Lock()
+    
+    def acquire(self, tokens: int = 1) -> bool:
+        """获取令牌"""
+        with self._lock:
+            now = time.time()
+            # 补充令牌
+            self.tokens = min(self.max_tokens, 
+                            self.tokens + (now - self.last_update) * self.rate)
+            self.last_update = now
+            
+            if self.tokens >= tokens:
+                self.tokens -= tokens
+                return True
+            return False
+    
+    def wait_and_acquire(self, tokens: int = 1):
+        """等待并获取令牌"""
+        while not self.acquire(tokens):
+            time.sleep(0.1)
+
+
+# ==================== 网站解析器 ====================
+
+class BaseParser:
+    """解析器基类"""
+    
+    name = "base"
+    
+    def __init__(self):
+        pass
     
     def parse(self, html: str, url: str) -> List[Dict]:
-        """解析页面 - 子类必须实现"""
         raise NotImplementedError
     
     def get_list_url(self, page: int) -> str:
-        """获取列表页URL - 子类必须实现"""
         raise NotImplementedError
-    
-    def get_detail_url(self, item: Dict) -> str:
-        """获取详情页URL"""
-        return item.get('url', '')
 
 
 class QuotesParser(BaseParser):
-    """名言网站解析器"""
+    """名言解析器"""
     
     name = "quotes"
-    allowed_domains = ['quotes.toscrape.com']
     base_url = "http://quotes.toscrape.com"
     
     def get_list_url(self, page: int = 1) -> str:
@@ -202,26 +230,24 @@ class QuotesParser(BaseParser):
 
 
 class NewsParser(BaseParser):
-    """新闻网站解析器 (示例: 网易新闻)"""
+    """新闻解析器"""
     
     name = "news"
-    allowed_domains = ['news.163.com', 'news.sina.com.cn']
     base_url = "https://news.163.com"
     
     def get_list_url(self, page: int = 1) -> str:
-        return f"{self.base_url}/"
+        return self.base_url + "/"
     
     def parse(self, html: str, url: str) -> List[Dict]:
         soup = BeautifulSoup(html, 'html.parser')
         items = []
         
-        # 网易新闻选择器示例
-        for item in soup.select('.news_title a, .item_top a, .topnews_title a')[:20]:
+        for item in soup.select('.news_title a, .item_top a')[:15]:
             try:
                 title = item.get_text(strip=True)
                 link = urljoin(url, item.get('href', ''))
                 
-                if title and link:
+                if title and link and len(title) > 5:
                     items.append({
                         'title': title,
                         'url': link,
@@ -236,86 +262,41 @@ class NewsParser(BaseParser):
         return False
 
 
-class ImageParser(BaseParser):
-    """图片爬取解析器"""
-    
-    name = "image"
-    allowed_domains = []
-    base_url = "https://www.reddit.com"
-    
-    def get_list_url(self, page: int = 1) -> str:
-        if 'reddit' in self.base_url:
-            return f"{self.base_url}/r/wallpapers/top/.json?t=day&limit=25"
-        return self.base_url
-    
-    def parse(self, html: str, url: str) -> List[Dict]:
-        items = []
-        
-        # 尝试解析 JSON
-        try:
-            data = json.loads(html)
-            if 'data' in data:
-                for child in data['data'].get('children', []):
-                    post = child.get('data', {})
-                    if post.get('url'):
-                        items.append({
-                            'title': post.get('title', ''),
-                            'url': post.get('url', ''),
-                            'type': 'image',
-                            'source': 'reddit'
-                        })
-        except:
-            # 解析 HTML
-            soup = BeautifulSoup(html, 'html.parser')
-            for img in soup.select('img[src]'):
-                src = img.get('src', '')
-                if src and not src.endswith('.gif'):
-                    items.append({
-                        'title': img.get('alt', ''),
-                        'url': src,
-                        'type': 'image'
-                    })
-        
-        return items
-    
-    def has_next(self, html: str) -> bool:
-        return False
+# ==================== 高效爬虫 ====================
 
-
-# ==================== 核心爬虫 ====================
-
-class Crawler:
-    """多网站爬虫 (同步版)"""
+class FastCrawler:
+    """高效爬虫 - 多线程 + 连接池"""
     
-    # 注册解析器
     PARSERS = {
         'quotes': QuotesParser,
         'news': NewsParser,
-        'image': ImageParser,
     }
     
-    def __init__(self, site: str = 'quotes', delay: float = 1, proxy: str = None):
+    def __init__(self, site: str = 'quotes', 
+                 workers: int = 3,      # 并发数
+                 delay: float = 0.5,    # 请求间隔
+                 retry: int = 3):        # 重试次数
+        
         self.site = site
+        self.workers = min(workers, 5)   # 最多5个线程
+        self.retry = retry
         
         # 获取解析器
         parser_class = self.PARSERS.get(site, QuotesParser)
         self.parser = parser_class()
         
         # 组件
-        self.rate_limiter = RateLimiter(delay)
-        self.proxy_pool = ProxyPool()
-        
-        if proxy:
-            self.proxy_pool.add(proxy)
+        self.session_pool = SessionPool(max_size=self.workers)
+        self.rate_limiter = RateLimiter(rate=1/delay if delay > 0 else 100)
         
         # 统计
-        self.stats = {'success': 0, 'failed': 0, 'duplicates': 0}
+        self.stats = ThreadSafeCounter()
+        self.seen_ids = ThreadSafeSet()
         
-        # 去重
-        self.seen_ids = set()
-        
-        # robots
-        self.robots = RobotsChecker(self.parser.base_url)
+        # 成本控制
+        self.max_requests = 100  # 最大请求数
+        self.request_count = 0
+        self._lock = threading.Lock()
     
     def _get_id(self, item: Dict) -> str:
         """生成唯一ID"""
@@ -325,114 +306,123 @@ class Crawler:
     def _is_duplicate(self, item: Dict) -> bool:
         """检查重复"""
         item_id = self._get_id(item)
-        if item_id in self.seen_ids:
-            return True
-        self.seen_ids.add(item_id)
-        return False
+        return not self.seen_ids.add(item_id)
     
-    def _download_image(self, url: str, save_dir: str) -> Optional[str]:
-        """下载图片"""
-        try:
-            resp = requests.get(url, timeout=30, proxies=self.proxy_pool.get())
-            if resp.status_code == 200:
-                # 获取扩展名
-                ext = os.path.splitext(urlparse(url).path)[1] or '.jpg'
-                if not ext:
-                    ext = '.jpg'
+    def fetch(self, url: str) -> Optional[str]:
+        """获取页面 - 带重试"""
+        # 成本控制
+        with self._lock:
+            if self.request_count >= self.max_requests:
+                return None
+            self.request_count += 1
+        
+        # 限速
+        self.rate_limiter.wait_and_acquire()
+        
+        session = self.session_pool.get_session()
+        
+        for attempt in range(self.retry):
+            try:
+                resp = session.get(url, timeout=10)
                 
-                filename = Utils.sanitize_filename(url.split('/')[-1][:100])
-                if not filename:
-                    filename = Utils.md5(url)[:10] + ext
+                if resp.status_code == 200:
+                    resp.encoding = 'utf-8'
+                    self.stats.increment('success')
+                    return resp.text
                 
-                filepath = os.path.join(save_dir, filename)
+                elif resp.status_code == 429:
+                    # 被限流，等待更久
+                    wait_time = (attempt + 1) * 2
+                    print(f"⚠️ 被限流，等待 {wait_time}秒...")
+                    time.sleep(wait_time)
                 
-                with open(filepath, 'wb') as f:
-                    f.write(resp.content)
-                
-                return filepath
-        except Exception as e:
-            print(f"⚠️ 图片下载失败: {e}")
+                elif resp.status_code >= 500:
+                    # 服务器错误，重试
+                    time.sleep(1)
+                    
+            except requests.exceptions.Timeout:
+                time.sleep(1)
+            except requests.exceptions.ConnectionError:
+                time.sleep(1)
+            except Exception as e:
+                break
+        
+        self.stats.increment('failed')
+        self.session_pool.return_session(session)
         return None
     
     def crawl_page(self, url: str) -> List[Dict]:
         """爬取单页"""
-        self.rate_limiter.wait()
+        html = self.fetch(url)
         
-        try:
-            resp = requests.get(
-                url, 
-                timeout=15,
-                proxies=self.proxy_pool.get()
-            )
-            resp.raise_for_status()
-            resp.encoding = 'utf-8'
-            
-            self.stats['success'] += 1
-            return self.parser.parse(resp.text, url)
-            
-        except Exception as e:
-            self.stats['failed'] += 1
-            print(f"⚠️ 爬取失败: {e}")
+        if not html:
             return []
+        
+        items = self.parser.parse(html, url)
+        
+        # 去重
+        unique_items = []
+        for item in items:
+            if not self._is_duplicate(item):
+                unique_items.append(item)
+            else:
+                self.stats.increment('duplicate')
+        
+        return unique_items
     
-    def crawl(self, pages: int = 1, max_items: int = 100, 
-              save_images: bool = False, save_dir: str = 'output') -> List[Dict]:
-        """爬取数据"""
+    def crawl(self, pages: int = 3, max_items: int = 100) -> List[Dict]:
+        """多线程爬取"""
         all_items = []
-        page = 1
-        url = self.parser.get_list_url(1)
+        pages_to_crawl = list(range(1, pages + 1))
         
-        print(f"🚀 开始爬取: {self.site}")
-        print(f"📄 目标: {pages} 页, 最多 {max_items} 条")
+        print(f"🚀 开始高效爬取: {self.site}")
+        print(f"⚙️ 并发数: {self.workers}, 目标: {pages} 页, 最多 {max_items} 条")
         print("-" * 50)
         
-        while len(all_items) < max_items:
-            # 检查 robots
-            if not self.robots.can_fetch(url):
-                print(f"⚠️ robots.txt 禁止: {url}")
-                break
+        start_time = time.time()
+        
+        # 多线程爬取
+        with ThreadPoolExecutor(max_workers=self.workers) as executor:
+            # 提交任务
+            future_to_page = {}
+            for page in pages_to_crawl:
+                url = self.parser.get_list_url(page)
+                future = executor.submit(self.crawl_page, url)
+                future_to_page[future] = page
             
-            print(f"📥 爬取第 {page} 页: {url[:60]}...")
-            
-            items = self.crawl_page(url)
-            
-            # 去重
-            new_items = [i for i in items if not self._is_duplicate(i)]
-            self.stats['duplicates'] += len(items) - len(new_items)
-            
-            all_items.extend(new_items)
-            print(f"   ✅ 获取 {len(new_items)} 条新数据")
-            
-            # 下载图片
-            if save_images:
-                img_dir = os.path.join(save_dir, 'images')
-                Utils.ensure_dir(img_dir)
-                
-                for item in new_items:
-                    if item.get('type') == 'image':
-                        filepath = self._download_image(item['url'], img_dir)
-                        if filepath:
-                            item['local_path'] = filepath
-            
-            # 检查是否继续
-            if pages > 0 and page >= pages:
-                break
-            
-            # 翻页
-            if hasattr(self.parser, 'has_next'):
-                html = requests.get(url, timeout=10).text
-                if not self.parser.has_next(html):
-                    break
-            
-            page += 1
-            url = self.parser.get_list_url(page)
+            # 收集结果
+            for future in as_completed(future_to_page):
+                page = future_to_page[future]
+                try:
+                    items = future.result()
+                    all_items.extend(items)
+                    
+                    if items:
+                        print(f"✅ 第 {page} 页: 获取 {len(items)} 条")
+                    else:
+                        print(f"⚠️ 第 {page} 页: 无数据")
+                    
+                    # 检查数量
+                    if len(all_items) >= max_items:
+                        # 取消剩余任务
+                        for f in future_to_page:
+                            f.cancel()
+                        break
+                        
+                except Exception as e:
+                    print(f"❌ 第 {page} 页失败: {e}")
+        
+        elapsed = time.time() - start_time
+        stats = self.stats.get_all()
         
         print("-" * 50)
-        print(f"🎉 完成! 共获取 {len(all_items)} 条数据")
-        print(f"📊 统计: 成功 {self.stats['success']}, 失败 {self.stats['failed']}, "
-              f"去重 {self.stats['duplicates']}")
+        print(f"🎉 完成! 获取 {len(all_items)} 条数据")
+        print(f"⏱️ 耗时: {elapsed:.2f}秒")
+        print(f"📊 统计: 成功 {stats.get('success', 0)}, "
+              f"失败 {stats.get('failed', 0)}, "
+              f"去重 {stats.get('duplicate', 0)}")
         
-        return all_items
+        return all_items[:max_items]
     
     def save(self, items: List[Dict], filepath: str, format: str = 'json'):
         """保存数据"""
@@ -443,7 +433,8 @@ class Crawler:
                 'meta': {
                     'site': self.site,
                     'count': len(items),
-                    'time': datetime.now().isoformat()
+                    'time': datetime.now().isoformat(),
+                    'workers': self.workers
                 },
                 'data': items
             }
@@ -454,72 +445,23 @@ class Crawler:
             if not items:
                 return
             with open(filepath, 'w', encoding='utf-8', newline='') as f:
-                keys = items[0].keys()
+                keys = list(items[0].keys())
                 writer = csv.DictWriter(f, fieldnames=keys)
                 writer.writeheader()
                 writer.writerows(items)
         
         elif format == 'txt':
             with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(f"# 爬取时间: {datetime.now().isoformat()}\n")
-                f.write(f"# 网站: {self.site}\n")
+                f.write(f"# 爬取: {self.site}\n")
+                f.write(f"# 时间: {datetime.now().isoformat()}\n")
                 f.write(f"# 总数: {len(items)}\n")
                 f.write("=" * 50 + "\n\n")
                 for i, item in enumerate(items, 1):
                     if 'text' in item:
                         f.write(f"{i}. {item['text']}\n")
                         f.write(f"   —— {item.get('author', '')}\n\n")
-                    elif 'title' in item:
-                        f.write(f"{i}. {item['title']}\n")
-                        f.write(f"   🔗 {item.get('url', '')}\n\n")
         
         print(f"💾 已保存: {filepath}")
-
-
-class AsyncCrawler:
-    """异步爬虫 (更快速)"""
-    
-    def __init__(self, site: str = 'quotes', concurrency: int = 5, delay: float = 0.5):
-        self.site = site
-        self.concurrency = concurrency
-        self.delay = delay
-        
-        # 获取解析器
-        parser_class = Crawler.PARSERS.get(site, QuotesParser)
-        self.parser = parser_class()
-        
-        # 统计
-        self.stats = {'success': 0, 'failed': 0}
-        self.seen_ids = set()
-    
-    async def fetch(self, session: aiohttp.ClientSession, url: str) -> str:
-        """异步获取"""
-        await asyncio.sleep(self.delay)
-        
-        try:
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
-                self.stats['success'] += 1
-                return await resp.text()
-        except:
-            self.stats['failed'] += 1
-            return ''
-    
-    async def crawl(self, urls: List[str]) -> List[Dict]:
-        """异步爬取多个URL"""
-        connector = aiohttp.TCPConnector(limit=self.concurrency)
-        
-        async with aiohttp.ClientSession(connector=connector) as session:
-            tasks = [self.fetch(session, url) for url in urls]
-            html_list = await asyncio.gather(*tasks)
-        
-        all_items = []
-        for html, url in zip(html_list, urls):
-            if html:
-                items = self.parser.parse(html, url)
-                all_items.extend(items)
-        
-        print(f"📊 异步统计: 成功 {self.stats['success']}, 失败 {self.stats['failed']}")
-        return all_items
 
 
 class Database:
@@ -530,7 +472,6 @@ class Database:
         self._init_db()
     
     def _init_db(self):
-        """初始化数据库"""
         conn = sqlite3.connect(self.db_path)
         conn.execute('''
             CREATE TABLE IF NOT EXISTS crawl_data (
@@ -543,14 +484,16 @@ class Database:
                 author TEXT,
                 tags TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(site, title, content)
+                UNIQUE(site, content)
             )
         ''')
         conn.commit()
         conn.close()
     
     def save(self, items: List[Dict], site: str):
-        """保存到数据库"""
+        if not items:
+            return
+            
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
@@ -576,83 +519,50 @@ class Database:
         
         conn.commit()
         conn.close()
-        
         print(f"💾 数据库保存: {saved} 条")
-    
-    def query(self, site: str = None, limit: int = 100) -> List[Dict]:
-        """查询数据"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        
-        if site:
-            cursor = conn.execute(
-                'SELECT * FROM crawl_data WHERE site = ? ORDER BY id DESC LIMIT ?',
-                (site, limit)
-            )
-        else:
-            cursor = conn.execute(
-                'SELECT * FROM crawl_data ORDER BY id DESC LIMIT ?',
-                (limit,)
-            )
-        
-        rows = cursor.fetchall()
-        conn.close()
-        
-        return [dict(row) for row in rows]
 
 
-# ==================== 命令行界面 ====================
+# ==================== 命令行 ====================
 
 def main():
     parser = argparse.ArgumentParser(
-        description='多功能爬虫 v4.0 (终极版)',
+        description='高效爬虫 v5.0 (多线程版)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-支持网站:
-  quotes   - 名言警句 (默认)
-  news     - 新闻网站
-  image    - 图片爬取
-
 示例:
-  python4 crawler.py -s quotes -p 3              # 爬取名言
-  python4 crawler.py -s image -p 2 --download   # 爬取图片
-  python4 crawler.py -s quotes --db              # 保存到数据库
-  python4 crawler.py -s quotes --async           # 异步快速爬取
+  python3 crawler.py -s quotes -p 5           # 爬5页，3线程
+  python3 crawler.py -s quotes -p 10 -w 5     # 5线程更快
+  python3 crawler.py -s quotes --db            # 保存数据库
+  python3 crawler.py -s quotes -f csv         # CSV格式
         """
     )
     
-    # 基本参数
     parser.add_argument('-s', '--site', default='quotes', 
-                       choices=['quotes', 'news', 'image'],
-                       help='网站类型')
-    parser.add_argument('-p', '--pages', type=int, default=2, help='爬取页数')
+                       choices=['quotes', 'news'],
+                       help='网站')
+    parser.add_argument('-p', '--pages', type=int, default=3, help='页数')
     parser.add_argument('-m', '--max', type=int, default=100, help='最大条数')
-    parser.add_argument('-d', '--delay', type=float, default=1, help='延迟秒数')
+    parser.add_argument('-w', '--workers', type=int, default=3, help='并发数(1-5)')
+    parser.add_argument('-d', '--delay', type=float, default=0.5, help='请求间隔')
+    parser.add_argument('-r', '--retry', type=int, default=3, help='重试次数')
     
-    # 输出
     parser.add_argument('-o', '--output', default='output/data', help='输出路径')
     parser.add_argument('-f', '--format', default='json', 
                        choices=['json', 'csv', 'txt'], help='格式')
-    parser.add_argument('--download', action='store_true', help='下载图片')
-    parser.add_argument('--db', action='store_true', help='保存到数据库')
-    
-    # 代理
-    parser.add_argument('--proxy', help='HTTP代理')
-    
-    # 异步
-    parser.add_argument('--async', dest='use_async', action='store_true', help='异步爬取')
+    parser.add_argument('--db', action='store_true', help='保存数据库')
     
     args = parser.parse_args()
     
     # 创建爬虫
-    if args.use_async:
-        print("⚡ 使用异步模式")
-        crawler = AsyncCrawler(args.site, delay=args.delay)
-        urls = [crawler.parser.get_list_url(i) for i in range(1, args.pages + 1)]
-        items = asyncio.run(crawler.crawl(urls))
-    else:
-        crawler = Crawler(args.site, args.delay, args.proxy)
-        items = crawler.crawl(args.pages, args.max, args.download, args.output)
+    crawler = FastCrawler(
+        site=args.site,
+        workers=args.workers,
+        delay=args.delay,
+        retry=args.retry
+    )
+    
+    # 爬取
+    items = crawler.crawl(args.pages, args.max)
     
     if not items:
         print("❌ 无数据")
@@ -663,8 +573,7 @@ def main():
         db = Database()
         db.save(items, args.site)
     
-    if args.format:
-        crawler.save(items, f"{args.output}.{args.format}", args.format)
+    crawler.save(items, f"{args.output}.{args.format}", args.format)
 
 
 if __name__ == "__main__":

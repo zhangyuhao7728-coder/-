@@ -1,0 +1,52 @@
+# 敏感文件 - 永不提交
+.env
+.env.local
+.env.*.local
+
+# 密钥和证书
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+
+# 会话和缓存
+sessions.json
+*.session
+cache/
+*.cache
+
+# 日志中的敏感信息
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# OpenClaw
+~/.openclaw/
+*.openclaw
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+venv3/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# 爬虫输出
+projects/crawler/output/
+projects/crawler/*.db
+projects/crawler/__pycache__/
