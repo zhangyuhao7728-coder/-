@@ -1,0 +1,40 @@
+{
+  "name": "第三方集成配置",
+  "integrations": {
+    "飞书": {
+      "enabled": true,
+      "status": "✅ 已配置",
+      "features": ["消息", "机器人", "Webhooks"]
+    },
+    "Telegram": {
+      "enabled": true,
+      "status": "✅ 已配置",
+      "features": ["消息", "机器人"]
+    },
+    "Google Workspace": {
+      "enabled": false,
+      "status": "⏳ 可选",
+      "features": ["邮件", "日历", "文档"],
+      "setup": {
+        "step1": "openclaw config set integrations.google.enabled true",
+        "step2": "配置credentials.json路径",
+        "step3": "openclaw integrations google authorize"
+      }
+    },
+    "钉钉": {
+      "enabled": false,
+      "status": "⏳ 可选",
+      "features": ["消息", "机器人"]
+    },
+    "Notion": {
+      "enabled": false,
+      "status": "⏳ 可选",
+      "features": ["数据库", "笔记"]
+    },
+    "GitHub": {
+      "enabled": false,
+      "status": "⏳ 可选",
+      "features": ["仓库", "Issue", "PR"]
+    }
+  }
+}

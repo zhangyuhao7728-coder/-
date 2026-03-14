@@ -1,0 +1,34 @@
+{
+  "name": "AI生图",
+  "description": "使用Nano Banana进行AI图像生成",
+  "security_level": "high",
+  "risk_warning": "AI生图需要安装第三方Skill，存在安全风险",
+  "config": {
+    "enabled": false,
+    "skill_name": "nano-banana-pro",
+    "provider": "nano-banana",
+    "model": "gemini-3.1-flash-image-preview"
+  },
+  "security_notes": [
+    "⚠️ 高风险：需要安装第三方Skill",
+    "⚠️ 可能存在恶意代码",
+    "建议：先审查Skill源码再安装",
+    "建议：使用独立账户运行",
+    "建议：限制文件访问权限"
+  ],
+  "safe_setup_steps": [
+    "1. 查看Skill源码: clawdhub search nano-banana",
+    "2. 审查代码确认无恶意行为",
+    "3. 使用独立目录运行",
+    "4. 限制文件访问权限",
+    "5. 监控运行日志"
+  ],
+  "alternative": {
+    "description": "使用OpenClaw内置功能代替",
+    "methods": [
+      "使用DALL-E: 配置OpenAI API",
+      "使用Midjourney: 通过Webhook集成",
+      "使用本地模型: Stable Diffusion"
+    ]
+  }
+}

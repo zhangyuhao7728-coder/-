@@ -1,0 +1,46 @@
+{
+  "users": {
+    "telegram": [
+      "8793442405"
+    ],
+    "webchat": [
+      "self"
+    ]
+  },
+  "commands": [
+    "python ",
+    "node ",
+    "git ",
+    "openclaw ",
+    "curl ",
+    "cat ",
+    "ls ",
+    "cd "
+  ],
+  "directories": [
+    "~/项目/Ai学习系统/",
+    "~/项目/公众号文章助手/",
+    "~/.openclaw/"
+  ],
+  "domains": [],
+  "file_patterns": {
+    "allowed": [
+      "*.py",
+      "*.js",
+      "*.json",
+      "*.md",
+      "*.txt",
+      "*.html",
+      "*.css",
+      "*.sh"
+    ],
+    "blocked": [
+      "*.exe",
+      "*.dmg",
+      "*.sh",
+      "*.bat",
+      "*.cmd",
+      "*.ps1"
+    ]
+  }
+}

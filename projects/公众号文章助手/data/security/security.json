@@ -1,0 +1,25 @@
+{
+  "api_key_storage": "env",
+  "gateway_mode": "local",
+  "enable_audit": true,
+  "max_file_operations": 100,
+  "allowed_extensions": [
+    ".py",
+    ".js",
+    ".json",
+    ".md",
+    ".txt",
+    ".html",
+    ".css"
+  ],
+  "blocked_commands": [
+    "rm -rf",
+    "del /f",
+    "format",
+    "mkfs",
+    "dd if="
+  ],
+  "prompt_filter": true,
+  "sandbox_mode": true,
+  "telegram_whitelist_only": true
+}

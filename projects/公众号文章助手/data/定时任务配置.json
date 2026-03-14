@@ -1,0 +1,30 @@
+{
+  "name": "定时任务配置",
+  "tasks": [
+    {
+      "name": "morning-briefing",
+      "schedule": "0 8 * * *",
+      "message": "生成每日简报：天气、日程、邮件、GitHub通知、AI热门资讯",
+      "description": "每天早上8点自动推送简报"
+    },
+    {
+      "name": "data-summary",
+      "schedule": "0 18 * * *",
+      "message": "汇总当日数据",
+      "description": "每天下午6点数据汇总"
+    },
+    {
+      "name": "daily-summary",
+      "schedule": "0 22 * * *",
+      "message": "生成每日任务完成总结",
+      "description": "每天晚上10点总结当天完成的任务"
+    },
+    {
+      "name": "weekly-report",
+      "schedule": "0 9 * * 1",
+      "message": "生成周报",
+      "description": "每周一早上9点生成周报"
+    }
+  ],
+  "warning": "注意频率不要太高，避免token消耗过高"
+}

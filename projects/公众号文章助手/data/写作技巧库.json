@@ -1,0 +1,156 @@
+{
+  "techniques": [
+    {
+      "name": "数字开头",
+      "description": "用具体数字吸引眼球",
+      "example": "28w+Star",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.873464"
+    },
+    {
+      "name": "故事引入",
+      "description": "用真实故事引起共鸣",
+      "example": "朋友删邮件崩溃",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.873571"
+    },
+    {
+      "name": "生活比喻",
+      "description": "用生活化比喻解释技术",
+      "example": "把钥匙交给陌生人",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.873684"
+    },
+    {
+      "name": "数据支撑",
+      "description": "用数据增加可信度",
+      "example": "6%插件是伪装者",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.873791"
+    },
+    {
+      "name": "专家背书",
+      "description": "引用权威观点",
+      "example": "奇安信专家说",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.873900"
+    },
+    {
+      "name": "亲身分享",
+      "description": "用第一人称分享经验",
+      "example": "我就这么干了",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.874016"
+    },
+    {
+      "name": "解决方案",
+      "description": "给出具体可操作建议",
+      "example": "用旧电脑隔离",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.874147"
+    },
+    {
+      "name": "结尾升华",
+      "description": "总结+情感升华",
+      "example": "睡个安稳觉",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.874363"
+    },
+    {
+      "name": "数字列表",
+      "description": "用X个技巧结构组织内容",
+      "example": "10个技巧",
+      "source": "开发者阿橙-技巧篇"
+    },
+    {
+      "name": "代码展示",
+      "description": "用代码块展示命令和配置",
+      "example": "openclaw xxx",
+      "source": "开发者阿橙-技巧篇"
+    },
+    {
+      "name": "步骤教学",
+      "description": "每个技巧有明确操作步骤",
+      "example": "第一步...第二步...",
+      "source": "开发者阿橙-技巧篇"
+    },
+    {
+      "name": "案例驱动",
+      "description": "每个技巧配合实用案例",
+      "example": "比如：每日新闻汇总",
+      "source": "开发者阿橙-技巧篇"
+    },
+    {
+      "name": "安全提醒",
+      "description": "结尾加入安全注意事项",
+      "example": "安全提醒：...",
+      "source": "开发者阿橙-技巧篇"
+    },
+    {
+      "name": "个人IP",
+      "description": "打造个人品牌人设",
+      "example": "大家好，我是橙哥",
+      "source": "开发者阿橙-技巧篇"
+    }
+  ],
+  "structures": [
+    {
+      "name": "问题引入式",
+      "steps": [
+        "热点引入",
+        "故事呈现",
+        "问题分析",
+        "原因解释",
+        "解决方案",
+        "总结建议"
+      ],
+      "description": "用故事引出问题，再给出解决方案",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.874601"
+    }
+  ],
+  "title_templates": [
+    {
+      "template": "28w+Star背后：{topic}必须知道的X个坑",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.872953"
+    },
+    {
+      "template": "{X}必看！{topic}的X个风险",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.873196"
+    },
+    {
+      "template": "关于{topic}，我朋友亲身经历了...",
+      "source": "开发者阿橙",
+      "added_at": "2026-03-14T13:17:23.873345"
+    },
+    {
+      "template": "X个效率翻倍的{topic}技巧",
+      "source": "开发者阿橙-技巧篇",
+      "added_at": "2026-03-14"
+    },
+    {
+      "template": "{topic}从入门到精通",
+      "source": "开发者阿橙-技巧篇",
+      "added_at": "2026-03-14"
+    },
+    {
+      "template": "5分钟学会{topic}",
+      "source": "开发者阿橙-技巧篇",
+      "added_at": "2026-03-14"
+    }
+  ],
+  "learned_from": [
+    {
+      "source": "开发者阿橙",
+      "title": "28w+Star背后：OpenClaw用户必须知道的4个安全坑",
+      "date": "2026-03-14T13:17:23.874812"
+    },
+    {
+      "source": "开发者阿橙",
+      "title": "OpenClaw养虾经验：10个效率翻倍的技巧",
+      "date": "2026-03-14"
+    }
+  ]
+}

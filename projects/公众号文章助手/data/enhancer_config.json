@@ -1,0 +1,238 @@
+{
+  "cli_commands": {
+    "onboard": {
+      "command": "openclaw onboard",
+      "description": "重新运行入门引导",
+      "added_at": "2026-03-14T13:36:20.228900"
+    },
+    "tui": {
+      "command": "openclaw tui",
+      "description": "启动终端UI",
+      "added_at": "2026-03-14T13:36:20.229278"
+    },
+    "dashboard": {
+      "command": "openclaw dashboard",
+      "description": "启动仪表板",
+      "added_at": "2026-03-14T13:36:20.229546"
+    },
+    "models-list": {
+      "command": "openclaw models list",
+      "description": "列出所有模型",
+      "added_at": "2026-03-14T13:36:20.229776"
+    },
+    "models-set": {
+      "command": "openclaw models set <provider/model>",
+      "description": "切换模型",
+      "added_at": "2026-03-14T13:36:20.229999"
+    },
+    "gateway-status": {
+      "command": "openclaw gateway status",
+      "description": "查看网关状态",
+      "added_at": "2026-03-14T13:36:20.230219"
+    },
+    "security-audit": {
+      "command": "openclaw security audit --deep",
+      "description": "安全审计",
+      "added_at": "2026-03-14T13:36:20.230433"
+    },
+    "gateway-stop": {
+      "command": "openclaw gateway stop",
+      "description": "停止网关",
+      "added_at": "2026-03-14T13:36:20.230646"
+    },
+    "gateway-start": {
+      "command": "openclaw gateway start",
+      "description": "启动网关",
+      "added_at": "2026-03-14T13:36:20.230859"
+    },
+    "gateway-restart": {
+      "command": "openclaw gateway restart",
+      "description": "重启网关",
+      "added_at": "2026-03-14T13:36:20.231074"
+    }
+  },
+  "cron_tasks": [
+    {
+      "name": "每日新闻汇总",
+      "schedule": "0 8 * * *",
+      "action": "搜索最新AI新闻，发到飞书",
+      "description": "每天早上8点汇总AI行业新闻",
+      "enabled": true,
+      "added_at": "2026-03-14T13:23:08.416251"
+    },
+    {
+      "name": "代码审查",
+      "schedule": "0 9 * * 1-5",
+      "action": "检查PR，自动审查代码",
+      "description": "工作日早上9点自动审查代码",
+      "enabled": true,
+      "added_at": "2026-03-14T13:23:08.416401"
+    },
+    {
+      "name": "依赖检查",
+      "schedule": "0 10 * * 0",
+      "action": "检查项目依赖安全更新",
+      "description": "每周检查依赖安全",
+      "enabled": true,
+      "added_at": "2026-03-14T13:23:08.416547"
+    },
+    {
+      "name": "错误监控",
+      "schedule": "*/10 * * * *",
+      "action": "监控错误日志，异常时报警",
+      "description": "每10分钟检查错误率",
+      "enabled": true,
+      "added_at": "2026-03-14T13:23:08.416690"
+    },
+    {
+      "name": "每日总结",
+      "schedule": "0 22 * * *",
+      "action": "总结当天完成的任务",
+      "description": "每天晚上10点提醒总结",
+      "enabled": true,
+      "added_at": "2026-03-14T13:23:08.416846"
+    },
+    {
+      "name": "每日新闻汇总",
+      "schedule": "0 8 * * *",
+      "action": "搜索最新AI新闻，发到飞书",
+      "description": "每天早上8点汇总AI行业新闻",
+      "enabled": true,
+      "added_at": "2026-03-14T13:36:20.231288"
+    },
+    {
+      "name": "代码审查",
+      "schedule": "0 9 * * 1-5",
+      "action": "检查PR，自动审查代码",
+      "description": "工作日早上9点自动审查代码",
+      "enabled": true,
+      "added_at": "2026-03-14T13:36:20.231580"
+    },
+    {
+      "name": "依赖检查",
+      "schedule": "0 10 * * 0",
+      "action": "检查项目依赖安全更新",
+      "description": "每周检查依赖安全",
+      "enabled": true,
+      "added_at": "2026-03-14T13:36:20.231812"
+    },
+    {
+      "name": "错误监控",
+      "schedule": "*/10 * * * *",
+      "action": "监控错误日志，异常时报警",
+      "description": "每10分钟检查错误率",
+      "enabled": true,
+      "added_at": "2026-03-14T13:36:20.232049"
+    },
+    {
+      "name": "每日总结",
+      "schedule": "0 22 * * *",
+      "action": "总结当天完成的任务",
+      "description": "每天晚上10点提醒总结",
+      "enabled": true,
+      "added_at": "2026-03-14T13:36:20.232431"
+    }
+  ],
+  "tools": {
+    "web_search": {
+      "name": "web_search",
+      "provider": "perplexity",
+      "model": "perplexity/sonar-pro",
+      "enabled": true,
+      "description": "网页搜索工具",
+      "added_at": "2026-03-14T13:36:20.232684"
+    },
+    "tts": {
+      "name": "tts",
+      "provider": "edge",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "enabled": true,
+      "description": "语音合成",
+      "added_at": "2026-03-14T13:36:20.232931"
+    },
+    "image": {
+      "name": "image",
+      "provider": "nano-banana",
+      "model": "gemini-3.1-flash-image-preview",
+      "enabled": false,
+      "description": "AI生图",
+      "added_at": "2026-03-14T13:36:20.233188"
+    }
+  },
+  "skills": [
+    {
+      "name": "第二大脑",
+      "description": "快速记录笔记和任务",
+      "config": {},
+      "added_at": "2026-03-14T13:23:08.418076"
+    },
+    {
+      "name": "代码审查员",
+      "description": "自动审查代码",
+      "config": {},
+      "added_at": "2026-03-14T13:23:08.418294"
+    },
+    {
+      "name": "新闻助手",
+      "description": "汇总行业新闻",
+      "config": {},
+      "added_at": "2026-03-14T13:23:08.418505"
+    },
+    {
+      "name": "第二大脑",
+      "description": "快速记录笔记和任务",
+      "config": {},
+      "added_at": "2026-03-14T13:36:20.234436"
+    },
+    {
+      "name": "代码审查员",
+      "description": "自动审查代码",
+      "config": {},
+      "added_at": "2026-03-14T13:36:20.234732"
+    },
+    {
+      "name": "新闻助手",
+      "description": "汇总行业新闻",
+      "config": {},
+      "added_at": "2026-03-14T13:36:20.235024"
+    }
+  ],
+  "mcp_servers": [
+    {
+      "name": "apify",
+      "description": "网页爬虫",
+      "enabled": false,
+      "added_at": "2026-03-14T13:23:08.417526"
+    },
+    {
+      "name": "filesystem",
+      "description": "文件操作",
+      "enabled": true,
+      "added_at": "2026-03-14T13:23:08.417702"
+    },
+    {
+      "name": "github",
+      "description": "GitHub操作",
+      "enabled": false,
+      "added_at": "2026-03-14T13:23:08.417891"
+    },
+    {
+      "name": "apify",
+      "description": "网页爬虫",
+      "enabled": false,
+      "added_at": "2026-03-14T13:36:20.233438"
+    },
+    {
+      "name": "filesystem",
+      "description": "文件操作",
+      "enabled": true,
+      "added_at": "2026-03-14T13:36:20.233722"
+    },
+    {
+      "name": "github",
+      "description": "GitHub操作",
+      "enabled": false,
+      "added_at": "2026-03-14T13:36:20.234123"
+    }
+  ]
+}

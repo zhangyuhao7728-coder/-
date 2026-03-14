@@ -1,0 +1,82 @@
+{
+  "name": "多Agent协作配置",
+  "description": "基于文章的多Agent架构",
+  "architecture": {
+    "gateway": "1个Gateway进程",
+    "total_agents": "根据需求创建",
+    "squads": [
+      {
+        "name": "内容生产队",
+        "purpose": "公众号内容创作",
+        "agents": [
+          {
+            "id": "writer",
+            "name": "写手",
+            "role": "负责文章写作",
+            "skills": ["文章生成", "SEO优化"]
+          },
+          {
+            "id": "editor",
+            "name": "编辑",
+            "role": "负责审核修改",
+            "skills": ["文章生成"]
+          },
+          {
+            "id": "designer",
+            "name": "设计师",
+            "role": "负责封面设计",
+            "skills": ["图片生成"]
+          }
+        ]
+      },
+      {
+        "name": "技术队",
+        "purpose": "技术开发维护",
+        "agents": [
+          {
+            "id": "coder",
+            "name": "程序员",
+            "role": "负责代码开发",
+            "skills": ["代码审查"]
+          },
+          {
+            "id": "debugger",
+            "name": "调试员",
+            "role": "负责问题排查",
+            "skills": ["安全检查"]
+          }
+        ]
+      },
+      {
+        "name": "运营队",
+        "purpose": "日常运营",
+        "agents": [
+          {
+            "id": "reporter",
+            "name": " Reporter",
+            "role": "负责数据报告",
+            "skills": ["数据分析"]
+          },
+          {
+            "id": "monitor",
+            "name": "监控员",
+            "role": "负责系统监控",
+            "skills": ["安全检查", "系统监控"]
+          }
+        ]
+      }
+    ]
+  },
+  "bindings_example": {
+    "dmScope": "per-account-channel-peer",
+    "bindings": [
+      {
+        "agentId": "writer",
+        "match": {
+          "channel": "telegram",
+          "accountId": "writer"
+        }
+      }
+    ]
+  }
+}

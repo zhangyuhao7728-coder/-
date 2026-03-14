@@ -1,0 +1,37 @@
+{
+  "name": "免费安全方案",
+  "description": "零成本、安全的OpenClaw配置",
+  "version": "1.0",
+  "updated": "2026-03-14",
+  "monthly_cost": "¥0 (完全免费)",
+  "components": {
+    "model": {
+      "name": "本地模型 (Ollama)",
+      "status": "✅ 已配置",
+      "models": ["qwen2.5:latest", "qwen3.5:9b", "deepseek-coder:6.7b"],
+      "cost": "免费"
+    },
+    "search": {
+      "name": "网页搜索",
+      "status": "可选配置",
+      "free_option": "DuckDuckGo (推荐)"
+    },
+    "tts": {
+      "name": "语音合成",
+      "status": "✅ 已配置",
+      "provider": "edge-tts",
+      "cost": "免费"
+    },
+    "image": {
+      "name": "AI生图",
+      "status": "❌ 已禁用",
+      "reason": "高风险 + 收费"
+    }
+  },
+  "security": {
+    "gateway_mode": "local",
+    "api_key_storage": "env",
+    "prompt_filter": true,
+    "sandbox_mode": true
+  }
+}

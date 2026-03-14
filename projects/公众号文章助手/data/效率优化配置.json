@@ -1,0 +1,171 @@
+{
+  "version": "2.0",
+  "updated": "2026-03-14",
+  "directions": {
+    "1_多Agent": {
+      "name": "多Agent协作",
+      "status": "pending",
+      "description": "从单兵作战到团队协作",
+      "implementation": {
+        "squad_1": {
+          "name": "产品增长队",
+          "members": [
+            "产品负责人",
+            "用户研究员",
+            "全栈工程师",
+            "UX设计师",
+            "文档专家"
+          ]
+        },
+        "squad_2": {
+          "name": "技术平台队",
+          "members": [
+            "工程经理",
+            "后端专家",
+            "DevOps工程师",
+            "QA工程师",
+            "安全工程师"
+          ]
+        },
+        "squad_3": {
+          "name": "营销增长队",
+          "members": [
+            "增长负责人",
+            "内容策划",
+            "获客专家",
+            "客户成功",
+            "数据分析师"
+          ]
+        }
+      }
+    },
+    "2_自定义Skill": {
+      "name": "自定义Skill",
+      "status": "pending",
+      "description": "用YAML写工作流，让系统学会你的活",
+      "examples": [
+        {
+          "name": "竞品价格监控",
+          "trigger": [
+            "监控价格",
+            "价格追踪"
+          ],
+          "steps": [
+            "web_search",
+            "compare",
+            "notify"
+          ]
+        },
+        {
+          "name": "每日简报",
+          "trigger": [
+            "今日简报",
+            "每日汇总"
+          ],
+          "steps": [
+            "天气",
+            "日程",
+            "邮件",
+            "GitHub",
+            "AI资讯"
+          ]
+        }
+      ]
+    },
+    "3_定时任务": {
+      "name": "定时任务",
+      "status": "pending",
+      "description": "从被动等到主动推",
+      "examples": [
+        {
+          "time": "8:00",
+          "task": "每日简报",
+          "content": "天气+日程+邮件+GitHub+AI资讯"
+        },
+        {
+          "time": "18:00",
+          "task": "数据汇总",
+          "content": "当日数据汇总"
+        },
+        {
+          "time": "22:00",
+          "task": "每日总结",
+          "content": "任务完成情况"
+        }
+      ]
+    },
+    "4_浏览器控制": {
+      "name": "浏览器控制",
+      "status": "pending",
+      "description": "让它操作网页（需Docker沙盒）",
+      "security": "必须Docker沙盒运行",
+      "commands": [
+        "openclaw plugins install @openclaw/browser-control",
+        "openclaw config set browser.enabled true"
+      ]
+    },
+    "5_记忆系统": {
+      "name": "记忆系统优化",
+      "status": "pending",
+      "description": "三层懒加载，减少token消耗80%",
+      "layers": {
+        "L0": "索引层 - 启动必读，知道记忆有啥",
+        "L1": "摘要层 - 需要时读摘要",
+        "L2": "全文层 - 确认需要才读全文"
+      },
+      "shared_knowledge": {
+        "path": "~/.openclaw/shared-memory/",
+        "file": "SHARED-KNOWLEDGE.md"
+      }
+    },
+    "6_第三方集成": {
+      "name": "第三方集成",
+      "status": "pending",
+      "description": "统一工作流",
+      "integrations": [
+        {
+          "name": "Google Workspace",
+          "enabled": false,
+          "features": "邮件+日历+文档"
+        },
+        {
+          "name": "飞书",
+          "enabled": true,
+          "features": "已配置"
+        },
+        {
+          "name": "钉钉",
+          "enabled": false,
+          "features": "可选"
+        },
+        {
+          "name": "Linear/Jira",
+          "enabled": false,
+          "features": "项目管理"
+        },
+        {
+          "name": "Obsidian/Notion",
+          "enabled": false,
+          "features": "笔记"
+        }
+      ]
+    },
+    "7_成本和安全": {
+      "name": "成本与安全",
+      "status": "active",
+      "description": "Docker沙盒+成本控制",
+      "settings": {
+        "sandbox_mode": "docker",
+        "daily_limit": 1000,
+        "monthly_budget": 50
+      },
+      "commands": [
+        "openclaw config set sandbox.mode \"docker\"",
+        "openclaw sandbox test",
+        "openclaw config set ai.dailyLimit 1000",
+        "openclaw config set ai.monthlyBudget 50",
+        "openclaw stats cost"
+      ]
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "description": "子Agent安全配置模板",
+  "design_principles": [
+    "1. 最小权限原则",
+    "2. 任务隔离",
+    "3. 不共享敏感数据",
+    "4. 独立工作空间"
+  ],
+  "safe_agent_config": {
+    "example_1": {
+      "name": "写作助手",
+      "purpose": "公众号文章写作",
+      "workspace": "~/项目/公众号文章助手/",
+      "allowed_tools": ["read", "write", "python"],
+      "forbidden_tools": ["exec", "browser"],
+      "max_file_operations": 50
+    },
+    "example_2": {
+      "name": "数据分析师",
+      "purpose": "数据分析处理",
+      "workspace": "~/项目/数据分析/",
+      "allowed_tools": ["read", "python"],
+      "forbidden_tools": ["exec", "browser", "write"],
+      "max_file_operations": 100
+    }
+  },
+  "security_rules": [
+    "子Agent不应知道主Agent的存在",
+    "子Agent应有独立工作空间",
+    "限制子Agent的文件操作权限",
+    "禁止子Agent访问系统关键目录",
+    "定期审计子Agent活动"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "description": "MCP服务器安全配置",
+  "servers": [
+    {
+      "name": "filesystem",
+      "description": "本地文件操作",
+      "security_level": "medium",
+      "recommended": true,
+      "config": {
+        "allowed_directories": [
+          "~/项目/Ai学习系统/",
+          "~/项目/公众号文章助手/",
+          "~/笔记/"
+        ],
+        "blocked_directories": [
+          "~/.ssh/",
+          "~/.aws/",
+          "~/Library/"
+        ],
+        "max_file_size": "10MB"
+      }
+    },
+    {
+      "name": "apify",
+      "description": "网页爬虫",
+      "security_level": "high",
+      "recommended": false,
+      "warning": "需要API Key，可能抓取恶意网站",
+      "config": {
+        "enabled": false,
+        "requires_api_key": true
+      }
+    },
+    {
+      "name": "github",
+      "description": "GitHub操作",
+      "security_level": "medium",
+      "recommended": false,
+      "config": {
+        "enabled": false,
+        "requires_token": true,
+        "allowed_repos": []  # 指定允许的仓库
+      }
+    }
+  ],
+  "security_guidelines": [
+    "1. 仅启用需要的MCP服务器",
+    "2. 限制文件访问目录",
+    "3. 不在MCP中存储敏感信息",
+    "4. 定期审查MCP权限"
+  ]
+}

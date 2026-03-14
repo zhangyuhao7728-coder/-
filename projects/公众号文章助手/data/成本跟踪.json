@@ -1,0 +1,46 @@
+{
+  "name": "成本跟踪系统",
+  "version": "2.0",
+  "description": "全面的成本控制和跟踪",
+  "components": {
+    "1_使用统计": {
+      "description": "跟踪每日/每周/每月使用",
+      "metrics": [
+        "token消耗",
+        "API调用次数",
+        "成本金额"
+      ]
+    },
+    "2_模型切换": {
+      "description": "根据使用量自动切换模型",
+      "rules": [
+        "免费额度内: MiniMax",
+        "80%后: 切换到Ollama",
+        "100%: 暂停服务"
+      ]
+    },
+    "3_预算警报": {
+      "description": "预算达到阈值时警报",
+      "levels": [
+        {"level": 50, "alert": "已使用50%预算"},
+        {"level": 75, "alert": "已使用75%预算"},
+        {"level": 90, "alert": "已使用90%预算"}
+      ]
+    },
+    "4_优化建议": {
+      "description": "提供成本优化建议",
+      "suggestions": [
+        "使用Ollama本地模型",
+        "优化记忆系统",
+        "减少定时任务频率",
+        "使用缓存"
+      ]
+    }
+  },
+  "current_config": {
+    "primary_model": "MiniMax-M2.5 (无限)",
+    "fallback_model": "qwen2.5:latest (免费)",
+    "daily_limit": 1000,
+    "monthly_budget": 50
+  }
+}

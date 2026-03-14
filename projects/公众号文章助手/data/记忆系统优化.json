@@ -1,0 +1,37 @@
+{
+  "name": "记忆系统优化",
+  "description": "三层懒加载，减少token消耗80%",
+  "layers": {
+    "L0": {
+      "name": "索引层",
+      "description": "启动必读，知道记忆有啥",
+      "files": [
+        "MEMORY.md",
+        "SHARED-KNOWLEDGE.md"
+      ]
+    },
+    "L1": {
+      "name": "摘要层",
+      "description": "需要时读摘要",
+      "files": [
+        "memory/summary/*.md"
+      ]
+    },
+    "L2": {
+      "name": "全文层",
+      "description": "确认需要才读全文",
+      "files": [
+        "memory/daily/*.md"
+      ]
+    }
+  },
+  "shared_knowledge_path": "~/.openclaw/shared-memory/",
+  "optimization": {
+    "target": "降低token消耗80%",
+    "methods": [
+      "只读需要的记忆",
+      "定期清理过期记忆",
+      "使用摘要代替全文"
+    ]
+  }
+}
