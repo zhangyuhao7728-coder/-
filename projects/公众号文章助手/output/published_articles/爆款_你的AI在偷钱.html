@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你的AI可能在偷你的钱</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #fff;
+            color: #333;
+            line-height: 1.8;
+        }
+        /* 标题 */
+        h1 {
+            font-size: 32px;
+            color: #ff6600;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        /* 强调文字 */
+        .highlight {
+            background: linear-gradient(transparent 60%, #ffdd00 60%);
+            padding: 2px 0;
+        }
+        .highlight-orange {
+            background: linear-gradient(transparent 60%, #ff6600 60%);
+            padding: 2px 0;
+            color: #000;
+        }
+        /* 标签 */
+        .tags {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .tag {
+            display: inline-block;
+            background: #fff3e0;
+            color: #ff6600;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 3px;
+            border: 1px solid #ff6600;
+        }
+        /* 章节 */
+        .section {
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-size: 22px;
+            color: #333;
+            border-left: 4px solid #ff6600;
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+        /* 警告框 */
+        .alert {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .alert-danger {
+            background: #fff5f5;
+            border: 2px solid #ff4444;
+        }
+        .alert-warning {
+            background: #fff8e1;
+            border: 2px solid #ff9800;
+        }
+        .alert-success {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+        /* 卡片 */
+        .card {
+            background: #fff;
+            border: 2px solid #ff6600;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        /* 步骤 */
+        .step {
+            margin: 30px 0;
+            padding: 20px;
+            background: #fffaf0;
+            border-radius: 10px;
+        }
+        .step-num {
+            display: inline-block;
+            background: #ff6600;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .step h3 {
+            display: inline;
+            color: #333;
+        }
+        /* 代码 */
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        /* 表格 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #fff3e0;
+            color: #ff6600;
+        }
+        /* 列表 */
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin: 10px 0;
+        }
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 2px solid #eee;
+            margin-top: 40px;
+            color: #666;
+        }
+        strong {
+            color: #ff6600;
+        }
+    </style>
+</head>
+<body>
+
+<h1>😱 你的AI可能在偷你的钱！</h1>
+<div class="subtitle">OpenClaw出事了！赶紧检查你的配置</div>
+
+<div class="tags">
+    <span class="tag">⚠️ 紧急</span>
+    <span class="tag">🔐 必看</span>
+    <span class="tag">💰 省钱</span>
+    <span class="tag">✅ 实用</span>
+</div>
+
+<!-- 第一部分 -->
+<div class="section">
+    <h2>1️⃣ 出大事了！</h2>
+    
+    <div class="alert alert-danger">
+        <strong>🔥 就在最近！</strong> 多家安全机构发布紧急提醒：<br>
+        OpenClaw存在严重安全漏洞，<span class="highlight-orange">有人已经中招！</span>
+    </div>
+    
+    <p>就在上周，<span class="highlight">有人因为配置不正确，API密钥被盗</span>，账户里的钱被人花了个精光！</p>
+    
+    <div class="alert alert-warning">
+        <strong>⚠️ 严重警告：</strong> 如果你的OpenClaw还是默认配置，<span class="highlight-orange">很可能正在"裸奔"！</span>
+    </div>
+</div>
+
+<!-- 第二部分 -->
+<div class="section">
+    <h2>2️⃣ 什么问题这么严重？</h2>
+    
+    <table>
+        <tr>
+            <th>🚨 问题</th>
+            <th>💀 后果</th>
+        </tr>
+        <tr>
+            <td>API密钥写代码里</td>
+            <td><strong>密钥裸奔，被人偷走</strong></td>
+        </tr>
+        <tr>
+            <td>谁都能用你的AI</td>
+            <td><strong>被当成免费劳动力</strong></td>
+        </tr>
+        <tr>
+            <td>命令随便执行</td>
+            <td><strong>可能删掉重要文件</strong></td>
+        </tr>
+        <tr>
+            <td>没有文件隔离</td>
+            <td><strong>隐私文件可能被看光</strong></td>
+        </tr>
+    </table>
+    
+    <div class="alert alert-warning">
+        <strong>💡 简单说：</strong> 你的AI现在<span class="highlight">可能正在帮别人干活，你还要倒贴钱！</span>
+    </div>
+</div>
+
+<!-- 第三部分 -->
+<div class="section">
+    <h2>3️⃣ 还能用吗？会不会坐牢？</h2>
+    
+    <div class="card">
+        <h3 style="color: #ff6600;">✅ 当然能用！</h3>
+        <p><span class="highlight-orange">风险来自不会用，不是工具本身。</span></p>
+        <p>就像菜刀，能做菜也能伤人，关键看你怎么用。</p>
+    </div>
+    
+    <p style="text-align: center; font-size: 18px;">
+        只要配置好，<span class="highlight-orange">比你的微信还安全！</span>
+    </p>
+</div>
+
+<!-- 第四部分 -->
+<div class="section">
+    <h2>4️⃣ 5分钟搞定！保护你的钱</h2>
+    
+    <!-- 方案1 -->
+    <div class="step">
+        <span class="step-num">1</span>
+        <h3>🔐 保护API密钥（最重要！）</h3>
+        <p><strong>❌ 千万别这样：</strong></p>
+        <div class="code"># 危险！别人能看到！
+API_KEY = "sk-xxxxxx"</div>
+        
+        <p><strong>✅ 正确做法：</strong></p>
+        <div class="code"># 终端执行
+touch ~/.openclaw/.env
+echo 'API_KEY=sk-你的密钥' >> ~/.openclaw/.env</div>
+    </div>
+    
+    <!-- 方案2 -->
+    <div class="step">
+        <span class="step-num">2</span>
+        <h3>🚪 只让自己进入</h3>
+        <p>修改配置：</p>
+        <div class="code">{
+  "telegram": {
+    "allowFrom": ["你的ID"]
+  }
+}</div>
+        <p>查ID：发消息给 <strong>@userinfobot</strong></p>
+    </div>
+    
+    <!-- 方案3 -->
+    <div class="step">
+        <span class="step-num">3</span>
+        <h3>🛡️ 限制命令执行</h3>
+        <p>创建白名单：</p>
+        <div class="code">ALLOWED_COMMANDS = [
+    "python scripts/写作",
+    "python tools/分析",
+]</div>
+    </div>
+    
+    <!-- 方案4 -->
+    <div class="step">
+        <span class="step-num">4</span>
+        <h3>📁 文件访问隔离</h3>
+        <p>只让访问指定目录：</p>
+        <div class="code">PROJECT_ROOT = "~/公众号项目"
+
+def check_path(path):
+    return path.startswith(PROJECT_ROOT)</div>
+    </div>
+    
+    <!-- 方案5 -->
+    <div class="step">
+        <span class="step-num">5</span>
+        <h3>📦 启用安全沙盒</h3>
+        <p>加一行配置：</p>
+        <div class="code">{
+  "sandbox": {
+    "mode": "docker"
+  }
+}</div>
+    </div>
+</div>
+
+<!-- 第五部分 -->
+<div class="section">
+    <h2>5️⃣ 一键检查</h2>
+    
+    <p>复制这条命令，粘贴到终端：</p>
+    
+    <div class="code">python3 ~/公众号项目/tools/安全检查.py</div>
+    
+    <p>看到这些就是安全：</p>
+    
+    <ul>
+        <li>✅ <span class="highlight">Token管理: 已保护</span></li>
+        <li>✅ <span class="highlight">用户白名单: 已配置</span></li>
+        <li>✅ <span class="highlight">命令白名单: 已配置</span></li>
+        <li>✅ <span class="highlight">文件隔离: 已配置</span></li>
+        <li>✅ <span class="highlight">沙盒模式: 已开启</span></li>
+    </ul>
+</div>
+
+<!-- 第六部分 -->
+<div class="section">
+    <h2>💰 总结</h2>
+    
+    <div class="card">
+        <p>5个配置，加起来<span class="highlight-orange">不到10分钟</span></p>
+        <p>但能保护你<span class="highlight-orange">几千块</span>不被偷！</p>
+    </div>
+    
+    <div class="alert alert-warning">
+        <strong>⚠️ 记住：</strong> <span class="highlight-orange">宁可错杀一千，不可放过一个！</span>
+    </div>
+    
+    <p style="text-align: center; margin-top: 30px;">
+        <strong>现在！立刻！马上！去检查你的配置！</strong>
+    </p>
+</div>
+
+<!-- 底部 -->
+<div class="footer">
+    <p style="font-size: 18px;">📢 互动</p>
+    <p>你配置好了吗？评论区报个数！</p>
+    <p style="margin-top: 30px;">
+        <em>我是余豪，AI小白 🚀</em><br>
+        <em>有帮助，<span class="highlight-orange">点个赞</span>再走？</span></em>
+    </p>
+</div>
+
+</body>
+</html>

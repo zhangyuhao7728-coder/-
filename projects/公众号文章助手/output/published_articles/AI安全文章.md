@@ -193,7 +193,7 @@ token = os.getenv("TELEGRAM_BOT_TOKEN")
 **Agent只能访问项目目录：**
 
 ```
-✅ 可以：~/项目/Ai学习系统/
+✅ 可以：~/你的AI项目/
 ❌ 不能：~/.ssh/
 ❌ 不能：~/.aws/
 ❌ 不能：~/.git/

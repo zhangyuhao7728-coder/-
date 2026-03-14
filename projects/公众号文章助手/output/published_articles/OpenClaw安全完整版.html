@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw安全必看</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+        .header .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .danger {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 14px;
+        }
+        .code-comment {
+            color: #6a9955;
+        }
+        .code-keyword {
+            color: #c586c0;
+        }
+        .code-string {
+            color: #ce9178;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #667eea;
+            color: white;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .step-num {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .step-content h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 封面 -->
+<div class="header">
+    <h1>🛡️ OpenClaw安全必看！</h1>
+    <div class="subtitle">个人电脑部署完整指南</div>
+    <div style="margin-top: 20px; font-size: 14px;">
+        作者：余豪 | AI小白
+    </div>
+</div>
+
+<!-- 第一部分：发生了什么 -->
+<div class="section">
+    <div class="section-title">⚠️ 一、最近发生了什么？</div>
+    
+    <div class="warning">
+        <strong>多家安全机构发布了提醒</strong>，说OpenClaw存在安全风险
+    </div>
+    
+    <p>具体问题：</p>
+    
+    <table>
+        <tr>
+            <th>问题</th>
+            <th>后果</th>
+        </tr>
+        <tr>
+            <td>🔴 恶意指令</td>
+            <td>你的API密钥可能被偷</td>
+        </tr>
+        <tr>
+            <td>🔴 误操作</td>
+            <td>重要文件被删除</td>
+        </tr>
+        <tr>
+            <td>🔴 恶意插件</td>
+            <td>个人信息泄露</td>
+        </tr>
+        <tr>
+            <td>🔴 安全漏洞</td>
+            <td>被黑客攻击</td>
+        </tr>
+    </table>
+    
+    <p><strong>信息来源：</strong>公开的安全报告和行业新闻（2026年3月）</p>
+</div>
+
+<!-- 第二部分：要不要停用 -->
+<div class="section">
+    <div class="section-title">😰 二、要不要停用？</div>
+    
+    <div class="success">
+        <strong>我的选择：继续用！</strong>
+    </div>
+    
+    <p>因为：</p>
+    <ul>
+        <li>风险来自<strong>不会用</strong>，不是工具本身</li>
+        <li>就像菜刀，能做菜也能伤人</li>
+        <li>学会配置就安全了</li>
+    </ul>
+</div>
+
+<!-- 第三部分：5个防护方案 -->
+<div class="section">
+    <div class="section-title">✅ 三、个人电脑防护方案（完整版）</div>
+    
+    <!-- 方案1 -->
+    <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+            <h3>保护API密钥</h3>
+            <p><strong>❌ 千万别这样：</strong></p>
+            <div class="code"><span class="code-comment"># 危险！会泄露！</span>
+API_KEY = "sk-xxxxxx"</div>
+            
+            <p><strong>✅ 正确做法：</strong></p>
+            <div class="code"><span class="code-comment"># 1. 创建 .env 文件</span>
+<span class="code-comment"># 文件内容：</span>
+API_KEY=sk-xxxxxx</div>
+            
+            <p><strong>操作步骤：</strong></p>
+            <ol>
+                <li>打开终端</li>
+                <li>输入：<code>cd ~/.openclaw</code></li>
+                <li>输入：<code>touch .env</code></li>
+                <li>编辑写入：<code>API_KEY=你的密钥</code></li>
+            </ol>
+        </div>
+    </div>
+    
+    <!-- 方案2 -->
+    <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+            <h3>只让自己使用</h3>
+            <p>在 <code>openclaw.json</code> 中配置：</p>
+            <div class="code">{
+  <span class="code-string">"telegram"</span>: {
+    <span class="code-string">"allowFrom"</span>: [
+      <span class="code-string">"你的Telegram数字ID"</span>
+    ]
+  }
+}</div>
+            
+            <p>查ID：发消息给 @userinfobot</p>
+        </div>
+    </div>
+    
+    <!-- 方案3 -->
+    <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+            <h3>限制命令执行</h3>
+            <p>创建白名单命令：</p>
+            <div class="code"><span class="code-keyword">ALLOWED_COMMANDS</span> = [
+    <span class="code-string">"python scripts/写作"</span>,
+    <span class="code-string">"python scripts/分析"</span>,
+    <span class="code-string">"python tools/安全检查.py"</span>
+]</div>
+        </div>
+    </div>
+    
+    <!-- 方案4 -->
+    <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+            <h3>文件访问隔离</h3>
+            <p>只让访问项目目录：</p>
+            <div class="code"><span class="code-keyword">import</span> os
+
+PROJECT_ROOT = os.path.expanduser(<span class="code-string">"~/你的AI项目"</span>)
+
+<span class="code-keyword">def</span> validate_path(path):
+    <span class="code-keyword">return</span> path.startswith(PROJECT_ROOT)</div>
+        </div>
+    </div>
+    
+    <!-- 方案5 -->
+    <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+            <h3>启用安全沙盒</h3>
+            <p>在配置中添加：</p>
+            <div class="code">{
+  <span class="code-string">"sandbox"</span>: {
+    <span class="code-string">"mode"</span>: <span class="code-string">"docker"</span>
+  }
+}</div>
+        </div>
+    </div>
+</div>
+
+<!-- 第四部分：检查效果 -->
+<div class="section">
+    <div class="section-title">📊 四、检查配置效果</div>
+    
+    <p>运行安全检查命令：</p>
+    <div class="code">python3 ~/公众号项目/tools/安全检查.py</div>
+    
+    <p>应该看到：</p>
+    <div class="success">
+        ✅ Token管理: 已保护<br>
+        ✅ 用户白名单: 已配置<br>
+        ✅ 命令白名单: 已配置<br>
+        ✅ 文件隔离: 已配置<br>
+        ✅ 沙盒模式: 已开启
+    </div>
+</div>
+
+<!-- 第五部分：我的心得 -->
+<div class="section">
+    <div class="section-title">💡 五、我的心得</div>
+    
+    <p><strong>记住4点：</strong></p>
+    <ol>
+        <li><strong>别慌</strong> - 有提醒是好事</li>
+        <li><strong>从小做</strong> - 一个一个配置</li>
+        <li><strong>白名单</strong> - 不确定就拒绝</li>
+        <li><strong>持续学</strong> - 安全要一直关注</li>
+    </ol>
+    
+    <div class="warning">
+        <strong>核心原则：</strong>宁可错杀一千，不可放过一个！
+    </div>
+</div>
+
+<!-- 第六部分：互动 -->
+<div class="section">
+    <div class="section-title">📢 六、互动</div>
+    
+    <p>你是怎么配置的？</p>
+    <p>有问题评论区聊聊！</p>
+    
+    <p style="text-align: center; margin-top: 30px;">
+        <em>我是余豪，AI小白 🚀</em><br>
+        <em>有帮助，点个赞？</em>
+    </p>
+</div>
+
+<div class="footer">
+    <p>本文仅供参考，具体操作请以官方文档为准</p>
+</div>
+
+</body>
+</html>
