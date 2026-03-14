@@ -7,7 +7,16 @@ Web Crawler v2 - 工业级爬虫
 4. 随机UA
 5. 日志记录
 6. 错误分类处理
+7. 安全防护（Scraper Guard）
 """
+
+import os
+import sys
+
+# 添加 security 模块路径（项目根目录的 security）
+import pathlib
+project_root = pathlib.Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(project_root / 'security'))
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -18,6 +27,15 @@ import time
 import logging
 from datetime import datetime
 import urllib3
+
+# 尝试导入安全守卫
+try:
+    from scraper_guard import ScraperGuard
+    SCRAPER_GUARD = ScraperGuard()
+    SECURITY_ENABLED = True
+except ImportError:
+    SECURITY_ENABLED = False
+    SCRAPER_GUARD = None
 
 # 禁用警告
 urllib3.disable_warnings()
@@ -90,6 +108,15 @@ class IndustrialCrawler:
         """
         start_time = time.time()
         
+        # ========== 安全检查 ==========
+        if SECURITY_ENABLED and SCRAPER_GUARD:
+            # 使用增强版安全守卫
+            from scraper_guard import check_url
+            url_safe, url_reason = check_url(url)
+            if not url_safe:
+                logger.warning(f"🚫 URL安全拦截: {url} - {url_reason}")
+                return {"status": "error", "type": "security_blocked", "url": url, "error": url_reason}
+        
         try:
             logger.info(f"🔄 正在请求: {url}")
             
@@ -102,6 +129,24 @@ class IndustrialCrawler:
             response.raise_for_status()
             
             soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # ========== 响应安全检查 ==========
+            if SECURITY_ENABLED and SCRAPER_GUARD:
+                content_type = response.headers.get('Content-Type', 'text/html')
+                
+                # 2. 检查文件类型
+                file_safe, file_reason = SCRAPER_GUARD.check_file_type(content_type, '')
+                if not file_safe:
+                    logger.warning(f"🚫 文件类型被拦截: {content_type} - {file_reason}")
+                    return {"status": "error", "type": "security_blocked", "url": url, "error": f"不支持的文件类型: {content_type}"}
+                
+                # 3. 检查响应内容是否包含危险代码（简单检查）
+                text_sample = response.text[:5000]
+                if SCRAPER_GUARD:
+                    code_safe, code_reason = SCRAPER_GUARD.check_code_execution(text_sample, url)
+                    if not code_safe:
+                        logger.warning(f"🚫 响应内容包含危险代码: {code_reason}")
+                        # 只记录，不阻断（因为HTML本身可能包含script标签）
             
             title = self._extract_title(soup)
             paragraphs = self._extract_paragraphs(soup, max_paragraphs)

@@ -1,0 +1,111 @@
+{
+  "_说明": "公众号文章风格数据库",
+  "_使用方式": "python tools/风格分析.py --file article.md --output 我的风格",
+  "默认风格": {
+    "tone": "专业",
+    "sentence_length": "中等",
+    "emoji": true,
+    "structure": [
+      "背景引入",
+      "问题/需求",
+      "解决方案",
+      "步骤/方法",
+      "总结"
+    ],
+    "opening": "大家好",
+    "closing": "有问题评论区见"
+  },
+  "教程类": {
+    "tone": "专业",
+    "sentence_length": "短句",
+    "emoji": false,
+    "structure": [
+      "背景",
+      "环境准备",
+      "安装步骤",
+      "配置",
+      "验证",
+      "总结"
+    ],
+    "opening": "今天分享",
+    "closing": "有问题评论区见"
+  },
+  "经验类": {
+    "tone": "轻松",
+    "sentence_length": "中等",
+    "emoji": true,
+    "structure": [
+      "故事引入",
+      "经历描述",
+      "踩坑过程",
+      "解决方法",
+      "心得总结"
+    ],
+    "opening": "最近",
+    "closing": "欢迎指正，一起学习"
+  },
+  "踩坑记录": {
+    "tone": "专业",
+    "sentence_length": "中等",
+    "emoji": false,
+    "structure": [
+      "问题描述",
+      "错误信息",
+      "排查过程",
+      "解决方案",
+      "经验总结"
+    ],
+    "opening": "这个问题",
+    "closing": "希望对你有帮助"
+  },
+  "安全科普": {
+    "tone": "专业",
+    "sentence_length": "中等",
+    "emoji": true,
+    "structure": [
+      "背景/预警",
+      "风险说明",
+      "防护方案",
+      "具体实现",
+      "总结建议"
+    ],
+    "opening": "大家好",
+    "closing": "有问题评论区见"
+  },
+  "余豪风格": {
+    "tone": "轻松",
+    "sentence_length": "短句",
+    "emoji": true,
+    "structure": [
+      "背景引入（身份共鸣）",
+      "问题/风险说明",
+      "解决方案（步骤）",
+      "经验总结",
+      "互动引导"
+    ],
+    "opening": "大家好，我是余豪",
+    "closing": "有问题评论区见，我是余豪",
+    "特点": [
+      "自称小白",
+      "第一人称",
+      "口语化表达",
+      "适当emoji",
+      "互动引导"
+    ]
+  },
+  "我的风格": {
+    "tone": "故事型",
+    "sentence_length": "短句",
+    "emoji": true,
+    "structure": [
+      "🛡️ AI小白必看！OpenClaw安全隐患详解，附解决方案",
+      "📌 写在前面",
+      "⚠️ 先说说风险：AI Agent 可能出什么事？",
+      "1️⃣ Token 泄露 = 电脑被控制",
+      "千万别这样！",
+      "2. Telegram 防止任何人控制"
+    ],
+    "opening": "大家好",
+    "closing": "点个赞"
+  }
+}

@@ -2,20 +2,46 @@
 
 Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
-## What Goes Here
+## 公众号文章助手
 
-Things like:
+位置：`~/项目/Ai学习系统/projects/公众号文章助手/`
 
-- Camera names and locations
-- SSH hosts and aliases
-- Preferred voices for TTS
-- Speaker/room names
-- Device nicknames
-- Anything environment-specific
+### 快速使用
 
-## Examples
+```bash
+cd ~/项目/Ai学习系统/projects/公众号文章助手
+```
 
-```markdown
+### 核心功能
+
+| 功能 | 命令 |
+|------|------|
+| 一键生成文章 | `python publish_pipeline.py --topic "主题"` |
+| 优化标题 | `python tools/文章优化.py --title "标题" --variants` |
+| 风格分析 | `python tools/风格分析.py --file article.md --preview` |
+| 生成封面 | `python tools/生成封面.py --title "标题" --template tech` |
+| 公众号排版 | `python formatter/markdown_to_wechat.py input.md output.html` |
+
+### 示例
+
+```bash
+# 一键生成
+python publish_pipeline.py --topic "AI安全" --style 余豪风格
+
+# 优化标题
+python tools/文章优化.py --title "AI教程" --variants
+
+# 分析风格
+python tools/风格分析.py --file ~/Desktop/AI安全文章.md --preview
+
+# 生成封面
+python tools/生成封面.py --title "我的文章" --template tech
+```
+
+---
+
+## 其他工具
+
 ### Cameras
 
 - living-room → Main area, 180° wide angle
@@ -29,12 +55,3 @@ Things like:
 
 - Preferred voice: "Nova" (warm, slightly British)
 - Default speaker: Kitchen HomePod
-```
-
-## Why Separate?
-
-Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
-
----
-
-Add whatever helps you do your job. This is your cheat sheet.
