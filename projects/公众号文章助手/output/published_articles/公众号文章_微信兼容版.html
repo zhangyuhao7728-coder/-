@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>你的AI真的安全吗</title>
+<style>
+body{font-family:微软雅黑,宋体;margin:20px;line-height:1.8}
+h1{text-align:center;font-size:22px}
+h2{font-size:18px;border-left:4px solid #ff6600;padding-left:10px}
+h3{font-size:16px;color:#ff6600}
+table{width:100%;border-collapse:collapse;margin:15px 0}
+th,td{border:1px solid #ddd;padding:10px;text-align:left}
+th{background:#f5f5f5}
+.code{background:#f5f5f5;border:1px solid #ddd;padding:10px;font-family:monospace;white-space:pre-wrap;border-radius:5px;color:#333}
+ul,ol{padding-left:20px}
+li{margin:5px 0}
+.warning{background:#fff3cd;border-left:4px solid #ff9800;padding:10px;margin:10px 0}
+</style>
+</head>
+<body>
+
+<h1>你的AI真的安全吗？</h1>
+<p style="text-align:center;color:#666">实测：OpenClaw安全配置指南</p>
+<hr>
+
+<h2>1️⃣ 背景</h2>
+<p>最近，多家安全机构发布了关于OpenClaw的风险提示。作为用户，我们应该：</p>
+<ul>
+<li>理性看待 - 不是不能用，是要正确配置</li>
+<li>科学防护 - 了解风险，正确设置</li>
+<li>持续关注 - 跟进官方安全更新</li>
+</ul>
+<p><strong>本文目的：</strong>帮助用户正确配置OpenClaw，降低安全风险</p>
+
+<h2>2️⃣ 风险说明（实事求是）</h2>
+<table>
+<tr><th>风险</th><th>说明</th><th>条件</th></tr>
+<tr><td>密钥泄露</td><td>API密钥被窃取</td><td>密钥明文写在代码里</td></tr>
+<tr><td>权限失控</td><td>AI执行危险操作</td><td>未配置权限限制</td></tr>
+<tr><td>隐私泄露</td><td>本地数据被访问</td><td>未配置文件隔离</td></tr>
+<tr><td>公网攻击</td><td>被黑客扫描入侵</td><td>Gateway暴露公网</td></tr>
+</table>
+<div class="warning">
+<p><strong>⚠️ 重要：</strong>这些风险主要是配置不当导致，正确配置可以大幅降低风险</p>
+</div>
+
+<h2>3️⃣ 配置方案</h2>
+<p><strong>准备工作：</strong>创建一个文件夹存放项目，例如 ~/openclaw</p>
+
+<h3>① API密钥保护</h3>
+<p><strong>问题：</strong>密钥明文写在代码里会被他人看到</p>
+<p><strong>解决：</strong>使用.env文件</p>
+<div class="code">cd ~/openclaw
+touch .env
+echo 'API_KEY=sk-你的密钥' >> .env</div>
+
+<h3>② 用户访问限制</h3>
+<p><strong>问题：</strong>任何人都能访问你的AI</p>
+<p><strong>解决：</strong>配置白名单</p>
+<div class="code">{
+  "telegram": {
+    "allowFrom": ["你的Telegram ID"]
+  }
+}</div>
+<p><em>查ID：在Telegram搜索 @userinfobot</em></p>
+
+<h3>③ 命令执行限制</h3>
+<p><strong>问题：</strong>AI可能执行危险命令</p>
+<p><strong>解决：</strong>命令白名单</p>
+<div class="code">{
+  "security": {
+    "allowedCommands": ["python *", "git *"]
+  }
+}</div>
+
+<h3>④ 文件访问隔离</h3>
+<p><strong>问题：</strong>AI可能访问敏感文件</p>
+<p><strong>解决：</strong>限定访问目录</p>
+<div class="code">{
+  "security": {
+    "allowedPaths": ["~/openclaw/*"]
+  }
+}</div>
+
+<h3>⑤ 本地绑定</h3>
+<p><strong>问题：</strong>公网暴露被攻击</p>
+<p><strong>解决：</strong>只绑定本地</p>
+<div class="code">{
+  "gateway": {
+    "bind": "127.0.0.1"
+  }
+}</div>
+<p><em>说明：127.0.0.1是本地地址，只有本机能访问</em></p>
+
+<h3>⑥ 沙盒模式</h3>
+<p><strong>作用：</strong>将AI运行在隔离环境中</p>
+<p><strong>✅ 优点：</strong>隔离运行环境、防止权限滥用、保护系统文件</p>
+<p><strong>⚠️ 缺点：</strong>配置复杂、需要Docker、部分功能受限</p>
+
+<p><strong>配置方法：</strong></p>
+<ul>
+<li><strong>方法1：Docker（推荐）</strong> - brew install --cask docker</li>
+<li><strong>方法2：Podman</strong> - brew install podman</li>
+<li><strong>方法3：虚拟环境</strong> - python3 -m venv venv</li>
+<li><strong>方法4：仅日志</strong> - logCommands: true</li>
+</ul>
+<p><em>💡 选择：新手用方法4，进阶用方法3，生产用方法1</em></p>
+
+<h2>4️⃣ 验证配置</h2>
+<p>运行检查脚本：</p>
+<div class="code">python3 ~/openclaw/tools/安全检查.py</div>
+<p>或手动检查：</p>
+<div class="code">cat ~/.openclaw/openclaw.json</div>
+
+<h2>5️⃣ API获取</h2>
+<ul>
+<li><strong>MiniMax（推荐）</strong>：minimax.cn → 注册 → API管理 → 创建密钥</li>
+<li><strong>火山引擎</strong>：console.volcengineapi.com → 注册 → 子用户 → AccessKey</li>
+</ul>
+<div class="warning">
+<p><strong>⚠️ 重要：</strong>API密钥只显示一次，请立即保存到.env文件</p>
+</div>
+
+<h2>📝 总结</h2>
+<table>
+<tr><th>配置项</th><th>作用</th><th>必做</th></tr>
+<tr><td>.env文件</td><td>保护密钥</td><td>✅ 必须</td></tr>
+<tr><td>用户白名单</td><td>防止滥用</td><td>✅ 必须</td></tr>
+<tr><td>本地绑定</td><td>防止公网攻击</td><td>✅ 必须</td></tr>
+<tr><td>命令限制</td><td>防止危险操作</td><td>✅ 建议</td></tr>
+<tr><td>文件隔离</td><td>保护隐私</td><td>✅ 建议</td></tr>
+<tr><td>沙盒模式</td><td>隔离运行</td><td>⭕ 可选</td></tr>
+</table>
+
+<hr>
+<p style="text-align:center;color:#999">本文内容仅供参考，具体以官方文档为准</p>
+<p style="text-align:center">有帮助的话，点个赞？</p>
+
+</body>
+</html>

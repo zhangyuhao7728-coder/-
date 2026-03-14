@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;max-width:100%;margin:0;padding:20px;background:#fff;color:#333;line-height:1.8}
+h1{font-size:24px;color:#333;text-align:center;margin-bottom:10px}
+h2{font-size:18px;color:#333;border-left:4px solid #ff9900;padding-left:12px;margin:20px 0 15px}
+h3{font-size:16px;color:#ff9900;margin:15px 0 10px}
+.highlight{background:linear-gradient(transparent 60%,#ffdd00 60%)}
+.alert{padding:15px;border-radius:8px;margin:15px 0}
+.alert-info{background:#e3f2fd;border-left:3px solid #2196f3}
+.alert-warning{background:#fff8e1;border-left:3px solid #ff9800}
+.alert-success{background:#e8f5e9;border-left:3px solid #4caf50}
+.code{background:#2d2d2d;color:#f8f8f2;padding:12px;border-radius:6px;font-family:monospace;font-size:13px;overflow-x:auto;margin:10px 0;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;margin:15px 0;font-size:14px}
+th,td{padding:10px;text-align:left;border:1px solid #ddd}
+th{background:#f5f5f5}
+ul,ol{padding-left:20px}
+li{margin:8px 0}
+.procon{display:flex;gap:10px;margin:15px 0}
+.pro,.con{flex:1;padding:12px;border-radius:8px}
+.pro{background:#e8f5e9;border:1px solid #4caf50}
+.con{background:#fff8e1;border:1px solid #ff9800}
+</style>
+</head>
+<body>
+
+
+<h1>你的AI真的安全吗？</h1>
+<div class="subtitle">实测：OpenClaw安全配置指南</div>
+
+<div class="tags">
+    <span class="tag">📋 实测</span>
+    <span class="tag">🔐 安全</span>
+    <span class="tag">📖 指南</span>
+</div>
+
+<!-- 第一部分：背景 -->
+<div class="section">
+    <h2>1️⃣ 背景</h2>
+    
+    <p>最近，多家安全机构发布了关于OpenClaw的风险提示。作为用户，我们应该：</p>
+    
+    <ul>
+        <li>理性看待 - 不是不能用，是要正确配置</li>
+        <li>科学防护 - 了解风险，正确设置</li>
+        <li>持续关注 - 跟进官方安全更新</li>
+    </ul>
+    
+    <div class="alert alert-info">
+        <strong>本文目的：</strong>帮助用户正确配置OpenClaw，降低安全风险
+    </div>
+</div>
+
+<!-- 第二部分：风险说明 -->
+<div class="section">
+    <h2>2️⃣ 风险说明（实事求是）</h2>
+    
+    <table>
+        <tr>
+            <th>风险</th>
+            <th>说明</th>
+            <th>条件</th>
+        </tr>
+        <tr>
+            <td>密钥泄露</td>
+            <td>API密钥被窃取</td>
+            <td>密钥明文写在代码里</td>
+        </tr>
+        <tr>
+            <td>权限失控</td>
+            <td>AI执行危险操作</td>
+            <td>未配置权限限制</td>
+        </tr>
+        <tr>
+            <td>隐私泄露</td>
+            <td>本地数据被访问</td>
+            <td>未配置文件隔离</td>
+        </tr>
+        <tr>
+            <td>公网攻击</td>
+            <td>被黑客扫描入侵</td>
+            <td>Gateway暴露公网</td>
+        </tr>
+    </table>
+    
+    <div class="alert alert-warning">
+        <strong>⚠️ 重要：</strong>这些风险<strong>主要是配置不当导致</strong>，正确配置可以大幅降低风险
+    </div>
+</div>
+
+<!-- 第三部分：配置方案 -->
+<div class="section">
+    <h2>3️⃣ 配置方案</h2>
+    
+    <div class="alert alert-info">
+        <strong>📋 准备工作：</strong>创建一个文件夹存放项目，例如 <code>~/openclaw</code>
+    </div>
+    
+    <!-- 方案1 -->
+    <div class="step">
+        <span class="step-num">1</span>
+        <h3>API密钥保护</h3>
+        <p><strong>问题：</strong>密钥明文写在代码里会被他人看到</p>
+        <p><strong>解决：</strong>使用.env文件</p>
+        
+        <div class="code"><span class="code-comment"># 终端执行</span>
+<span class="code-comment"># 1. 进入项目目录</span>
+cd ~/openclaw
+
+<span class="code-comment"># 2. 创建.env文件</span>
+touch .env
+
+<span class="code-comment"># 3. 写入API密钥（替换成你的）</span>
+<span class="code-highlight">echo 'API_KEY=sk-你的密钥' >> .env</span></div>
+    </div>
+    
+    <!-- 方案2 -->
+    <div class="step">
+        <span class="step-num">2</span>
+        <h3>用户访问限制</h3>
+        <p><strong>问题：</strong>任何人都能访问你的AI</p>
+        <p><strong>解决：</strong>配置白名单</p>
+        
+        <p>修改 openclaw.json：</p>
+        <div class="code">{
+  <span class="code-highlight">"telegram"</span>: {
+    <span class="code-highlight">"allowFrom"</span>: [
+      <span class="code-comment">"你的Telegram ID"</span>
+    ]
+  }
+}</div>
+        
+        <div class="alert alert-info">
+            <strong>查ID：</strong>在Telegram搜索 @userinfobot，发消息获取
+        </div>
+    </div>
+    
+    <!-- 方案3 -->
+    <div class="step">
+        <span class="step-num">3</span>
+        <h3>命令执行限制</h3>
+        <p><strong>问题：</strong>AI可能执行危险命令</p>
+        <p><strong>解决：</strong>命令白名单</p>
+        
+        <div class="code">{
+  <span class="code-highlight">"security"</span>: {
+    <span class="code-highlight">"allowedCommands"</span>: [
+      <span class="code-comment">"python *"</span>,
+      <span class="code-comment">"git *"</span>
+    ]
+  }
+}</div>
+    </div>
+    
+    <!-- 方案4 -->
+    <div class="step">
+        <span class="step-num">4</span>
+        <h3>文件访问隔离</h3>
+        <p><strong>问题：</strong>AI可能访问敏感文件</p>
+        <p><strong>解决：</strong>限定访问目录</p>
+        
+        <div class="code">{
+  <span class="code-highlight">"security"</span>: {
+    <span class="code-highlight">"allowedPaths"</span>: [
+      <span class="code-comment">"~/openclaw/*"</span>
+    ]
+  }
+}</div>
+    </div>
+    
+    <!-- 方案5 -->
+    <div class="step">
+        <span class="step-num">5</span>
+        <h3>本地绑定</h3>
+        <p><strong>问题：</strong>公网暴露被攻击</p>
+        <p><strong>解决：</strong>只绑定本地</p>
+        
+        <div class="code">{
+  <span class="code-highlight">"gateway"</span>: {
+    <span class="code-highlight">"bind"</span>: <span class="code-string">"127.0.0.1"</span>
+  }
+}</div>
+        
+        <div class="alert alert-info">
+            <strong>说明：</strong>127.0.0.1是本地地址，只有本机能访问
+        </div>
+    </div>
+    
+    <!-- 方案6：沙盒 -->
+    <div class="step">
+        <span class="step-num">6</span>
+        <h3>沙盒模式</h3>
+        <p><strong>作用：</strong>将AI运行在隔离环境中</p>
+        
+        <div class="procon">
+            <div class="pro">
+                <h4>✅ 优点</h4>
+                <ul>
+                    <li>隔离运行环境</li>
+                    <li>防止权限滥用</li>
+                    <li>保护系统文件</li>
+                    <li>可控制网络访问</li>
+                </ul>
+            </div>
+            <div class="con">
+                <h4>⚠️ 缺点</h4>
+                <ul>
+                    <li>配置复杂</li>
+                    <li>需要Docker</li>
+                    <li>部分功能受限</li>
+                    <li>占用资源</li>
+                </ul>
+            </div>
+        </div>
+        
+        <h4>配置方法：</h4>
+        
+        <p><strong>方法1：Docker模式（推荐）</strong></p>
+        <div class="code"><span class="code-comment"># 1. 安装Docker（macOS）</span>
+brew install --cask docker
+
+<span class="code-comment"># 2. 启动Docker</span>
+open -a Docker
+
+<span class="code-comment"># 3. 配置openclaw.json</span>
+{
+  <span class="code-highlight">"sandbox"</span>: {
+    <span class="code-highlight">"mode"</span>: <span class="code-string">"docker"</span>
+  }
+}</div>
+        
+        <p><strong>方法2：Podman（无需root）</strong></p>
+        <div class="code"><span class="code-comment"># 安装Podman</span>
+brew install podman
+
+<span class="code-comment"># 启动</span>
+podman machine start
+
+<span class="code-comment"># 配置</span>
+{
+  <span class="code-highlight">"sandbox"</span>: {
+    <span class="code-highlight">"mode"</span>: <span class="code-string">"podman"</span>
+  }
+}</div>
+        
+        <p><strong>方法3：简易沙盒（无Docker）</strong></p>
+        <div class="code"><span class="code-comment"># 使用Python虚拟环境隔离</span>
+cd ~/openclaw
+python3 -m venv venv
+source venv/bin/activate
+
+<span class="code-comment"># 配置限制性环境变量</span>
+{
+  <span class="code-highlight">"sandbox"</span>: {
+    <span class="code-highlight">"mode"</span>: <span class="code-string">"venv"</span>
+  }
+}</div>
+        
+        <p><strong>方法4：仅日志监控（最简）</strong></p>
+        <div class="code"><span class="code-comment"># 不使用沙盒，但启用操作日志</span>
+{
+  <span class="code-highlight">"security"</span>: {
+    <span class="code-highlight">"logCommands"</span>: true,
+    <span class="code-highlight">"logFileAccess"</span>: true
+  }
+}</div>
+        
+        <div class="alert alert-warning">
+            <strong>💡 选择建议：</strong><br>
+            - 新手：方法4（仅日志）<br>
+            - 进阶：方法3（虚拟环境）<br>
+            - 生产：方法1（Docker）
+        </div>
+    </div>
+</div>
+
+<!-- 第四部分：检查 -->
+<div class="section">
+    <h2>4️⃣ 验证配置</h2>
+    
+    <p>运行检查脚本：</p>
+    <div class="code">python3 ~/openclaw/tools/安全检查.py</div>
+    
+    <p>或手动检查配置文件 <code>openclaw.json</code>：</p>
+    <div class="code">cat ~/.openclaw/openclaw.json</div>
+</div>
+
+<!-- 第五部分：API获取 -->
+<div class="section">
+    <h2>5️⃣ API密钥获取</h2>
+    
+    <h3>MiniMax（推荐）</h3>
+    <ol>
+        <li>访问 <strong>minimax.cn</strong></li>
+        <li>注册/登录账号</li>
+        <li>进入"API管理"</li>
+        <li>创建API Key</li>
+        <li>复制保存（只显示一次）</li>
+    </ol>
+    
+    <h3>火山引擎</h3>
+    <ol>
+        <li>访问 <strong>console.volcengineapi.com</strong></li>
+        <li>注册/登录</li>
+        <li>创建子用户 → 创建AccessKey</li>
+        <li>获取AK/SK</li>
+    </ol>
+    
+    <div class="alert alert-warning">
+        <strong>⚠️ 重要：</strong>API密钥只显示一次，请立即保存到.env文件
+    </div>
+</div>
+
+<!-- 总结 -->
+<div class="section">
+    <h2>📝 总结</h2>
+    
+    <table>
+        <tr>
+            <th>配置项</th>
+            <th>作用</th>
+            <th>必做</th>
+        </tr>
+        <tr>
+            <td>.env文件</td>
+            <td>保护密钥</td>
+            <td>✅ 必须</td>
+        </tr>
+        <tr>
+            <td>用户白名单</td>
+            <td>防止滥用</td>
+            <td>✅ 必须</td>
+        </tr>
+        <tr>
+            <td>本地绑定</td>
+            <td>防止公网攻击</td>
+            <td>✅ 必须</td>
+        </tr>
+        <tr>
+            <td>命令限制</td>
+            <td>防止危险操作</td>
+            <td>✅ 建议</td>
+        </tr>
+        <tr>
+            <td>文件隔离</td>
+            <td>保护隐私</td>
+            <td>✅ 建议</td>
+        </tr>
+        <tr>
+            <td>沙盒模式</td>
+            <td>隔离运行</td>
+            <td>⭕ 可选</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 底部 -->
+<div class="footer">
+    <p>本文内容仅供参考，具体以官方文档为准</p>
+    <p style="margin-top: 15px;">
+        <em>有帮助的话，点个赞？</em>
+    </p>
+</div>
+
+
+</body>
+</html>
