@@ -1,0 +1,65 @@
+{
+  "name": "项目功能扩展",
+  "based_on": "OpenClaw生态6小龙虾",
+  "learned_features": [
+    {
+      "feature": "多Agent协作",
+      "source": "NanoClaw",
+      "status": "可配置",
+      "description": "Agent Swarm模式，多个AI无缝协作",
+      "implementation": "配置多个Agent分组"
+    },
+    {
+      "feature": "容器隔离",
+      "source": "NanoClaw",
+      "status": "系统级",
+      "description": "Agent之间相互隔离，一个出问题不影响其他",
+      "implementation": "Docker容器"
+    },
+    {
+      "feature": "安全沙箱",
+      "source": "IronClaw",
+      "status": "已实现",
+      "description": "WASM沙箱，恶意命令关在小黑屋",
+      "implementation": "openclaw sandbox mode=docker"
+    },
+    {
+      "feature": "实时监控仪表盘",
+      "source": "TinyClaw",
+      "status": "可开发",
+      "description": "TUI界面监控所有Agent状态",
+      "implementation": "tools/系统监控.py"
+    },
+    {
+      "feature": "任务自动流转",
+      "source": "TinyClaw",
+      "status": "可配置",
+      "description": "任务从Agent A流转到B再到C",
+      "implementation": "Cron任务链"
+    },
+    {
+      "feature": "边缘计算",
+      "source": "ZeroClaw",
+      "status": "未来方向",
+      "description": "树莓派上运行，本地处理数据",
+      "implementation": "待研究"
+    }
+  ],
+  "recommended_for_project": [
+    {
+      "feature": "Agent隔离",
+      "priority": "高",
+      "reason": "提高系统稳定性"
+    },
+    {
+      "feature": "实时监控",
+      "priority": "高",
+      "reason": "便于了解系统状态"
+    },
+    {
+      "feature": "任务流转",
+      "priority": "中",
+      "reason": "自动化工作流程"
+    }
+  ]
+}

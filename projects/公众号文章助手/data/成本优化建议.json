@@ -1,0 +1,35 @@
+{
+  "name": "成本优化建议",
+  "analysis": {
+    "current_cost": "0",
+    "potential_cost": "低",
+    "optimization_needed": false
+  },
+  "recommendations": [
+    {
+      "item": "主模型",
+      "status": "✅ 已优化",
+      "detail": "MiniMax无限额度"
+    },
+    {
+      "item": "备用模型", 
+      "status": "✅ 已优化",
+      "detail": "Ollama本地免费"
+    },
+    {
+      "item": "Cron任务",
+      "status": "✅ 正常",
+      "detail": "39个任务，大部分每日一次"
+    },
+    {
+      "item": "高频任务",
+      "status": "✅ 已检查",
+      "detail": "health-check每2小时，属正常范围"
+    }
+  ],
+  "monthly_estimate": {
+    "current": "0元 (MiniMax无限 + Ollama免费)",
+    "if_full_api": "约500-1000元"
+  },
+  "savings": "100%"
+}

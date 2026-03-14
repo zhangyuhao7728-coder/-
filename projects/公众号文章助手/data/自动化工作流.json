@@ -1,0 +1,38 @@
+{
+  "name": "自动化工作流",
+  "description": "预设的自动化流程",
+  "workflows": {
+    "daily_article": {
+      "name": "每日文章自动生成",
+      "steps": [
+        {"step": 1, "action": "选题", "tool": "选题系统.py"},
+        {"step": 2, "action": "采集参考", "tool": "抓取文章.py"},
+        {"step": 3, "action": "分析结构", "tool": "文章结构解析.py"},
+        {"step": 4, "action": "生成内容", "tool": "智能写作V3.py"},
+        {"step": 5, "action": "SEO优化", "tool": "文章优化.py"},
+        {"step": 6, "action": "生成封面", "tool": "生成封面.py"},
+        {"step": 7, "action": "排版", "tool": "markdown_to_wechat.py"},
+        {"step": 8, "action": "保存", "tool": "cms.py"}
+      ],
+      "trigger": "cron: 0 8 * * *"
+    },
+    "security_check": {
+      "name": "每日安全检查",
+      "steps": [
+        {"step": 1, "action": "运行审计", "command": "openclaw security audit"},
+        {"step": 2, "action": "检查日志", "command": "tail -100 ~/.openclaw/logs/gateway.log"},
+        {"step": 3, "action": "检查配置", "command": "openclaw gateway status"},
+        {"step": 4, "action": "生成报告", "tool": "增强成本控制.py"}
+      ],
+      "trigger": "cron: 0 6 * * *"
+    },
+    "content_backup": {
+      "name": "内容自动备份",
+      "steps": [
+        {"step": 1, "action": "备份数据库", "command": "cp data/*.json backup/"},
+        {"step": 2, "action": "备份文章", "command": "cp output/*.md backup/"}
+      ],
+      "trigger": "cron: 0 2 * * *"
+    }
+  }
+}

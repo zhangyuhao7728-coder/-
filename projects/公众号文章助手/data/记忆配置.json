@@ -1,0 +1,18 @@
+{
+  "name": "长期记忆配置",
+  "version": "1.0",
+  "auto_load": true,
+  "memory_dir": "~/.openclaw/memory",
+  "categories": [
+    {"name": "writing", "description": "公众号写作技巧"},
+    {"name": "efficiency", "description": "效率优化"},
+    {"name": "ecology", "description": "生态框架"},
+    {"name": "security", "description": "安全配置"},
+    {"name": "ai_learning", "description": "AI学习"}
+  ],
+  "commands": {
+    "查看记忆": "python3 tools/长期记忆系统.py",
+    "搜索记忆": "python3 tools/长期记忆系统.py search <关键词>",
+    "添加记忆": "python3 tools/长期记忆系统.py save <类别> <标题>"
+  }
+}

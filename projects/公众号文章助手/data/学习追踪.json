@@ -1,0 +1,36 @@
+{
+  "name": "AI学习追踪系统",
+  "version": "1.0",
+  "description": "追踪学习进度和成果",
+  "learning_path": {
+    "阶段1_Python基础": {
+      "status": "进行中",
+      "progress": 60,
+      "topics": ["变量", "函数", "类", "文件操作"]
+    },
+    "阶段2_数据处理": {
+      "status": "待开始",
+      "progress": 0,
+      "topics": ["NumPy", "Pandas", "数据可视化"]
+    },
+    "阶段3_AI_ML入门": {
+      "status": "待开始",
+      "progress": 0,
+      "topics": ["机器学习基础", "深度学习", "LLM"]
+    },
+    "阶段4_实战项目": {
+      "status": "待开始",
+      "progress": 0,
+      "topics": ["公众号内容系统", "AI Agent"]
+    }
+  },
+  "daily_goals": {
+    "算法题": 2,
+    "学习时间": "2小时",
+    "项目": "1个小功能"
+  },
+  "resources": {
+    "python": ["官方文档", "LeetCode"],
+    "ai": ["OpenClaw文档", "MiniMax API"]
+  }
+}

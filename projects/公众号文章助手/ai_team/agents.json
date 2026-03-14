@@ -1,0 +1,45 @@
+{
+  "team_name": "AI团队",
+  "version": "1.0",
+  "squads": {
+    "产品增长队": {
+      "lead": "product-lead",
+      "members": [
+        {"id": "product-lead", "name": "产品负责人", "role": "产品战略、优先级"},
+        {"id": "user-researcher", "name": "用户研究员", "role": "用户反馈分析"},
+        {"id": "fullstack-dev", "name": "全栈工程师", "role": "功能开发"},
+        {"id": "ux-designer", "name": "UX设计师", "role": "交互设计"},
+        {"id": "docs-writer", "name": "文档专家", "role": "文档编写"}
+      ]
+    },
+    "技术平台队": {
+      "lead": "eng-manager",
+      "members": [
+        {"id": "eng-manager", "name": "工程经理", "role": "技术规划"},
+        {"id": "backend-dev", "name": "后端专家", "role": "API开发"},
+        {"id": "devops", "name": "DevOps工程师", "role": "部署运维"},
+        {"id": "qa-engineer", "name": "QA工程师", "role": "测试"},
+        {"id": "security", "name": "安全工程师", "role": "安全审计"}
+      ]
+    },
+    "营销增长队": {
+      "lead": "growth-lead",
+      "members": [
+        {"id": "growth-lead", "name": "增长负责人", "role": "增长策略"},
+        {"id": "content-writer", "name": "内容策划", "role": "内容运营"},
+        {"id": "marketing", "name": "获客专家", "role": "推广获客"},
+        {"id": "cs-manager", "name": "客户成功", "role": "客服"},
+        {"id": "data-analyst", "name": "数据分析师", "role": "数据分析"}
+      ]
+    },
+    "总办": {
+      "lead": "ceo",
+      "members": [
+        {"id": "ceo", "name": "CEO", "role": "统筹全局"}
+      ]
+    }
+  },
+  "total": 16,
+  "recommended_start": 3,
+  "config_priority": ["ceo", "squad-lead", "data-analyst"]
+}
