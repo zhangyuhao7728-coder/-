@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>你的AI可能在偷你的钱</title>
+    <title>你的AI真的安全吗</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -14,335 +14,505 @@
             color: #333;
             line-height: 1.8;
         }
-        /* 标题 */
         h1 {
-            font-size: 32px;
-            color: #ff6600;
+            font-size: 28px;
+            color: #333;
             text-align: center;
             margin-bottom: 10px;
         }
         .subtitle {
             text-align: center;
             color: #666;
-            font-size: 18px;
+            font-size: 16px;
             margin-bottom: 30px;
         }
-        /* 强调文字 */
-        .highlight {
-            background: linear-gradient(transparent 60%, #ffdd00 60%);
-            padding: 2px 0;
-        }
         .highlight-orange {
-            background: linear-gradient(transparent 60%, #ff6600 60%);
+            background: linear-gradient(transparent 60%, #ff9900 60%);
             padding: 2px 0;
-            color: #000;
         }
-        /* 标签 */
         .tags {
             text-align: center;
             margin-bottom: 30px;
         }
         .tag {
             display: inline-block;
-            background: #fff3e0;
-            color: #ff6600;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
+            background: #f5f5f5;
+            color: #666;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 13px;
             margin: 3px;
-            border: 1px solid #ff6600;
         }
-        /* 章节 */
         .section {
-            margin-bottom: 40px;
+            margin-bottom: 35px;
         }
         h2 {
-            font-size: 22px;
+            font-size: 20px;
             color: #333;
-            border-left: 4px solid #ff6600;
-            padding-left: 15px;
-            margin-bottom: 20px;
+            border-left: 3px solid #ff9900;
+            padding-left: 12px;
+            margin-bottom: 15px;
         }
-        /* 警告框 */
+        h3 {
+            font-size: 16px;
+            color: #ff9900;
+            margin: 15px 0 10px 0;
+        }
         .alert {
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
         }
-        .alert-danger {
-            background: #fff5f5;
-            border: 2px solid #ff4444;
+        .alert-info {
+            background: #e3f2fd;
+            border-left: 3px solid #2196f3;
         }
         .alert-warning {
             background: #fff8e1;
-            border: 2px solid #ff9800;
+            border-left: 3px solid #ff9800;
         }
         .alert-success {
             background: #e8f5e9;
-            border: 2px solid #4caf50;
+            border-left: 3px solid #4caf50;
         }
-        /* 卡片 */
+        .alert-danger {
+            background: #ffebee;
+            border-left: 3px solid #f44336;
+        }
         .card {
-            background: #fff;
-            border: 2px solid #ff6600;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
         }
-        /* 步骤 */
         .step {
-            margin: 30px 0;
-            padding: 20px;
-            background: #fffaf0;
-            border-radius: 10px;
+            margin: 25px 0;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 8px;
         }
         .step-num {
             display: inline-block;
-            background: #ff6600;
+            background: #ff9900;
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
             text-align: center;
-            line-height: 30px;
+            line-height: 25px;
             font-weight: bold;
-            margin-right: 10px;
+            margin-right: 8px;
+            font-size: 14px;
         }
         .step h3 {
             display: inline;
             color: #333;
+            margin: 0;
         }
-        /* 代码 */
         .code {
             background: #2d2d2d;
             color: #f8f8f2;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 6px;
             font-family: monospace;
-            font-size: 13px;
+            font-size: 12px;
             overflow-x: auto;
             margin: 10px 0;
         }
-        /* 表格 */
+        .code-comment {
+            color: #6a9955;
+        }
+        .code-highlight {
+            color: #ffd700;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 15px 0;
+            font-size: 14px;
         }
         th, td {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
             border: 1px solid #ddd;
         }
         th {
-            background: #fff3e0;
-            color: #ff6600;
+            background: #f5f5f5;
+            color: #333;
         }
-        /* 列表 */
         ul {
             padding-left: 20px;
         }
         li {
-            margin: 10px 0;
+            margin: 8px 0;
         }
-        /* 底部 */
         .footer {
             text-align: center;
-            padding: 30px;
-            border-top: 2px solid #eee;
-            margin-top: 40px;
+            padding: 25px;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
             color: #666;
+            font-size: 14px;
         }
-        strong {
-            color: #ff6600;
+        .procon {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
         }
+        .pro, .con {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .pro {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+        }
+        .con {
+            background: #fff8e1;
+            border: 1px solid #ff9800;
+        }
+        .pro h4 {margin: 0 0 10px 0; color: #2e7d32;}
+        .con h4 {margin: 0 0 10px 0; color: #f57c00;}
     </style>
 </head>
 <body>
 
-<h1>😱 你的AI可能在偷你的钱！</h1>
-<div class="subtitle">OpenClaw出事了！赶紧检查你的配置</div>
+<h1>你的AI真的安全吗？</h1>
+<div class="subtitle">实测：OpenClaw安全配置指南</div>
 
 <div class="tags">
-    <span class="tag">⚠️ 紧急</span>
-    <span class="tag">🔐 必看</span>
-    <span class="tag">💰 省钱</span>
-    <span class="tag">✅ 实用</span>
+    <span class="tag">📋 实测</span>
+    <span class="tag">🔐 安全</span>
+    <span class="tag">📖 指南</span>
 </div>
 
-<!-- 第一部分 -->
+<!-- 第一部分：背景 -->
 <div class="section">
-    <h2>1️⃣ 出大事了！</h2>
+    <h2>1️⃣ 背景</h2>
     
-    <div class="alert alert-danger">
-        <strong>🔥 就在最近！</strong> 多家安全机构发布紧急提醒：<br>
-        OpenClaw存在严重安全漏洞，<span class="highlight-orange">有人已经中招！</span>
-    </div>
+    <p>最近，多家安全机构发布了关于OpenClaw的风险提示。作为用户，我们应该：</p>
     
-    <p>就在上周，<span class="highlight">有人因为配置不正确，API密钥被盗</span>，账户里的钱被人花了个精光！</p>
+    <ul>
+        <li>理性看待 - 不是不能用，是要正确配置</li>
+        <li>科学防护 - 了解风险，正确设置</li>
+        <li>持续关注 - 跟进官方安全更新</li>
+    </ul>
     
-    <div class="alert alert-warning">
-        <strong>⚠️ 严重警告：</strong> 如果你的OpenClaw还是默认配置，<span class="highlight-orange">很可能正在"裸奔"！</span>
+    <div class="alert alert-info">
+        <strong>本文目的：</strong>帮助用户正确配置OpenClaw，降低安全风险
     </div>
 </div>
 
-<!-- 第二部分 -->
+<!-- 第二部分：风险说明 -->
 <div class="section">
-    <h2>2️⃣ 什么问题这么严重？</h2>
+    <h2>2️⃣ 风险说明（实事求是）</h2>
     
     <table>
         <tr>
-            <th>🚨 问题</th>
-            <th>💀 后果</th>
+            <th>风险</th>
+            <th>说明</th>
+            <th>条件</th>
         </tr>
         <tr>
-            <td>API密钥写代码里</td>
-            <td><strong>密钥裸奔，被人偷走</strong></td>
+            <td>密钥泄露</td>
+            <td>API密钥被窃取</td>
+            <td>密钥明文写在代码里</td>
         </tr>
         <tr>
-            <td>谁都能用你的AI</td>
-            <td><strong>被当成免费劳动力</strong></td>
+            <td>权限失控</td>
+            <td>AI执行危险操作</td>
+            <td>未配置权限限制</td>
         </tr>
         <tr>
-            <td>命令随便执行</td>
-            <td><strong>可能删掉重要文件</strong></td>
+            <td>隐私泄露</td>
+            <td>本地数据被访问</td>
+            <td>未配置文件隔离</td>
         </tr>
         <tr>
-            <td>没有文件隔离</td>
-            <td><strong>隐私文件可能被看光</strong></td>
+            <td>公网攻击</td>
+            <td>被黑客扫描入侵</td>
+            <td>Gateway暴露公网</td>
         </tr>
     </table>
     
     <div class="alert alert-warning">
-        <strong>💡 简单说：</strong> 你的AI现在<span class="highlight">可能正在帮别人干活，你还要倒贴钱！</span>
+        <strong>⚠️ 重要：</strong>这些风险<strong>主要是配置不当导致</strong>，正确配置可以大幅降低风险
     </div>
 </div>
 
-<!-- 第三部分 -->
+<!-- 第三部分：配置方案 -->
 <div class="section">
-    <h2>3️⃣ 还能用吗？会不会坐牢？</h2>
+    <h2>3️⃣ 配置方案</h2>
     
-    <div class="card">
-        <h3 style="color: #ff6600;">✅ 当然能用！</h3>
-        <p><span class="highlight-orange">风险来自不会用，不是工具本身。</span></p>
-        <p>就像菜刀，能做菜也能伤人，关键看你怎么用。</p>
+    <div class="alert alert-info">
+        <strong>📋 准备工作：</strong>创建一个文件夹存放项目，例如 <code>~/openclaw</code>
     </div>
-    
-    <p style="text-align: center; font-size: 18px;">
-        只要配置好，<span class="highlight-orange">比你的微信还安全！</span>
-    </p>
-</div>
-
-<!-- 第四部分 -->
-<div class="section">
-    <h2>4️⃣ 5分钟搞定！保护你的钱</h2>
     
     <!-- 方案1 -->
     <div class="step">
         <span class="step-num">1</span>
-        <h3>🔐 保护API密钥（最重要！）</h3>
-        <p><strong>❌ 千万别这样：</strong></p>
-        <div class="code"># 危险！别人能看到！
-API_KEY = "sk-xxxxxx"</div>
+        <h3>API密钥保护</h3>
+        <p><strong>问题：</strong>密钥明文写在代码里会被他人看到</p>
+        <p><strong>解决：</strong>使用.env文件</p>
         
-        <p><strong>✅ 正确做法：</strong></p>
-        <div class="code"># 终端执行
-touch ~/.openclaw/.env
-echo 'API_KEY=sk-你的密钥' >> ~/.openclaw/.env</div>
+        <div class="code"><span class="code-comment"># 终端执行</span>
+<span class="code-comment"># 1. 进入项目目录</span>
+cd ~/openclaw
+
+<span class="code-comment"># 2. 创建.env文件</span>
+touch .env
+
+<span class="code-comment"># 3. 写入API密钥（替换成你的）</span>
+<span class="code-highlight">echo 'API_KEY=sk-你的密钥' >> .env</span></div>
     </div>
     
     <!-- 方案2 -->
     <div class="step">
         <span class="step-num">2</span>
-        <h3>🚪 只让自己进入</h3>
-        <p>修改配置：</p>
+        <h3>用户访问限制</h3>
+        <p><strong>问题：</strong>任何人都能访问你的AI</p>
+        <p><strong>解决：</strong>配置白名单</p>
+        
+        <p>修改 openclaw.json：</p>
         <div class="code">{
-  "telegram": {
-    "allowFrom": ["你的ID"]
+  <span class="code-highlight">"telegram"</span>: {
+    <span class="code-highlight">"allowFrom"</span>: [
+      <span class="code-comment">"你的Telegram ID"</span>
+    ]
   }
 }</div>
-        <p>查ID：发消息给 <strong>@userinfobot</strong></p>
+        
+        <div class="alert alert-info">
+            <strong>查ID：</strong>在Telegram搜索 @userinfobot，发消息获取
+        </div>
     </div>
     
     <!-- 方案3 -->
     <div class="step">
         <span class="step-num">3</span>
-        <h3>🛡️ 限制命令执行</h3>
-        <p>创建白名单：</p>
-        <div class="code">ALLOWED_COMMANDS = [
-    "python scripts/写作",
-    "python tools/分析",
-]</div>
+        <h3>命令执行限制</h3>
+        <p><strong>问题：</strong>AI可能执行危险命令</p>
+        <p><strong>解决：</strong>命令白名单</p>
+        
+        <div class="code">{
+  <span class="code-highlight">"security"</span>: {
+    <span class="code-highlight">"allowedCommands"</span>: [
+      <span class="code-comment">"python *"</span>,
+      <span class="code-comment">"git *"</span>
+    ]
+  }
+}</div>
     </div>
     
     <!-- 方案4 -->
     <div class="step">
         <span class="step-num">4</span>
-        <h3>📁 文件访问隔离</h3>
-        <p>只让访问指定目录：</p>
-        <div class="code">PROJECT_ROOT = "~/公众号项目"
-
-def check_path(path):
-    return path.startswith(PROJECT_ROOT)</div>
+        <h3>文件访问隔离</h3>
+        <p><strong>问题：</strong>AI可能访问敏感文件</p>
+        <p><strong>解决：</strong>限定访问目录</p>
+        
+        <div class="code">{
+  <span class="code-highlight">"security"</span>: {
+    <span class="code-highlight">"allowedPaths"</span>: [
+      <span class="code-comment">"~/openclaw/*"</span>
+    ]
+  }
+}</div>
     </div>
     
     <!-- 方案5 -->
     <div class="step">
         <span class="step-num">5</span>
-        <h3>📦 启用安全沙盒</h3>
-        <p>加一行配置：</p>
+        <h3>本地绑定</h3>
+        <p><strong>问题：</strong>公网暴露被攻击</p>
+        <p><strong>解决：</strong>只绑定本地</p>
+        
         <div class="code">{
-  "sandbox": {
-    "mode": "docker"
+  <span class="code-highlight">"gateway"</span>: {
+    <span class="code-highlight">"bind"</span>: <span class="code-string">"127.0.0.1"</span>
   }
 }</div>
+        
+        <div class="alert alert-info">
+            <strong>说明：</strong>127.0.0.1是本地地址，只有本机能访问
+        </div>
+    </div>
+    
+    <!-- 方案6：沙盒 -->
+    <div class="step">
+        <span class="step-num">6</span>
+        <h3>沙盒模式</h3>
+        <p><strong>作用：</strong>将AI运行在隔离环境中</p>
+        
+        <div class="procon">
+            <div class="pro">
+                <h4>✅ 优点</h4>
+                <ul>
+                    <li>隔离运行环境</li>
+                    <li>防止权限滥用</li>
+                    <li>保护系统文件</li>
+                    <li>可控制网络访问</li>
+                </ul>
+            </div>
+            <div class="con">
+                <h4>⚠️ 缺点</h4>
+                <ul>
+                    <li>配置复杂</li>
+                    <li>需要Docker</li>
+                    <li>部分功能受限</li>
+                    <li>占用资源</li>
+                </ul>
+            </div>
+        </div>
+        
+        <h4>配置方法：</h4>
+        
+        <p><strong>方法1：Docker模式（推荐）</strong></p>
+        <div class="code"><span class="code-comment"># 1. 安装Docker（macOS）</span>
+brew install --cask docker
+
+<span class="code-comment"># 2. 启动Docker</span>
+open -a Docker
+
+<span class="code-comment"># 3. 配置openclaw.json</span>
+{
+  <span class="code-highlight">"sandbox"</span>: {
+    <span class="code-highlight">"mode"</span>: <span class="code-string">"docker"</span>
+  }
+}</div>
+        
+        <p><strong>方法2：Podman（无需root）</strong></p>
+        <div class="code"><span class="code-comment"># 安装Podman</span>
+brew install podman
+
+<span class="code-comment"># 启动</span>
+podman machine start
+
+<span class="code-comment"># 配置</span>
+{
+  <span class="code-highlight">"sandbox"</span>: {
+    <span class="code-highlight">"mode"</span>: <span class="code-string">"podman"</span>
+  }
+}</div>
+        
+        <p><strong>方法3：简易沙盒（无Docker）</strong></p>
+        <div class="code"><span class="code-comment"># 使用Python虚拟环境隔离</span>
+cd ~/openclaw
+python3 -m venv venv
+source venv/bin/activate
+
+<span class="code-comment"># 配置限制性环境变量</span>
+{
+  <span class="code-highlight">"sandbox"</span>: {
+    <span class="code-highlight">"mode"</span>: <span class="code-string">"venv"</span>
+  }
+}</div>
+        
+        <p><strong>方法4：仅日志监控（最简）</strong></p>
+        <div class="code"><span class="code-comment"># 不使用沙盒，但启用操作日志</span>
+{
+  <span class="code-highlight">"security"</span>: {
+    <span class="code-highlight">"logCommands"</span>: true,
+    <span class="code-highlight">"logFileAccess"</span>: true
+  }
+}</div>
+        
+        <div class="alert alert-warning">
+            <strong>💡 选择建议：</strong><br>
+            - 新手：方法4（仅日志）<br>
+            - 进阶：方法3（虚拟环境）<br>
+            - 生产：方法1（Docker）
+        </div>
     </div>
 </div>
 
-<!-- 第五部分 -->
+<!-- 第四部分：检查 -->
 <div class="section">
-    <h2>5️⃣ 一键检查</h2>
+    <h2>4️⃣ 验证配置</h2>
     
-    <p>复制这条命令，粘贴到终端：</p>
+    <p>运行检查脚本：</p>
+    <div class="code">python3 ~/openclaw/tools/安全检查.py</div>
     
-    <div class="code">python3 ~/公众号项目/tools/安全检查.py</div>
-    
-    <p>看到这些就是安全：</p>
-    
-    <ul>
-        <li>✅ <span class="highlight">Token管理: 已保护</span></li>
-        <li>✅ <span class="highlight">用户白名单: 已配置</span></li>
-        <li>✅ <span class="highlight">命令白名单: 已配置</span></li>
-        <li>✅ <span class="highlight">文件隔离: 已配置</span></li>
-        <li>✅ <span class="highlight">沙盒模式: 已开启</span></li>
-    </ul>
+    <p>或手动检查配置文件 <code>openclaw.json</code>：</p>
+    <div class="code">cat ~/.openclaw/openclaw.json</div>
 </div>
 
-<!-- 第六部分 -->
+<!-- 第五部分：API获取 -->
 <div class="section">
-    <h2>💰 总结</h2>
+    <h2>5️⃣ API密钥获取</h2>
     
-    <div class="card">
-        <p>5个配置，加起来<span class="highlight-orange">不到10分钟</span></p>
-        <p>但能保护你<span class="highlight-orange">几千块</span>不被偷！</p>
-    </div>
+    <h3>MiniMax（推荐）</h3>
+    <ol>
+        <li>访问 <strong>minimax.cn</strong></li>
+        <li>注册/登录账号</li>
+        <li>进入"API管理"</li>
+        <li>创建API Key</li>
+        <li>复制保存（只显示一次）</li>
+    </ol>
+    
+    <h3>火山引擎</h3>
+    <ol>
+        <li>访问 <strong>console.volcengineapi.com</strong></li>
+        <li>注册/登录</li>
+        <li>创建子用户 → 创建AccessKey</li>
+        <li>获取AK/SK</li>
+    </ol>
     
     <div class="alert alert-warning">
-        <strong>⚠️ 记住：</strong> <span class="highlight-orange">宁可错杀一千，不可放过一个！</span>
+        <strong>⚠️ 重要：</strong>API密钥只显示一次，请立即保存到.env文件
     </div>
+</div>
+
+<!-- 总结 -->
+<div class="section">
+    <h2>📝 总结</h2>
     
-    <p style="text-align: center; margin-top: 30px;">
-        <strong>现在！立刻！马上！去检查你的配置！</strong>
-    </p>
+    <table>
+        <tr>
+            <th>配置项</th>
+            <th>作用</th>
+            <th>必做</th>
+        </tr>
+        <tr>
+            <td>.env文件</td>
+            <td>保护密钥</td>
+            <td>✅ 必须</td>
+        </tr>
+        <tr>
+            <td>用户白名单</td>
+            <td>防止滥用</td>
+            <td>✅ 必须</td>
+        </tr>
+        <tr>
+            <td>本地绑定</td>
+            <td>防止公网攻击</td>
+            <td>✅ 必须</td>
+        </tr>
+        <tr>
+            <td>命令限制</td>
+            <td>防止危险操作</td>
+            <td>✅ 建议</td>
+        </tr>
+        <tr>
+            <td>文件隔离</td>
+            <td>保护隐私</td>
+            <td>✅ 建议</td>
+        </tr>
+        <tr>
+            <td>沙盒模式</td>
+            <td>隔离运行</td>
+            <td>⭕ 可选</td>
+        </tr>
+    </table>
 </div>
 
 <!-- 底部 -->
 <div class="footer">
-    <p style="font-size: 18px;">📢 互动</p>
-    <p>你配置好了吗？评论区报个数！</p>
-    <p style="margin-top: 30px;">
-        <em>我是余豪，AI小白 🚀</em><br>
-        <em>有帮助，<span class="highlight-orange">点个赞</span>再走？</span></em>
+    <p>本文内容仅供参考，具体以官方文档为准</p>
+    <p style="margin-top: 15px;">
+        <em>有帮助的话，点个赞？</em>
     </p>
 </div>
 
