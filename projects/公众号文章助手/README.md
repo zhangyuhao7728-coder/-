@@ -50,3 +50,27 @@ python3 tools/security_check.py
 
 ---
 *版本: V5 | 更新: 2026-03-14*
+
+---
+
+## WordPress AI 开发
+
+### 新增功能
+
+- WordPress开发Skill
+- Claude Code配置
+- WordPress Studio配置
+- AI开发教程
+
+### 快速开始
+
+```bash
+# 1. 安装Claude Code
+npm install @anthropic-ai/claude-code
+
+# 2. 安装WordPress Studio
+# https://developer.wordpress.com/studio/
+
+# 3. 查看教程
+# docs/WordPress_AI开发教程.md
+```

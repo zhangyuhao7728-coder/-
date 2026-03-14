@@ -1,0 +1,32 @@
+{
+  "name": "WordPress插件开发配置",
+  "description": "基于Claude Code + WordPress Studio的插件开发配置",
+  "prerequisites": {
+    "tools": [
+      "Claude Code",
+      "WordPress Studio"
+    ],
+    "skills": [
+      "WordPress官方技能包"
+    ]
+  },
+  "workflow": {
+    "step1": "安装Claude Code",
+    "step2": "安装WordPress Studio",
+    "step3": "创建本地站点",
+    "step4": "打开终端启动Claude",
+    "step5": "描述插件需求",
+    "step6": "激活插件测试"
+  },
+  "tips": [
+    "说清在WordPress根目录",
+    "功能描述越具体越好",
+    "复杂功能拆分步骤",
+    "让AI解释代码"
+  ],
+  "example_prompts": {
+    "simple": "创建一个简单插件，在后台顶部显示'你好，名字'",
+    "settings": "添加一个设置页面",
+    "custom_post": "创建自定义文章类型"
+  }
+}

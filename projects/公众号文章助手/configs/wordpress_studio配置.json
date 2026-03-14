@@ -1,0 +1,19 @@
+{
+  "name": "WordPress Studio",
+  "description": "官方免费本地WordPress开发工具",
+  "官网": "https://developer.wordpress.com/studio/",
+  "平台": ["macOS", "Windows"],
+  "功能": [
+    "一键创建本地WordPress站点",
+    "管理站点",
+    "与WordPress.com同步",
+    "生成云端预览链接",
+    "集成AI助手"
+  ],
+  "优势": [
+    "零配置",
+    "轻量化",
+    "资源占用低",
+    "无需手动配置PHP/MySQL/Docker"
+  ]
+}

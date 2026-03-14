@@ -1,0 +1,18 @@
+{
+  "name": "Claude Code",
+  "description": "AI编程助手，用于WordPress开发",
+  "install": {
+    "mac": "brew install claude-code",
+    "npm": "npm install @anthropic-ai/claude-code",
+    "官网": "https://claude.ai/code"
+  },
+  "usage": {
+    "启动": "claude",
+    "登录": "claude login",
+    "新建项目": "claude new"
+  },
+  "wordpress集成": {
+    "WordPress Studio": "https://developer.wordpress.com/studio/",
+    "技能包": "https://github.com/WordPress/agent-skills"
+  }
+}
