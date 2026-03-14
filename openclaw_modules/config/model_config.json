@@ -23,10 +23,17 @@
       "quota": "unlimited"
     },
     "volcengine": {
+      "name": "火山引擎 Coding Plan Plus",
       "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
       "api_key": "f6e71ec3-7286-44ca-8640-d5aaf153ed46",
       "timeout": 60,
-      "quota_percent": 40
+      "quota": {
+        "prompts": 100,
+        "hours": 5,
+        "expires": "2027-03-14"
+      },
+      "model": "doubao-seed-code",
+      "features": ["MiniMax M2.5", "100TPS", "图像理解", "联网搜索"]
     },
     "ollama": {
       "base_url": "http://localhost:11434",

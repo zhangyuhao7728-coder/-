@@ -1,206 +1,172 @@
 #!/usr/bin/env python3
 """
-风格模仿写作工具
-用法：
-  python tools/风格生成.py --style 余豪风格 --topic "AI安全"
-  python tools/风格生成.py --style 教程类 --topic "Python入门"
+AI写作系统 V2
+基于爆文模型生成文章
 """
 import os
-import sys
 import json
-import argparse
+from datetime import datetime
+from typing import Dict, List
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
-STYLE_DB = os.path.join(PROJECT_DIR, 'style', 'style_database.json')
-
-# 加载风格数据库
-def load_style(name: str) -> dict:
-    """加载指定风格"""
-    if not os.path.exists(STYLE_DB):
-        print("❌ 风格数据库不存在")
+class AIWriter:
+    """AI写作器"""
+    
+    def __init__(self):
+        self.style_db_path = 'style/style_database.json'
+        self.styles = self.load_styles()
+    
+    def load_styles(self) -> dict:
+        """加载风格"""
+        if os.path.exists(self.style_db_path):
+            with open(self.style_db_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
         return {}
     
-    with open(STYLE_DB, 'r', encoding='utf-8') as f:
-        db = json.load(f)
+    def generate_structure(self, topic: str, article_type: str = '经验分享') -> dict:
+        """生成文章结构"""
+        
+        # 根据文章类型生成结构
+        structures = {
+            '教程': [
+                {'type': 'intro', 'title': '背景介绍', 'desc': '为什么学习这个'},
+                {'type': 'step', 'title': '环境准备', 'desc': '需要什么条件'},
+                {'type': 'step', 'title': '基础概念', 'desc': '核心知识点'},
+                {'type': 'step', 'title': '实战操作', 'desc': '手把手演示'},
+                {'type': 'summary', 'title': '总结', 'desc': '回顾要点'},
+            ],
+            '经验分享': [
+                {'type': 'intro', 'title': '故事引入', 'desc': '发生了什么'},
+                {'type': 'content', 'title': '问题描述', 'desc': '具体是什么情况'},
+                {'type': 'content', 'title': '解决过程', 'desc': '我是怎么做的'},
+                {'type': 'content', 'title': '经验总结', 'desc': '学到了什么'},
+                {'type': 'ending', 'title': '互动引导', 'desc': '欢迎评论'},
+            ],
+            '踩坑记录': [
+                {'type': 'intro', 'title': '问题背景', 'desc': '什么场景下出现'},
+                {'type': 'content', 'title': '错误现象', 'desc': '具体报错信息'},
+                {'type': 'content', 'title': '排查过程', 'desc': '尝试了哪些方法'},
+                {'type': 'content', 'title': '解决方案', 'desc': '最终怎么解决'},
+                {'type': 'summary', 'title': '经验教训', 'desc': '以后要注意什么'},
+            ],
+            '安全科普': [
+                {'type': 'intro', 'title': '背景', 'desc': '为什么要注意'},
+                {'type': 'content', 'title': '风险说明', 'desc': '具体有哪些风险'},
+                {'type': 'content', 'title': '防护方案', 'desc': '如何保护自己'},
+                {'type': 'content', 'title': '具体操作', 'desc': '一步步怎么做'},
+                {'type': 'ending', 'title': '总结', 'desc': '要点回顾'},
+            ],
+        }
+        
+        return structures.get(article_type, structures['经验分享'])
     
-    # 跳过说明字段
-    if name in db and not name.startswith('_'):
-        return db[name]
+    def generate_opening(self, topic: str, style: dict = None) -> str:
+        """生成开头"""
+        style = style or {}
+        tone = style.get('tone', '轻松')
+        
+        openings = {
+            '轻松': f'大家好！今天想和大家聊聊{topic}...',
+            '专业': f'本文将详细介绍{topic}的相关内容...',
+            '故事型': f'最近在研究{topic}，过程中有一些心得...',
+        }
+        
+        return openings.get(tone, openings['轻松'])
     
-    # 查找相似
-    for key in db:
-        if not key.startswith('_') and name in key:
-            return db[key]
+    def generate_title(self, topic: str, style: dict = None) -> List[str]:
+        """生成标题"""
+        titles = [
+            f'5分钟学会{topic}',
+            f'{topic}入门指南',
+            f'关于{topic}，你需要知道这些',
+            f'一文读懂{topic}',
+            f'{topic}完全指南',
+        ]
+        
+        return titles
     
-    return db.get('默认风格', {})
-
-def build_prompt(style: dict, topic: str, article_type: str = None) -> str:
-    """构建写作提示词"""
+    def generate_article(self, topic: str, style_name: str = '余豪风格', 
+                         article_type: str = '经验分享') -> dict:
+        """生成完整文章"""
+        
+        # 获取风格
+        style = self.styles.get(style_name, {})
+        
+        # 生成结构
+        structure = self.generate_structure(topic, article_type)
+        
+        # 生成标题
+        titles = self.generate_title(topic, style)
+        
+        # 生成开头
+        opening = self.generate_opening(topic, style)
+        
+        article = {
+            'title': titles[0],
+            'titles': titles,
+            'topic': topic,
+            'style': style_name,
+            'type': article_type,
+            'opening': opening,
+            'structure': structure,
+            'created_at': datetime.now().isoformat(),
+        }
+        
+        return article
     
-    tone = style.get('tone', '专业')
-    sentence = style.get('sentence_length', '中等')
-    use_emoji = style.get('emoji', True)
-    structure = style.get('structure', [])
-    opening = style.get('opening', '大家好')
-    closing = style.get('closing', '有问题评论区见')
-    
-    # 构建结构提示
-    structure_prompt = ""
-    if structure:
-        structure_prompt = "文章结构：\n"
-        for i, s in enumerate(structure, 1):
-            structure_prompt += f"{i}. {s}\n"
-    
-    # 构建风格提示
-    style_prompt = f"""
-写作风格要求：
-- 语气：{tone}
-- 句子长度：{sentence}
-- 使用emoji：{"是" if use_emoji else "否"}
-- 开场白：{opening}
-- 结尾语：{closing}
-"""
-    
-    # 构建完整prompt
-    prompt = f"""你是一位公众号博主，擅长写AI相关的文章。
-
-{structure_prompt}
-{style_prompt}
-
-请根据以下主题写一篇{article_type or '文章'}：
+    def generate_prompt(self, article: dict) -> str:
+        """生成LLM提示词"""
+        topic = article['topic']
+        structure = article['structure']
+        
+        # 构建结构描述
+        structure_desc = '\n'.join([
+            f"{i+1}. {s['title']}：{s['desc']}"
+            for i, s in enumerate(structure)
+        ])
+        
+        prompt = f"""请根据以下要求写一篇公众号文章：
 
 主题：{topic}
 
+文章结构：
+{structure_desc}
+
 要求：
 1. 语言生动有趣，接地气
-2. 适当使用emoji增加趣味
-3. 结构清晰，层次分明
-4. 有互动环节，引导评论
-5. 开头要吸引人，结尾要有号召力
-6. 字数控制在1500-2500字
-
-文章类型：{article_type or '经验分享类'}
+2. 适当使用emoji
+3. 开头要吸引人
+4. 结构清晰，层次分明
+5. 结尾要有互动引导
+6. 字数1500-2500字
 
 请开始写作："""
-    
-    return prompt
+        
+        return prompt
 
-def call_llm(prompt: str) -> str:
-    """调用LLM生成文章"""
-    print("🤖 正在调用AI生成文章...")
-    print("⚠️  LLM调用功能待配置")
-    print("\n生成的Prompt：")
-    print("="*50)
-    print(prompt[:500] + "...")
-    print("="*50)
-    
-    # 这里可以集成实际的LLM调用
-    # 暂时返回示例
-    return f"""
-# {prompt.split('主题：')[1].split('\\n')[0]}
-
-> 这是一个AI生成的文章示例
-> 实际使用需要配置LLM
-
----
-
-## 开场
-
-大家好！今天想和大家聊聊...
-
-## 内容
-
-（AI生成的内容会在这里）
-
----
-
-## 结尾
-
-{closing}
-
----
-"""
-    
-    # 实际LLM调用示例（需要配置）：
-    # from ai.llm_router import chat
-    # return await chat(prompt)
-
-def format_article(content: str, topic: str, style: dict) -> str:
-    """格式化文章"""
-    
-    opening = style.get('opening', '大家好')
-    closing = style.get('closing', '有问题评论区见')
-    
-    # 添加标题
-    title = f"# {topic}\n"
-    
-    # 添加开场
-    intro = f"\n> 主题：{topic}\n\n"
-    
-    # 添加结尾互动
-    ending = f"\n\n---\n\n{closing}\n"
-    
-    return title + intro + content + ending
-
-def generate_article(style_name: str, topic: str, output: str = None, article_type: str = None):
+def write_article(topic: str, style: str = '余豪风格', 
+                  article_type: str = '经验分享') -> dict:
     """生成文章"""
-    
-    print(f"\n{'='*50}")
-    print("🎨 风格模仿写作")
-    print(f"{'='*50}\n")
-    
-    # 加载风格
-    print(f"📂 加载风格: {style_name}")
-    style = load_style(style_name)
-    
-    if not style:
-        print(f"❌ 未找到风格: {style_name}")
-        # 列出可用风格
-        if os.path.exists(STYLE_DB):
-            with open(STYLE_DB, 'r', encoding='utf-8') as f:
-                db = json.load(f)
-            print("\n可用风格：")
-            for key in db:
-                if not key.startswith('_'):
-                    print(f"  - {key}")
-        return
-    
-    print(f"✅ 风格特点：{style.get('tone', '未知')} | {style.get('sentence_length', '未知')}句 | Emoji: {'是' if style.get('emoji') else '否'}")
-    
-    # 构建prompt
-    print(f"\n📝 主题: {topic}")
-    prompt = build_prompt(style, topic, article_type)
-    
-    # 生成内容
-    content = call_llm(prompt)
-    
-    # 格式化
-    formatted = format_article(content, topic, style)
-    
-    # 输出
-    if output:
-        with open(output, 'w', encoding='utf-8') as f:
-            f.write(formatted)
-        print(f"\n✅ 已保存到: {output}")
-    else:
-        print("\n" + "="*50)
-        print("📄 生成的文章：")
-        print("="*50)
-        print(formatted)
-    
-    return formatted
-
-def main():
-    parser = argparse.ArgumentParser(description='风格模仿写作')
-    parser.add_argument('--style', '-s', default='余豪风格', help='风格名称')
-    parser.add_argument('--topic', '-t', required=True, help='文章主题')
-    parser.add_argument('--type', '-y', help='文章类型')
-    parser.add_argument('--output', '-o', help='输出文件')
-    
-    args = parser.parse_args()
-    
-    generate_article(args.style, args.topic, args.output, args.type)
+    writer = AIWriter()
+    return writer.generate_article(topic, style, article_type)
 
 if __name__ == '__main__':
-    main()
+    writer = AIWriter()
+    
+    print("="*50)
+    print("✍️ AI写作系统")
+    print("="*50)
+    
+    # 生成示例
+    article = writer.generate_article('AI安全', '余豪风格', '安全科普')
+    
+    print(f"\n📌 标题: {article['title']}")
+    print(f"\n📝 标题选项:")
+    for t in article['titles']:
+        print(f"  • {t}")
+    
+    print(f"\n📖 文章结构:")
+    for i, s in enumerate(article['structure'], 1):
+        print(f"  {i}. {s['title']}: {s['desc']}")
+    
+    print(f"\n📝 LLM提示词:")
+    print(writer.generate_prompt(article)[:200] + "...")

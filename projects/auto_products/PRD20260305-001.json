@@ -1,0 +1,21 @@
+{
+  "id": "PRD20260305-001",
+  "name": "AI Chatbot",
+  "description": "\u667a\u80fd\u804a\u5929\u673a\u5668\u4eba",
+  "type": "web",
+  "status": "completed",
+  "pipeline": [
+    "research",
+    "design",
+    "coding",
+    "review",
+    "documentation"
+  ],
+  "current_stage": 4,
+  "files": [
+    "app.py",
+    "README.md"
+  ],
+  "created": "2026-03-05T15:18:07.483673",
+  "updated": "2026-03-05T15:18:07.484874"
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>封面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 800px;
+            height: 1200px;
+            background: linear-gradient(180deg, #1e3a5f 0%, #0d1b2a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        .warning {
+            position: absolute;
+            top: 280px;
+            background: #e74c3c;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        h1 {
+            font-size: 42px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        .subtitle {
+            font-size: 20px;
+            color: #a8d8ea;
+            margin-top: 6px;
+        }
+        .divider {
+            width: 80px;
+            height: 2px;
+            background: #3498db;
+            margin: 10px auto;
+        }
+        .desc {
+            font-size: 16px;
+            color: #ccc;
+            line-height: 1.4;
+        }
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .tag {
+            background: rgba(255,255,255,0.1);
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .author {
+            position: absolute;
+            bottom: 280px;
+            font-size: 16px;
+            color: rgba(255,255,255,0.6);
+        }
+        .note {
+            position: absolute;
+            bottom: 310px;
+            font-size: 14px;
+            color: #f39c12;
+        }
+        .lobster {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="lobster">🦞</div>
+    <div class="warning">⚠️ 国家已发出预警</div>
+    <h1>AI小白的<br>安全防护笔记</h1>
+    <p class="subtitle">一个初学者的实践心得</p>
+    <div class="divider"></div>
+    <p class="desc">不是完美方案<br>只是一种思路</p>
+    <div class="tags">
+        <span class="tag">AI安全</span>
+        <span class="tag">OpenClaw</span>
+        <span class="tag">经验分享</span>
+        <span class="tag">小白入门</span>
+    </div>
+    <p class="note">💡 欢迎指正，一起学习</p>
+    <p class="author">我是余豪 🚀</p>
+</body>
+</html>

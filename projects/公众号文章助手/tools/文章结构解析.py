@@ -1,217 +1,288 @@
 #!/usr/bin/env python3
 """
-文章结构解析工具
-用法：
-  python tools/文章结构解析.py --file article.md
-  python tools/文章结构解析.py --file article.md --style
+内容解析系统 V2
+从HTML中提取结构化内容
 """
 import os
-import sys
 import re
 import json
-import argparse
+from datetime import datetime
+from bs4 import BeautifulSoup
+from typing import Dict, List, Optional
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
-PARSED_DIR = os.path.join(PROJECT_DIR, 'data', 'parsed_articles')
-
-def extract_structure(md_text: str) -> dict:
-    """提取文章结构"""
-    lines = md_text.split('\n')
+class ArticleParser:
+    """文章解析器"""
     
-    sections = []
-    current_section = None
-    content_lines = []
+    def __init__(self):
+        self.supported_formats = ['html', 'md', 'txt']
     
-    for line in lines:
-        line = line.strip()
+    def parse_html(self, html: str, platform: str = None) -> dict:
+        """解析HTML"""
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        result = {
+            'title': self.extract_title(soup),
+            'author': self.extract_author(soup),
+            'publish_date': self.extract_date(soup),
+            'content': self.extract_content(soup),
+            'images': self.extract_images(soup),
+            'links': self.extract_links(soup),
+            'code_blocks': self.extract_code_blocks(soup),
+            'structure': self.analyze_structure(soup),
+            'metadata': self.extract_metadata(soup),
+        }
+        
+        return result
+    
+    def extract_title(self, soup: BeautifulSoup) -> str:
+        """提取标题"""
+        # 优先使用meta标签
+        title = soup.find('meta', property='og:title')
+        if title:
+            return title.get('content', '')
+        
+        title = soup.find('meta', attrs={'name': 'title'})
+        if title:
+            return title.get('content', '')
+        
+        # 使用title标签
+        if soup.title:
+            return soup.title.string.strip() if soup.title.string else ''
+        
+        # 使用h1
+        h1 = soup.find('h1')
+        if h1:
+            return h1.get_text(strip=True)
+        
+        return ''
+    
+    def extract_author(self, soup: BeautifulSoup) -> str:
+        """提取作者"""
+        # 多种方式尝试
+        authors = [
+            soup.find('meta', attrs={'name': 'author'}),
+            soup.find('meta', property='article:author'),
+            soup.find('span', class_=re.compile('author')),
+            soup.find('a', class_=re.compile('author')),
+        ]
+        
+        for author in authors:
+            if author:
+                content = author.get('content', '') or author.get_text(strip=True)
+                if content:
+                    return content
+        
+        return ''
+    
+    def extract_date(self, soup: BeautifulSoup) -> str:
+        """提取日期"""
+        dates = [
+            soup.find('meta', property='article:published_time'),
+            soup.find('meta', attrs={'name': 'publishdate'}),
+            soup.find('time', class_=re.compile('time|date')),
+        ]
+        
+        for date in dates:
+            if date:
+                content = date.get('content', '') or date.get('datetime', '') or date.get_text(strip=True)
+                if content:
+                    return content[:10]  # 取日期部分
+        
+        return ''
+    
+    def extract_content(self, soup: BeautifulSoup) -> str:
+        """提取正文"""
+        # 尝试找到主要内容区域
+        content_area = None
+        
+        selectors = [
+            'article',
+            'main',
+            'div[class*="content"]',
+            'div[class*="article"]',
+            'div[id*="content"]',
+            'div[id*="article"]',
+            'div[class*="markdown-body"]',
+            'div[class*="rich-text"]',
+        ]
+        
+        for selector in selectors:
+            content_area = soup.select_one(selector)
+            if content_area:
+                break
+        
+        if not content_area:
+            content_area = soup.body
+        
+        # 清理脚本和样式
+        for tag in content_area.find_all(['script', 'style', 'nav', 'footer', 'header']):
+            tag.decompose()
+        
+        # 获取纯文本
+        text = content_area.get_text(separator='\n', strip=True)
+        
+        # 清理多余空白
+        text = re.sub(r'\n{3,}', '\n\n', text)
+        text = text.strip()
+        
+        return text
+    
+    def extract_images(self, soup: BeautifulSoup) -> List[Dict]:
+        """提取图片"""
+        images = []
+        
+        for img in soup.find_all('img'):
+            src = img.get('src') or img.get('data-src') or img.get('data-original')
+            if src and not src.startswith('data:'):
+                images.append({
+                    'src': src,
+                    'alt': img.get('alt', ''),
+                    'title': img.get('title', ''),
+                })
+        
+        return images
+    
+    def extract_links(self, soup: BeautifulSoup) -> List[Dict]:
+        """提取链接"""
+        links = []
+        
+        for a in soup.find_all('a', href=True):
+            href = a.get('href', '')
+            if href and not href.startswith('#'):
+                links.append({
+                    'href': href,
+                    'text': a.get_text(strip=True),
+                })
+        
+        return links[:50]  # 限制数量
+    
+    def extract_code_blocks(self, soup: BeautifulSoup) -> List[Dict]:
+        """提取代码块"""
+        code_blocks = []
+        
+        # pre > code
+        for pre in soup.find_all('pre'):
+            code = pre.find('code')
+            if code:
+                lang = code.get('class', [])
+                lang = [l for l in lang if l.startswith('language-')]
+                code_blocks.append({
+                    'language': lang[0].replace('language-', '') if lang else '',
+                    'code': code.get_text(),
+                })
+        
+        return code_blocks
+    
+    def analyze_structure(self, soup: BeautifulSoup) -> Dict:
+        """分析文章结构"""
+        structure = {
+            'headings': {'h1': 0, 'h2': 0, 'h3': 0, 'h4': 0},
+            'paragraphs': 0,
+            'lists': 0,
+            'quotes': 0,
+            'code_blocks': 0,
+            'images': 0,
+            'links': 0,
+            'tables': 0,
+        }
+        
+        # 统计标题
+        for level in ['h1', 'h2', 'h3', 'h4']:
+            structure['headings'][level] = len(soup.find_all(level))
+        
+        # 统计段落
+        structure['paragraphs'] = len(soup.find_all('p'))
+        
+        # 统计列表
+        structure['lists'] = len(soup.find_all(['ul', 'ol']))
+        
+        # 统计引用
+        structure['quotes'] = len(soup.find_all(['blockquote', 'q']))
+        
+        # 统计代码块
+        structure['code_blocks'] = len(soup.find_all('pre'))
+        
+        # 统计图片
+        structure['images'] = len(soup.find_all('img'))
+        
+        # 统计链接
+        structure['links'] = len(soup.find_all('a', href=True))
+        
+        # 统计表格
+        structure['tables'] = len(soup.find_all('table'))
+        
+        return structure
+    
+    def extract_metadata(self, soup: BeautifulSoup) -> Dict:
+        """提取元数据"""
+        metadata = {}
+        
+        # 描述
+        desc = soup.find('meta', attrs={'name': 'description'})
+        if desc:
+            metadata['description'] = desc.get('content', '')
+        
+        # 关键词
+        keywords = soup.find('meta', attrs={'name': 'keywords'})
+        if keywords:
+            metadata['keywords'] = keywords.get('content', '')
+        
+        # 标签
+        tags = soup.find_all('meta', property='article:tag')
+        if tags:
+            metadata['tags'] = [t.get('content', '') for t in tags]
+        
+        return metadata
+    
+    def to_markdown(self, parsed: dict) -> str:
+        """转换为Markdown"""
+        md = []
         
         # 标题
-        if line.startswith('# '):
-            if current_section:
-                current_section['content'] = '\n'.join(content_lines).strip()
-                sections.append(current_section)
-            current_section = {'level': 1, 'title': line[2:], 'content': ''}
-            content_lines = []
-        elif line.startswith('## '):
-            if current_section and content_lines:
-                current_section['content'] = '\n'.join(content_lines).strip()
-                sections.append(current_section)
-            current_section = {'level': 2, 'title': line[3:], 'content': ''}
-            content_lines = []
-        elif line.startswith('### '):
-            if current_section and content_lines:
-                current_section['content'] = '\n'.join(content_lines).strip()
-                sections.append(current_section)
-            current_section = {'level': 3, 'title': line[4:], 'content': ''}
-            content_lines = []
-        elif line and current_section:
-            content_lines.append(line)
-    
-    # 最后一个section
-    if current_section:
-        current_section['content'] = '\n'.join(content_lines).strip()
-        sections.append(current_section)
-    
-    return sections
-
-def extract_intro(md_text: str) -> str:
-    """提取开场部分"""
-    lines = md_text.split('\n')
-    intro_lines = []
-    in_intro = True
-    
-    for line in lines:
-        line = line.strip()
-        if line.startswith('#'):
-            in_intro = False
-        elif in_intro and line:
-            intro_lines.append(line)
+        md.append(f"# {parsed.get('title', '无标题')}\n")
         
-        if len(intro_lines) > 5:
-            break
-    
-    return '\n'.join(intro_lines)
+        # 元信息
+        if parsed.get('author'):
+            md.append(f"> 作者: {parsed['author']}")
+        if parsed.get('publish_date'):
+            md.append(f"> 发布日期: {parsed['publish_date']}")
+        
+        md.append("\n---\n")
+        
+        # 内容
+        md.append(parsed.get('content', ''))
+        
+        return '\n'.join(md)
 
-def analyze_style(md_text: str) -> dict:
-    """分析文章风格"""
-    # 统计
-    lines = md_text.split('\n')
-    total_lines = len([l for l in lines if l.strip()])
-    total_chars = len(md_text)
-    total_words = len(md_text.replace('\n', ''))
+def parse_file(filepath: str, platform: str = None) -> dict:
+    """解析文件"""
+    parser = ArticleParser()
     
-    # 段落长度
-    paragraphs = [p.strip() for p in md_text.split('\n\n') if p.strip()]
-    avg_para_length = sum(len(p) for p in paragraphs) / max(len(paragraphs), 1)
+    with open(filepath, 'r', encoding='utf-8') as f:
+        html = f.read()
     
-    # emoji统计
-    emoji_pattern = re.compile(r'[\U00010000-\U0010ffff]', re.U)
-    emoji_count = len(emoji_pattern.findall(md_text))
-    
-    # 句子统计
-    sentences = re.split(r'[。！？.!?]', md_text)
-    avg_sentence_length = total_words / max(len(sentences), 1)
-    
-    # 特点判断
-    if avg_para_length < 50:
-        para_style = "short"
-    elif avg_para_length < 150:
-        para_style = "medium"
-    else:
-        para_style = "long"
-    
-    if emoji_count / max(total_words, 1) > 0.02:
-        emoji_usage = "high"
-    elif emoji_count / max(total_words, 1) > 0.005:
-        emoji_usage = "moderate"
-    else:
-        emoji_usage = "low"
-    
-    return {
-        "total_lines": total_lines,
-        "total_chars": total_chars,
-        "total_words": total_words,
-        "avg_paragraph_length": int(avg_para_length),
-        "paragraph_style": para_style,
-        "emoji_count": emoji_count,
-        "emoji_usage": emoji_usage,
-        "avg_sentence_length": int(avg_sentence_length),
-        "has_code_blocks": "```" in md_text,
-        "has_tables": "|" in md_text and "---" in md_text,
-    }
+    return parser.parse_html(html, platform)
 
-def detect_template_type(md_text: str, structure: list) -> str:
-    """判断文章类型"""
-    text = md_text.lower()
-    
-    # 关键词匹配
-    if any(k in text for k in ['教程', '使用', '安装', '配置', '步骤', '如何']):
-        return "教程类"
-    elif any(k in text for k in ['踩坑', '问题', '错误', '解决', '排查', 'bug']):
-        return "踩坑记录"
-    elif any(k in text for k in ['经验', '心得', '感悟', '复盘', '分享']):
-        return "经验类"
-    else:
-        return "经验类"  # 默认
-
-def parse_article(md_file: str, analyze_style_flag: bool = True) -> dict:
-    """解析文章"""
-    # 读取文件
-    with open(md_file, 'r', encoding='utf-8') as f:
-        md_text = f.read()
-    
-    # 提取标题
-    title_match = re.search(r'^#\s+(.+)$', md_text, re.MULTILINE)
-    title = title_match.group(1) if title_match else "无标题"
-    
-    # 提取结构
-    sections = extract_structure(md_text)
-    
-    # 提取开场
-    intro = extract_intro(md_text)
-    
-    # 构建结果
-    result = {
-        "title": title,
-        "intro": intro[:200],  # 限制长度
-        "sections_count": len(sections),
-        "sections": [
-            {
-                "level": s['level'],
-                "title": s['title'],
-                "content_length": len(s['content'])
-            }
-            for s in sections[:10]  # 最多10个
-        ],
-        "template_type": detect_template_type(md_text, sections)
-    }
-    
-    # 风格分析
-    if analyze_style_flag:
-        result["style"] = analyze_style(md_text)
-    
-    return result
-
-def main():
-    parser = argparse.ArgumentParser(description='文章结构解析')
-    parser.add_argument('--file', '-f', required=True, help='文章文件')
-    parser.add_argument('--style', '-s', action='store_true', help='包含风格分析')
-    parser.add_argument('--output', '-o', help='输出JSON文件')
-    parser.add_argument('--preview', '-p', action='store_true', help='预览结果')
-    
-    args = parser.parse_args()
-    
-    if not os.path.exists(args.file):
-        print(f"❌ 文件不存在: {args.file}")
-        sys.exit(1)
-    
-    print(f"\n{'='*40}")
-    print("📊 文章结构解析")
-    print(f"{'='*40}\n")
-    
-    # 解析
-    result = parse_article(args.file, args.style)
-    
-    # 输出
-    if args.output:
-        with open(args.output, 'w', encoding='utf-8') as f:
-            json.dump(result, f, ensure_ascii=False, indent=2)
-        print(f"✅ 已保存到: {args.output}")
-    else:
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-    
-    # 预览
-    if args.preview:
-        print(f"\n{'='*40}")
-        print(f"📌 标题: {result['title']}")
-        print(f"📝 类型: {result['template_type']}")
-        print(f"📑 章节数: {result['sections_count']}")
-        if 'style' in result:
-            s = result['style']
-            print(f"📏 平均段落: {s['avg_paragraph_length']}字")
-            print(f"😀 Emoji: {s['emoji_count']}个 ({s['emoji_usage']})")
-            print(f"📝 段落风格: {s['paragraph_style']}")
+def parse_html(html: str, platform: str = None) -> dict:
+    """解析HTML字符串"""
+    parser = ArticleParser()
+    return parser.parse_html(html, platform)
 
 if __name__ == '__main__':
-    main()
+    import sys
+    
+    if len(sys.argv) > 1:
+        result = parse_file(sys.argv[1])
+        
+        print(f"\n{'='*50}")
+        print(f"📌 标题: {result.get('title', 'N/A')}")
+        print(f"👤 作者: {result.get('author', 'N/A')}")
+        print(f"📅 日期: {result.get('publish_date', 'N/A')}")
+        
+        struct = result.get('structure', {})
+        print(f"\n📊 结构:")
+        print(f"   段落: {struct.get('paragraphs', 0)}")
+        print(f"   标题: {struct.get('headings', {})}")
+        print(f"   图片: {struct.get('images', 0)}")
+        print(f"   链接: {struct.get('links', 0)}")
+        print(f"   代码: {struct.get('code_blocks', 0)}")

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>🤖 AI 返利系统</title>
+<meta charset="UTF-8">
+<style>
+* {margin: 0;padding: 0;box-sizing: border-box;}
+body {font-family: -apple-system, sans-serif;background: linear-gradient(135deg, #1a1a2e, #16213e);min-height: 100vh;color: #fff;padding: 20px;}
+.container {max-width: 800px;margin: 0 auto;}
+h1 {text-align: center;color: #ffd700;margin-bottom: 30px;}
+.search-box {display: flex;gap: 10px;margin-bottom: 30px;}
+.search-box input {flex: 1;padding: 15px;border-radius: 10px;border: none;font-size: 16px;}
+.search-box button {padding: 15px 30px;border-radius: 10px;border: none;background: #ffd700;color: #000;font-weight: bold;cursor: pointer;}
+.results {display: grid;gap: 15px;}
+.item {background: rgba(255,255,255,0.1);padding: 20px;border-radius: 12px;}
+.item h3 {color: #ffd700;margin-bottom: 10px;}
+.item .price {color: #ff6b6b;font-size: 1.2em;}
+.item .commission {color: #4ecdc4;}
+.item a {display: inline-block;margin-top: 10px;padding: 8px 20px;background: #ffd700;color: #000;text-decoration: none;border-radius: 6px;}
+.loading {text-align: center;color: #888;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🤖 AI 返利搜索</h1>
+<div class="search-box">
+  <input id="keyword" placeholder="搜索商品...">
+  <button onclick="search()">搜索</button>
+</div>
+<div id="results" class="results"></div>
+</div>
+<script>
+async function search() {
+  const keyword = document.getElementById('keyword').value
+  if(!keyword) return
+  
+  document.getElementById('results').innerHTML = '<div class="loading">搜索中...</div>'
+  
+  try {
+    const res = await fetch(`/api/affiliate/search?keyword=${encodeURIComponent(keyword)}&platform=taobao`)
+    const data = await res.json()
+    
+    if(data.success && data.results) {
+      document.getElementById('results').innerHTML = data.results.map(item => `
+        <div class="item">
+          <h3>${item.title}</h3>
+          <div class="price">💰 ${item.price}</div>
+          <div class="commission">📊 佣金: ${item.commission}</div>
+          <a href="${item.link}" target="_blank">🛒 购买返利</a>
+        </div>
+      `).join('')
+    } else {
+      document.getElementById('results').innerHTML = '<div class="loading">未找到商品</div>'
+    }
+  } catch(e) {
+    document.getElementById('results').innerHTML = '<div class="loading">搜索失败</div>'
+  }
+}
+</script>
+</body>
+</html>

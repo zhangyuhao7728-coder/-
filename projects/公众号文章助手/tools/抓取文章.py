@@ -1,212 +1,257 @@
 #!/usr/bin/env python3
 """
-公众号文章抓取工具
-用法：
-  python tools/抓取文章.py --url "文章链接"
-  python tools/抓取文章.py --url "文章链接" --output my_article
+内容采集系统 V2
+支持多平台采集
 """
 import os
 import sys
-import argparse
 import re
+import time
 import requests
 from datetime import datetime
 from urllib.parse import urlparse
+from pathlib import Path
 
-# 配置
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
-DATA_DIR = os.path.join(PROJECT_DIR, 'data')
-RAW_DIR = os.path.join(DATA_DIR, 'raw_articles')
-PARSED_DIR = os.path.join(DATA_DIR, 'parsed_articles')
-
-# 创建目录
-os.makedirs(RAW_DIR, exist_ok=True)
-os.makedirs(PARSED_DIR, exist_ok=True)
-
-# 请求头
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-}
-
-def download_article(url: str) -> str:
-    """下载文章"""
-    print(f"📥 正在下载: {url}")
+class ContentCrawler:
+    """多平台内容采集器"""
     
-    try:
-        response = requests.get(url, headers=HEADERS, timeout=30)
-        response.raise_for_status()
-        return response.text
-    except Exception as e:
-        print(f"❌ 下载失败: {e}")
-        sys.exit(1)
-
-def parse_wechat_article(html: str) -> dict:
-    """解析微信公众号文章"""
-    import re
-    
-    # 提取标题
-    title_match = re.search(r'<title>(.+?)</title>', html)
-    title = title_match.group(1) if title_match else "无标题"
-    
-    # 提取正文（公众号文章通常在 #js_content 下）
-    content_match = re.search(r'<div id="js_content"[^>]*>(.+?)</div>', html, re.DOTALL)
-    content = content_match.group(1) if content_match else ""
-    
-    # 清理HTML标签，保留基本格式
-    # 保留p, br, img等
-    content = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.DOTALL)
-    content = re.sub(r'<style[^>]*>.*?</style>', '', content, flags=re.DOTALL)
-    
-    # 转Markdown
-    content = html_to_markdown(content)
-    
-    return {
-        'title': title,
-        'content': content,
-        'url': '',
-        'date': datetime.now().strftime('%Y-%m-%d')
+    # 请求头
+    HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
     }
-
-def parse_general_article(html: str, url: str) -> dict:
-    """解析一般网页文章"""
-    from bs4 import BeautifulSoup
     
-    soup = BeautifulSoup(html, 'html.parser')
-    
-    # 标题
-    title = ''
-    if soup.title:
-        title = soup.title.string
-    if not title:
-        h1 = soup.find('h1')
-        if h1:
-            title = h1.get_text()
-    
-    # 正文
-    article = soup.find('article') or soup.find('main') or soup.find('div', class_=re.compile('content|article|post'))
-    
-    if article:
-        content = article.get_text(separator='\n', strip=True)
-    else:
-        # 取body
-        body = soup.find('body')
-        content = body.get_text(separator='\n', strip=True) if body else ''
-    
-    return {
-        'title': title or '无标题',
-        'content': content[:5000],  # 限制长度
-        'url': url,
-        'date': datetime.now().strftime('%Y-%m-%d')
+    # 支持的平台
+    PLATFORMS = {
+        'weixin': {'name': '微信公众号', 'domain': 'weixin.qq.com'},
+        'zhihu': {'name': '知乎', 'domain': 'zhihu.com'},
+        'juejin': {'name': '掘金', 'domain': 'juejin.cn'},
+        'csdn': {'name': 'CSDN', 'domain': 'csdn.net'},
+        'jianshu': {'name': '简书', 'domain': 'jianshu.com'},
+        'xiaohongshu': {'name': '小红书', 'domain': 'xiaohongshu.com'},
+        'bilibili': {'name': 'B站', 'domain': 'bilibili.com'},
+        'github': {'name': 'GitHub', 'domain': 'github.com'},
     }
+    
+    def __init__(self, output_dir: str = 'data/raw_articles'):
+        self.output_dir = output_dir
+        os.makedirs(output_dir, exist_ok=True)
+        
+        self.session = requests.Session()
+        self.session.headers.update(self.HEADERS)
+    
+    def detect_platform(self, url: str) -> str:
+        """检测平台"""
+        domain = urlparse(url).netloc.lower()
+        
+        for platform, info in self.PLATFORMS.items():
+            if info['domain'] in domain:
+                return platform
+        
+        return 'unknown'
+    
+    def download(self, url: str) -> dict:
+        """下载网页"""
+        print(f"📥 下载中: {url}")
+        
+        try:
+            response = self.session.get(url, timeout=30)
+            response.raise_for_status()
+            
+            return {
+                'success': True,
+                'url': url,
+                'platform': self.detect_platform(url),
+                'content': response.text,
+                'status_code': response.status_code,
+                'timestamp': datetime.now().isoformat(),
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'url': url,
+                'error': str(e),
+            }
+    
+    def save_html(self, url: str, content: str) -> str:
+        """保存HTML"""
+        platform = self.detect_platform(url)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{platform}_{timestamp}.html"
+        
+        filepath = os.path.join(self.output_dir, filename)
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        return filepath
+    
+    def batch_download(self, urls: list, delay: float = 1.0) -> list:
+        """批量下载"""
+        results = []
+        
+        for i, url in enumerate(urls, 1):
+            print(f"\n[{i}/{len(urls)}] {url}")
+            
+            result = self.download(url)
+            
+            if result['success']:
+                filepath = self.save_html(url, result['content'])
+                result['filepath'] = filepath
+                print(f"✅ 已保存: {filepath}")
+            else:
+                print(f"❌ 失败: {result.get('error')}")
+            
+            results.append(result)
+            
+            if delay > 0 and i < len(urls):
+                time.sleep(delay)
+        
+        return results
 
-def html_to_markdown(html: str) -> str:
-    """简单HTML转Markdown"""
-    import re
+class PlatformCrawler:
+    """各平台专用采集器"""
     
-    md = html
+    @staticmethod
+    def weixin(html: str, url: str) -> dict:
+        """微信公众号解析"""
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # 提取标题
+        title = soup.title.string if soup.title else ''
+        if not title:
+            title_tag = soup.find('meta', attrs={'name': 'description'})
+            title = title_tag.get('content', '') if title_tag else ''
+        
+        # 提取正文
+        content_div = soup.find('div', id='js_content')
+        content = content_div.get_text(separator='\n', strip=True) if content_div else ''
+        
+        # 提取作者
+        author = ''
+        author_tag = soup.find('meta', attrs={'name': 'author'})
+        if author_tag:
+            author = author_tag.get('content', '')
+        
+        return {
+            'platform': 'weixin',
+            'title': title.strip(),
+            'author': author,
+            'content': content,
+            'url': url,
+            'raw_html': html[:10000],  # 保存前10000字符
+        }
     
-    # 标题
-    md = re.sub(r'<h1[^>]*>(.+?)</h1>', r'# \1\n', md)
-    md = re.sub(r'<h2[^>]*>(.+?)</h2>', r'## \1\n', md)
-    md = re.sub(r'<h3[^>]*>(.+?)</h3>', r'### \1\n', md)
+    @staticmethod
+    def zhihu(html: str, url: str) -> dict:
+        """知乎解析"""
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # 标题
+        title = soup.find('h1')
+        title = title.get_text(strip=True) if title else ''
+        
+        # 正文
+        article = soup.find('article') or soup.find('div', class_='RichText')
+        content = article.get_text(separator='\n', strip=True) if article else ''
+        
+        return {
+            'platform': 'zhihu',
+            'title': title,
+            'content': content,
+            'url': url,
+        }
     
-    # 加粗
-    md = re.sub(r'<strong>(.+?)</strong>', r'**\1**', md)
-    md = re.sub(r'<b>(.+?)</b>', r'**\1**', md)
+    @staticmethod
+    def juejin(html: str, url: str) -> dict:
+        """掘金解析"""
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        title = soup.find('h1')
+        title = title.get_text(strip=True) if title else ''
+        
+        article = soup.find('article') or soup.find('div', class_='markdown-body')
+        content = article.get_text(separator='\n', strip=True) if article else ''
+        
+        return {
+            'platform': 'juejin',
+            'title': title,
+            'content': content,
+            'url': url,
+        }
     
-    # 链接
-    md = re.sub(r'<a[^>]*href="([^"]*)"[^>]*>(.+?)</a>', r'[\2](\1)', md)
-    
-    # 图片
-    md = re.sub(r'<img[^>]*src="([^"]*)"[^>]*>', r'![](\1)', md)
-    
-    # 换行
-    md = re.sub(r'<br\s*/?>', '\n', md)
-    md = re.sub(r'</p>', '\n\n', md)
-    md = re.sub(r'</div>', '\n', md)
-    
-    # 清理剩余标签
-    md = re.sub(r'<[^>]+>', '', md)
-    
-    # 清理多余空白
-    md = re.sub(r'\n{3,}', '\n\n', md)
-    
-    return md.strip()
+    @staticmethod
+    def csdn(html: str, url: str) -> dict:
+        """CSDN解析"""
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        title = soup.find('h1', class_='title-article')
+        title = title.get_text(strip=True) if title else ''
+        
+        article = soup.find('article', class_='markdown-body')
+        content = article.get_text(separator='\n', strip=True) if article else ''
+        
+        return {
+            'platform': 'csdn',
+            'title': title,
+            'content': content,
+            'url': url,
+        }
 
-def save_article(article: dict, name: str) -> tuple:
-    """保存文章"""
-    # 生成文件名
-    date = article.get('date', datetime.now().strftime('%Y-%m-%d'))
-    filename = f"{date}_{name}"
+def crawl(url: str, output_dir: str = 'data/raw_articles') -> dict:
+    """采集内容"""
+    crawler = ContentCrawler(output_dir)
     
-    # 保存原文
-    html_file = os.path.join(RAW_DIR, f"{filename}.html")
+    # 下载
+    result = crawler.download(url)
+    if not result['success']:
+        return result
     
-    # 保存解析后
-    md_file = os.path.join(PARSED_DIR, f"{filename}.md")
+    # 保存
+    filepath = crawler.save_html(url, result['content'])
+    result['filepath'] = filepath
     
-    # 生成Markdown内容
-    md_content = f"""# {article['title']}
+    # 解析
+    platform = crawler.detect_platform(url)
+    
+    parse_funcs = {
+        'weixin': PlatformCrawler.weixin,
+        'zhihu': PlatformCrawler.zhihu,
+        'juejin': PlatformCrawler.juejin,
+        'csdn': PlatformCrawler.csdn,
+    }
+    
+    parse_func = parse_funcs.get(platform)
+    if parse_func:
+        parsed = parse_func(result['content'], url)
+        result['parsed'] = parsed
+    
+    return result
 
-> 来源: {article['url']}
-> 日期: {article['date']}
-
----
-
-{article['content']}
-"""
+if __name__ == '__main__':
+    import argparse
     
-    with open(md_file, 'w', encoding='utf-8') as f:
-        f.write(md_content)
-    
-    return html_file, md_file
-
-def main():
-    parser = argparse.ArgumentParser(description='公众号文章抓取')
-    parser.add_argument('--url', '-u', required=True, help='文章链接')
-    parser.add_argument('--output', '-o', default='', help='输出文件名（不含扩展名）')
-    parser.add_argument('--save-html', action='store_true', help='同时保存HTML原文')
+    parser = argparse.ArgumentParser(description='内容采集系统')
+    parser.add_argument('--url', '-u', help='采集URL')
+    parser.add_argument('--batch', '-b', nargs='+', help='批量采集')
+    parser.add_argument('--output', '-o', default='data/raw_articles', help='输出目录')
     
     args = parser.parse_args()
     
-    url = args.url
-    name = args.output or 'article'
+    crawler = ContentCrawler(args.output)
     
-    print(f"\n{'='*40}")
-    print("📥 公众号文章抓取工具")
-    print(f"{'='*40}\n")
+    if args.url:
+        result = crawl(args.url, args.output)
+        print(f"\n{'='*50}")
+        print(f"平台: {result.get('platform')}")
+        print(f"保存: {result.get('filepath')}")
+        if 'parsed' in result:
+            print(f"标题: {result['parsed'].get('title', 'N/A')}")
     
-    # 下载
-    html = download_article(url)
-    
-    # 解析
-    print("🔍 正在解析...")
-    
-    # 判断是否为微信公众号
-    if 'weixin.qq.com' in url:
-        article = parse_wechat_article(html)
-    else:
-        article = parse_general_article(html, url)
-    
-    print(f"📌 标题: {article['title']}")
-    print(f"📝 字数: {len(article['content'])}")
-    
-    # 保存
-    html_file, md_file = save_article(article, name)
-    
-    print(f"\n✅ 已保存:")
-    print(f"   📄 Markdown: {md_file}")
-    
-    if args.save_html:
-        html_file = os.path.join(RAW_DIR, f"{name}.html")
-        with open(html_file, 'w', encoding='utf-8') as f:
-            f.write(html)
-        print(f"   🌐 HTML: {html_file}")
-    
-    print(f"\n✨ 完成！")
-
-if __name__ == '__main__':
-    main()
+    elif args.batch:
+        results = crawler.batch_download(args.batch)
+        print(f"\n完成: {len([r for r in results if r['success']])}/{len(results)}")

@@ -1,0 +1,50 @@
+{
+  "api_token": "ai-control-plane-2026",
+  "local_model": "qwen3.5:9b",
+  "cloud_model": "minimax_m25",
+  "affiliate": {
+    "alimama": {
+      "pid": "mm_10013873396_3397400377_116242050304",
+      "enabled": true,
+      "platform": "taobao"
+    },
+    "jingfen": {
+      "enabled": false
+    }
+  },
+  "models": {
+    "qwen3.5:9b": {
+      "provider": "ollama",
+      "url": "http://localhost:11434",
+      "model": "qwen3.5:9b",
+      "type": "local",
+      "size": "6.1GB",
+      "enabled": true
+    },
+    "qwen2.5": {
+      "provider": "ollama",
+      "url": "http://localhost:11434",
+      "model": "qwen2.5:latest",
+      "type": "local",
+      "size": "4.7GB",
+      "enabled": true
+    },
+    "deepseek-coder": {
+      "provider": "ollama",
+      "url": "http://localhost:11434",
+      "model": "deepseek-coder:6.7b",
+      "type": "local",
+      "size": "3.8GB",
+      "enabled": true
+    }
+  },
+  "cloud_models": {
+    "minimax_m25": {
+      "provider": "minimax",
+      "url": "https://api.minimax.io/anthropic",
+      "model": "MiniMax-M2.5",
+      "type": "cloud",
+      "enabled": true
+    }
+  }
+}
