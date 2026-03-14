@@ -21,7 +21,7 @@ SECRET_PATTERNS = [
 
 # 扫描仓库
 REPOS = [
-    "/Users/zhangyuhao/Learning project/python/openclaw_modules",
+    "/Users/zhangyuhao/项目/Ai学习系统/openclaw_modules",
     "/Users/zhangyuhao/openclaw"
 ]
 

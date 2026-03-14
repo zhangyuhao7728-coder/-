@@ -19,6 +19,8 @@ CONFIG_FILE = os.path.join(OPENCLAW_DIR, "openclaw.json")
 BACKUP_DIR = os.path.join(OPENCLAW_DIR, "backups")
 LOG_FILE = os.path.join(OPENCLAW_DIR, "logs", "auto_maintenance.log")
 
+OPENCLAW_CMD = os.path.expanduser("~/.nvm/versions/node/v22.22.0/bin/openclaw")
+
 def run_cmd(cmd):
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     return result.returncode, result.stdout, result.stderr
@@ -26,24 +28,24 @@ def run_cmd(cmd):
 def check_gateway():
     """检查Gateway状态"""
     print("\n🔍 检查Gateway状态...")
-    code, out, err = run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw gateway status")
+    code, out, err = run_cmd(f"{OPENCLAW_CMD} gateway status")
     
     if "running" in out.lower():
         print("   ✅ Gateway 运行正常")
         return True
     else:
         print("   ❌ Gateway 未运行，尝试启动...")
-        run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw gateway start")
+        run_cmd(f"{OPENCLAW_CMD} gateway start")
         return False
 
 def check_config():
     """检查配置错误"""
     print("\n🔍 检查配置...")
-    code, out, err = run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw doctor 2>&1")
+    code, out, err = run_cmd(f"{OPENCLAW_CMD} doctor 2>&1")
     
     if "Config invalid" in out or "Unrecognized key" in out:
         print("   ⚠️ 发现配置错误，尝试修复...")
-        run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw doctor --fix")
+        run_cmd(f"{OPENCLAW_CMD} doctor --fix")
         return False
     
     print("   ✅ 配置正常")
@@ -93,7 +95,7 @@ def restart_if_needed():
     
     if code != 0:
         print("   ⚠️ Gateway未运行，正在启动...")
-        run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw gateway start")
+        run_cmd(f"{OPENCLAW_CMD} gateway start")
     else:
         print("   ✅ Gateway运行中")
 

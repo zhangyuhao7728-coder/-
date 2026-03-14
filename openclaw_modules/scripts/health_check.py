@@ -9,6 +9,8 @@ import subprocess
 import time
 import os
 
+OPENCLAW_CMD = os.path.expanduser("~/.nvm/versions/node/v22.22.0/bin/openclaw")
+
 def check_gateway():
     """检查 Gateway 状态"""
     result = subprocess.run(
@@ -21,7 +23,7 @@ def check_gateway():
 def restart_gateway():
     """重启 Gateway"""
     print("🔄 正在重启 Gateway...")
-    subprocess.run(["openclaw", "gateway", "restart"])
+    subprocess.run([OPENCLAW_CMD, "gateway", "restart"])
     time.sleep(5)
     return check_gateway()
 
@@ -29,7 +31,7 @@ def check_connection():
     """检查 Telegram 连接"""
     # 检查日志中的错误
     result = subprocess.run(
-        ["openclaw", "logs", "--limit", "10", "--no-color"],
+        [OPENCLAW_CMD, "logs", "--limit", "10", "--no-color"],
         capture_output=True,
         text=True,
         timeout=30

@@ -8,6 +8,8 @@ OpenClaw 紧急检查脚本
 import os
 import subprocess
 
+OPENCLAW_CMD = os.path.expanduser("~/.nvm/versions/node/v22.22.0/bin/openclaw")
+
 def run_cmd(cmd):
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     return result.returncode, result.stdout, result.stderr
@@ -15,24 +17,24 @@ def run_cmd(cmd):
 def check_gateway():
     """检查Gateway"""
     print("🔍 检查 Gateway...")
-    code, out, err = run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw gateway status")
+    code, out, err = run_cmd(f"{OPENCLAW_CMD} gateway status")
     
     if "running" in out.lower():
         print("   ✅ Gateway 运行正常")
         return True
     else:
         print("   ❌ Gateway 异常，尝试启动...")
-        run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw gateway start")
+        run_cmd(f"{OPENCLAW_CMD} gateway start")
         return False
 
 def check_config():
     """检查配置"""
     print("🔍 检查配置...")
-    code, out, err = run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw doctor 2>&1")
+    code, out, err = run_cmd(f"{OPENCLAW_CMD} doctor 2>&1")
     
     if "Config invalid" in out or "Unrecognized key" in out:
         print("   ⚠️ 发现配置错误，修复中...")
-        code, out, err = run_cmd("~/.nvm/versions/node/v22.22.0/bin/openclaw doctor --fix 2>&1")
+        code, out, err = run_cmd(f"{OPENCLAW_CMD} doctor --fix 2>&1")
         if "Config invalid" not in out:
             print("   ✅ 配置已修复")
             return False

@@ -10,6 +10,8 @@ import json
 import subprocess
 from datetime import datetime
 
+OPENCLAW_CMD = os.path.expanduser("~/.nvm/versions/node/v22.22.0/bin/openclaw")
+
 # 7个子任务定义
 SUB_AGENTS = [
     {
@@ -64,7 +66,7 @@ def run_sub_agent(agent):
     
     try:
         result = subprocess.run(
-            ["openclaw", "spawn", "--model", "minimax-cn/MiniMax-M2.5", "--timeout", "3600"],
+            [OPENCLAW_CMD, "spawn", "--model", "minimax-cn/MiniMax-M2.5", "--timeout", "3600"],
             input=agent['prompt'],
             capture_output=True,
             text=True,

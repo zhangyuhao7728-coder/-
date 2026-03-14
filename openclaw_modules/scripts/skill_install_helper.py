@@ -9,8 +9,9 @@ import os
 import sys
 import subprocess
 
-SKILLS_DIR = "/Users/zhangyuhao/Learning project/python/openclaw_modules/skills"
-PREFLIGHT_SCRIPT = "/Users/zhangyuhao/Learning project/python/openclaw_modules/scripts/skill_preflight_checker.py"
+OPENCLAW_CMD = os.path.expanduser("~/.nvm/versions/node/v22.22.0/bin/openclaw")
+SKILLS_DIR = "/Users/zhangyuhao/项目/Ai学习系统/openclaw_modules/skills"
+PREFLIGHT_SCRIPT = "/Users/zhangyuhao/项目/Ai学习系统/openclaw_modules/scripts/skill_preflight_checker.py"
 
 def check_skill_safety(skill_path):
     """检查技能安全性"""
@@ -53,7 +54,7 @@ def install_skill(skill_name):
     # 2. 安装
     print("\n2️⃣ 安装技能...")
     result = subprocess.run(
-        ["openclaw", "plugins", "install", skill_name],
+        [OPENCLAW_CMD, "plugins", "install", skill_name],
         capture_output=True,
         text=True
     )

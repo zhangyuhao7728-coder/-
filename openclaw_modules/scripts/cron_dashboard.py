@@ -6,12 +6,15 @@
 
 import subprocess
 import json
+import os
 from datetime import datetime
+
+OPENCLAW_CMD = os.path.expanduser("~/.nvm/versions/node/v22.22.0/bin/openclaw")
 
 def get_cron_list():
     """获取 cron 列表"""
     result = subprocess.run(
-        ["openclaw", "cron", "list"],
+        [OPENCLAW_CMD, "cron", "list"],
         capture_output=True,
         text=True,
         timeout=30
@@ -21,7 +24,7 @@ def get_cron_list():
 def get_cron_runs():
     """获取最近运行历史"""
     result = subprocess.run(
-        ["openclaw", "cron", "runs", "--limit", "5"],
+        [OPENCLAW_CMD, "cron", "runs", "--limit", "5"],
         capture_output=True,
         text=True,
         timeout=30
